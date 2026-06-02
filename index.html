@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<html lang="en"><head><meta charset="UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QuNeva Status</title>
-  <meta name="description" content="Real-time uptime and availability monitoring for QuNeva Workforce Management Platform."/>
-  <meta property="og:title" content="QuNeva Status"/>
-  <meta property="og:description" content="Live uptime monitoring for QuNeva WFM services."/>
-  <meta property="og:url" content="https://status.quneva.com"/>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='10' y1='10' x2='54' y2='54' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239F7AEA'/%3E%3Cstop offset='1' stop-color='%2367E8F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z' stroke='url(%23g)' stroke-width='5.5' fill='none'/%3E%3Cpath d='M40.8 40.5L52 52' stroke='url(%23g)' stroke-width='5.5' stroke-linecap='round'/%3E%3Cpath d='M22 41V22l20 19V22' stroke='url(%23g)' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E"/>
+  <meta name="description" content="Real-time uptime and availability monitoring for QuNeva Workforce Management Platform.">
+  <meta property="og:title" content="QuNeva Status">
+  <meta property="og:description" content="Live uptime monitoring for QuNeva WFM services.">
+  <meta property="og:url" content="https://status.quneva.com">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='10' y1='10' x2='54' y2='54' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239F7AEA'/%3E%3Cstop offset='1' stop-color='%2367E8F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z' stroke='url(%23g)' stroke-width='5.5' fill='none'/%3E%3Cpath d='M40.8 40.5L52 52' stroke='url(%23g)' stroke-width='5.5' stroke-linecap='round'/%3E%3Cpath d='M22 41V22l20 19V22' stroke='url(%23g)' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
   <style>
     :root {
       --bg:          #0a0e1a;
@@ -132,12 +131,12 @@
       <svg width="26" height="26" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="qg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#9F7AEA"/><stop offset="1" stop-color="#67E8F9"/>
+            <stop stop-color="#9F7AEA"></stop><stop offset="1" stop-color="#67E8F9"></stop>
           </linearGradient>
         </defs>
-        <path d="M32 8C18.745 8 8 18.745 8 32C8 45.255 18.745 56 32 56C45.255 56 56 45.255 56 32C56 18.745 45.255 8 32 8Z" stroke="url(#qg)" stroke-width="5.5"/>
-        <path d="M40.8 40.5L52 52" stroke="url(#qg)" stroke-width="5.5" stroke-linecap="round"/>
-        <path d="M22 41V22L42 41V22" stroke="url(#qg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M32 8C18.745 8 8 18.745 8 32C8 45.255 18.745 56 32 56C45.255 56 56 45.255 56 32C56 18.745 45.255 8 32 8Z" stroke="url(#qg)" stroke-width="5.5"></path>
+        <path d="M40.8 40.5L52 52" stroke="url(#qg)" stroke-width="5.5" stroke-linecap="round"></path>
+        <path d="M22 41V22L42 41V22" stroke="url(#qg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
       <div class="brand-name">
         <span class="brand-qn">QuNeva</span>
@@ -156,31 +155,65 @@
 <div class="hero">
   <div class="hero-badge badge-operational" id="globalBadge">
     <span class="pulse"></span>
-    <span id="globalStatus">Checking status…</span>
+    <span id="globalStatus">All Systems Operational</span>
   </div>
   <h1>QuNeva System Status</h1>
   <p>Real-time uptime and availability monitoring for the QuNeva Workforce Management Platform.</p>
-  <div class="last-updated" id="lastUpdated">Fetching latest data…</div>
+  <div class="last-updated" id="lastUpdated">Last checked: 16:30:36 · Auto-refreshes every 5 minutes</div>
 </div>
 
 <!-- SERVICES -->
 <div class="section">
   <div class="section-title">Services</div>
   <div class="services-card" id="servicesCard">
-    <!-- Injected by JS -->
     <div class="service-row">
       <div class="service-left">
         <div class="service-icon icon-web">🌐</div>
         <div>
-          <div class="service-name skeleton" style="width:140px;height:14px"></div>
-          <div class="service-url skeleton" style="width:200px;height:11px;margin-top:4px"></div>
+          <div class="service-name">QuNeva Website</div>
+          <div class="service-url">https://www.quneva.com</div>
         </div>
       </div>
       <div class="service-right">
-        <div class="skeleton" style="width:60px;height:22px;border-radius:100px"></div>
+        <div class="bars"><div class="bar" style="height:83%" title="30 May"></div><div class="bar" style="height:98%" title="30 May"></div><div class="bar" style="height:92%" title="30 May"></div><div class="bar partial" style="height:70%" title="30 May"></div><div class="bar" style="height:86%" title="30 May"></div><div class="bar" style="height:92%" title="30 May"></div><div class="bar" style="height:83%" title="30 May"></div><div class="bar" style="height:90%" title="30 May"></div><div class="bar" style="height:93%" title="30 May"></div><div class="bar" style="height:91%" title="30 May"></div><div class="bar" style="height:92%" title="30 May"></div><div class="bar" style="height:90%" title="30 May"></div><div class="bar" style="height:63%" title="31 May"></div><div class="bar" style="height:63%" title="31 May"></div><div class="bar" style="height:69%" title="31 May"></div><div class="bar" style="height:99%" title="31 May"></div><div class="bar" style="height:84%" title="31 May"></div><div class="bar" style="height:72%" title="31 May"></div><div class="bar" style="height:93%" title="31 May"></div><div class="bar" style="height:92%" title="31 May"></div><div class="bar" style="height:83%" title="31 May"></div><div class="bar" style="height:79%" title="31 May"></div><div class="bar" style="height:94%" title="31 May"></div><div class="bar" style="height:76%" title="31 May"></div><div class="bar" style="height:78%" title="1 Jun"></div><div class="bar" style="height:72%" title="1 Jun"></div><div class="bar" style="height:96%" title="1 Jun"></div><div class="bar" style="height:86%" title="1 Jun"></div><div class="bar" style="height:65%" title="1 Jun"></div><div class="bar" style="height:74%" title="1 Jun"></div><div class="bar" style="height:76%" title="1 Jun"></div><div class="bar" style="height:97%" title="1 Jun"></div><div class="bar" style="height:68%" title="1 Jun"></div><div class="bar" style="height:64%" title="1 Jun"></div><div class="bar" style="height:91%" title="1 Jun"></div><div class="bar" style="height:74%" title="1 Jun"></div><div class="bar" style="height:67%" title="2 Jun"></div><div class="bar" style="height:83%" title="2 Jun"></div><div class="bar" style="height:69%" title="2 Jun"></div><div class="bar" style="height:61%" title="2 Jun"></div><div class="bar" style="height:91%" title="2 Jun"></div><div class="bar" style="height:93%" title="2 Jun"></div><div class="bar" style="height:92%" title="2 Jun"></div><div class="bar" style="height:70%" title="2 Jun"></div><div class="bar partial" style="height:89%" title="2 Jun"></div></div>
+        <div class="status-chip chip-up">
+          <span class="dot-sm"></span>
+          Operational
+        </div>
       </div>
     </div>
-  </div>
+    <div class="service-row">
+      <div class="service-left">
+        <div class="service-icon icon-web">🔗</div>
+        <div>
+          <div class="service-name">QuNeva Root Domain</div>
+          <div class="service-url">https://quneva.com</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <div class="bars"><div class="bar partial" style="height:96%" title="30 May"></div><div class="bar" style="height:84%" title="30 May"></div><div class="bar" style="height:61%" title="30 May"></div><div class="bar" style="height:91%" title="30 May"></div><div class="bar" style="height:89%" title="30 May"></div><div class="bar" style="height:71%" title="30 May"></div><div class="bar" style="height:81%" title="30 May"></div><div class="bar" style="height:80%" title="30 May"></div><div class="bar" style="height:68%" title="30 May"></div><div class="bar" style="height:96%" title="30 May"></div><div class="bar" style="height:68%" title="30 May"></div><div class="bar" style="height:74%" title="30 May"></div><div class="bar" style="height:63%" title="31 May"></div><div class="bar" style="height:76%" title="31 May"></div><div class="bar" style="height:89%" title="31 May"></div><div class="bar" style="height:84%" title="31 May"></div><div class="bar" style="height:80%" title="31 May"></div><div class="bar" style="height:72%" title="31 May"></div><div class="bar" style="height:88%" title="31 May"></div><div class="bar" style="height:90%" title="31 May"></div><div class="bar" style="height:64%" title="31 May"></div><div class="bar" style="height:85%" title="31 May"></div><div class="bar" style="height:63%" title="31 May"></div><div class="bar" style="height:72%" title="31 May"></div><div class="bar" style="height:97%" title="1 Jun"></div><div class="bar" style="height:60%" title="1 Jun"></div><div class="bar" style="height:61%" title="1 Jun"></div><div class="bar" style="height:66%" title="1 Jun"></div><div class="bar" style="height:78%" title="1 Jun"></div><div class="bar" style="height:98%" title="1 Jun"></div><div class="bar" style="height:76%" title="1 Jun"></div><div class="bar" style="height:93%" title="1 Jun"></div><div class="bar" style="height:82%" title="1 Jun"></div><div class="bar" style="height:63%" title="1 Jun"></div><div class="bar" style="height:69%" title="1 Jun"></div><div class="bar" style="height:86%" title="1 Jun"></div><div class="bar" style="height:60%" title="2 Jun"></div><div class="bar" style="height:87%" title="2 Jun"></div><div class="bar" style="height:83%" title="2 Jun"></div><div class="bar" style="height:74%" title="2 Jun"></div><div class="bar" style="height:90%" title="2 Jun"></div><div class="bar" style="height:92%" title="2 Jun"></div><div class="bar" style="height:76%" title="2 Jun"></div><div class="bar partial" style="height:90%" title="2 Jun"></div><div class="bar" style="height:77%" title="2 Jun"></div></div>
+        <div class="status-chip chip-up">
+          <span class="dot-sm"></span>
+          Operational
+        </div>
+      </div>
+    </div>
+    <div class="service-row">
+      <div class="service-left">
+        <div class="service-icon icon-auth">🔐</div>
+        <div>
+          <div class="service-name">QuNeva Login</div>
+          <div class="service-url">https://www.quneva.com/login</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <div class="bars"><div class="bar" style="height:88%" title="30 May"></div><div class="bar" style="height:74%" title="30 May"></div><div class="bar" style="height:90%" title="30 May"></div><div class="bar" style="height:67%" title="30 May"></div><div class="bar" style="height:97%" title="30 May"></div><div class="bar" style="height:94%" title="30 May"></div><div class="bar" style="height:66%" title="30 May"></div><div class="bar" style="height:95%" title="30 May"></div><div class="bar" style="height:79%" title="30 May"></div><div class="bar" style="height:92%" title="30 May"></div><div class="bar" style="height:81%" title="30 May"></div><div class="bar" style="height:97%" title="30 May"></div><div class="bar" style="height:91%" title="31 May"></div><div class="bar" style="height:66%" title="31 May"></div><div class="bar" style="height:79%" title="31 May"></div><div class="bar" style="height:88%" title="31 May"></div><div class="bar" style="height:86%" title="31 May"></div><div class="bar" style="height:70%" title="31 May"></div><div class="bar" style="height:66%" title="31 May"></div><div class="bar" style="height:97%" title="31 May"></div><div class="bar" style="height:71%" title="31 May"></div><div class="bar" style="height:85%" title="31 May"></div><div class="bar" style="height:96%" title="31 May"></div><div class="bar" style="height:98%" title="31 May"></div><div class="bar" style="height:93%" title="1 Jun"></div><div class="bar" style="height:98%" title="1 Jun"></div><div class="bar" style="height:84%" title="1 Jun"></div><div class="bar" style="height:76%" title="1 Jun"></div><div class="bar" style="height:74%" title="1 Jun"></div><div class="bar" style="height:77%" title="1 Jun"></div><div class="bar" style="height:86%" title="1 Jun"></div><div class="bar" style="height:87%" title="1 Jun"></div><div class="bar" style="height:91%" title="1 Jun"></div><div class="bar" style="height:98%" title="1 Jun"></div><div class="bar" style="height:62%" title="1 Jun"></div><div class="bar" style="height:90%" title="1 Jun"></div><div class="bar" style="height:94%" title="2 Jun"></div><div class="bar" style="height:84%" title="2 Jun"></div><div class="bar" style="height:73%" title="2 Jun"></div><div class="bar" style="height:79%" title="2 Jun"></div><div class="bar" style="height:86%" title="2 Jun"></div><div class="bar" style="height:74%" title="2 Jun"></div><div class="bar" style="height:74%" title="2 Jun"></div><div class="bar" style="height:96%" title="2 Jun"></div><div class="bar" style="height:72%" title="2 Jun"></div></div>
+        <div class="status-chip chip-up">
+          <span class="dot-sm"></span>
+          Operational
+        </div>
+      </div>
+    </div></div>
 </div>
 
 <!-- UPTIME 90-DAY -->
@@ -188,10 +221,26 @@
   <div class="section-title">90-Day Uptime</div>
   <div class="services-card" id="uptimeCard">
     <div class="uptime-row">
-      <div class="skeleton" style="width:160px;height:13px;border-radius:4px"></div>
-      <div class="skeleton" style="width:50px;height:13px;border-radius:4px"></div>
+      <div class="uptime-name">QuNeva Website</div>
+      <div class="uptime-bar-wrap">
+        <div class="uptime-bar-bg"><div class="uptime-bar-fill" style="width:99.73%"></div></div>
+      </div>
+      <div class="uptime-pct">99.73%</div>
     </div>
-  </div>
+    <div class="uptime-row">
+      <div class="uptime-name">QuNeva Root Domain</div>
+      <div class="uptime-bar-wrap">
+        <div class="uptime-bar-bg"><div class="uptime-bar-fill" style="width:99.95%"></div></div>
+      </div>
+      <div class="uptime-pct">99.95%</div>
+    </div>
+    <div class="uptime-row">
+      <div class="uptime-name">QuNeva Login</div>
+      <div class="uptime-bar-wrap">
+        <div class="uptime-bar-bg"><div class="uptime-bar-fill" style="width:99.82%"></div></div>
+      </div>
+      <div class="uptime-pct">99.82%</div>
+    </div></div>
 </div>
 
 <!-- RESPONSE TIME -->
@@ -200,21 +249,24 @@
   <div class="metrics-grid" id="metricsGrid">
     <div class="metric-card">
       <div class="metric-label">Website</div>
-      <div class="metric-value skeleton" style="width:80px;height:32px;border-radius:4px"></div>
+      <div class="metric-value" style="color:#f59e0b">919ms</div>
+      <div class="metric-sub">Response time</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">Login Page</div>
-      <div class="metric-value skeleton" style="width:80px;height:32px;border-radius:4px"></div>
+      <div class="metric-value" style="color:#f59e0b">904ms</div>
+      <div class="metric-sub">Response time</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">Avg Response</div>
-      <div class="metric-value skeleton" style="width:80px;height:32px;border-radius:4px"></div>
+      <div class="metric-value" style="color:#f59e0b">917ms</div>
+      <div class="metric-sub">All services</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">Checks Today</div>
-      <div class="metric-value skeleton" style="width:80px;height:32px;border-radius:4px"></div>
-    </div>
-  </div>
+      <div class="metric-value" style="color:var(--accent-2)">162</div>
+      <div class="metric-sub">Every 5 min via Actions</div>
+    </div></div>
 </div>
 
 <!-- INCIDENTS -->
@@ -232,16 +284,16 @@
 <footer>
   <div class="footer-left">
     <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
-      <defs><linearGradient id="fg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#9F7AEA"/><stop offset="1" stop-color="#67E8F9"/></linearGradient></defs>
-      <path d="M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z" stroke="url(#fg)" stroke-width="5.5"/>
-      <path d="M40.8 40.5L52 52" stroke="url(#fg)" stroke-width="5.5" stroke-linecap="round"/>
-      <path d="M22 41V22l20 19V22" stroke="url(#fg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <defs><linearGradient id="fg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#9F7AEA"></stop><stop offset="1" stop-color="#67E8F9"></stop></linearGradient></defs>
+      <path d="M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z" stroke="url(#fg)" stroke-width="5.5"></path>
+      <path d="M40.8 40.5L52 52" stroke="url(#fg)" stroke-width="5.5" stroke-linecap="round"></path>
+      <path d="M22 41V22l20 19V22" stroke="url(#fg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
     </svg>
     <span>© 2026 QuNeva WFM — Developed by <a href="https://www.abdelrahman-ezzat.vip" target="_blank" rel="noopener" style="color:var(--accent-2)">Abdelrahman Ezzat</a></span>
   </div>
   <div class="footer-links">
     <a href="https://www.quneva.com" target="_blank" rel="noopener">Platform</a>
-    <a href="https://github.com/Abdelrahman-Ezzat-G/quneva-status" target="_blank" rel="noopener">GitHub</a>
+
     <a href="mailto:support@quneva.com">Contact</a>
   </div>
 </footer>
@@ -415,5 +467,5 @@ async function runChecks() {
 runChecks();
 setInterval(runChecks, 5 * 60 * 1000);
 </script>
-</body>
-</html>
+
+</body></html>
