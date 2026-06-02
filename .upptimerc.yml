@@ -12,17 +12,28 @@ sites:
 status-website:
   cname: status.quneva.com
   name: QuNeva Status
-  introTitle: "QuNeva System Status"
-  introMessage: "Live uptime and availability monitoring for QuNeva services."
+  introTitle: "🟢 QuNeva System Status"
+  introMessage: "Real-time uptime and availability monitoring for QuNeva Workforce Management Platform."
+  logoUrl: https://www.quneva.com/favicon.ico
   navbar:
     - title: Status
       href: /
-    - title: QuNeva
+    - title: QuNeva WFM
       href: https://www.quneva.com
+    - title: Support
+      href: mailto:support@quneva.com
 
 assignees:
   - Abdelrahman-Ezzat-G
 
 commitMessages:
-  commitAuthorName: "QuNeva Status Bot"
-  commitAuthorEmail: "status@quneva.com"
+  commitAuthorName: QuNeva Status Bot
+  commitAuthorEmail: status-bot@quneva.com
+  userUpdatedTemplate: "$SITE_NAME is $STATUS"
+  statusChangeTemplate: "[$SITE_NAME] $OLD_STATUS → $STATUS"
+
+i18n:
+  langCode: en
+
+# Check every 5 minutes
+schedule: "*/5 * * * *"
