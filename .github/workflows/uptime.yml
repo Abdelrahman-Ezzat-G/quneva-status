@@ -1,23 +1,134 @@
-name: Uptime CI
+name: Uptime Monitor
 
 on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
-
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+  push:
+    branches:
+      - main
 
 jobs:
-  uptime:
+  check-uptime:
+    name: Check Services
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: upptime/uptime-monitor@master
+      - name: Check QuNeva Website
+        id: website
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 https://www.quneva.com)
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 https://www.quneva.com)
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "time=$TIME" >> $GITHUB_OUTPUT
+          echo "Website: HTTP $STATUS in ${TIME}s"
+          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
+
+      - name: Check QuNeva Root Domain
+        id: root
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://quneva.com)
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 https://quneva.com)
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "time=$TIME" >> $GITHUB_OUTPUT
+          echo "Root domain: HTTP $STATUS in ${TIME}s"
+          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
+
+      - name: Check QuNeva Login
+        id: login
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 https://www.quneva.com/login)
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 https://www.quneva.com/login)
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "time=$TIME" >> $GITHUB_OUTPUT
+          echo "Login: HTTP $STATUS in ${TIME}s"
+          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
+
+      - name: Update status history
+        run: |
+          mkdir -p data
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          DATE=$(date -u +"%Y-%m-%d")
+
+          # Write latest status JSON
+          cat > data/status.json << EOF
+          {
+            "timestamp": "$TIMESTAMP",
+            "date": "$DATE",
+            "services": {
+              "website": {
+                "name": "QuNeva Website",
+                "url": "https://www.quneva.com",
+                "status": "${{ steps.website.outputs.result }}",
+                "http_status": ${{ steps.website.outputs.status }},
+                "response_time_s": ${{ steps.website.outputs.time }}
+              },
+              "root": {
+                "name": "QuNeva Root Domain",
+                "url": "https://quneva.com",
+                "status": "${{ steps.root.outputs.result }}",
+                "http_status": ${{ steps.root.outputs.status }},
+                "response_time_s": ${{ steps.root.outputs.time }}
+              },
+              "login": {
+                "name": "QuNeva Login",
+                "url": "https://www.quneva.com/login",
+                "status": "${{ steps.login.outputs.result }}",
+                "http_status": ${{ steps.login.outputs.status }},
+                "response_time_s": ${{ steps.login.outputs.time }}
+              }
+            }
+          }
+          EOF
+
+          echo "Status file written:"
+          cat data/status.json
+
+      - name: Append to history log
+        run: |
+          mkdir -p data
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "$TIMESTAMP,${{ steps.website.outputs.result }},${{ steps.website.outputs.status }},${{ steps.website.outputs.time }},${{ steps.root.outputs.result }},${{ steps.root.outputs.status }},${{ steps.root.outputs.time }},${{ steps.login.outputs.result }},${{ steps.login.outputs.status }},${{ steps.login.outputs.time }}" >> data/history.csv
+
+      - name: Open incident if down
+        if: steps.website.outputs.result == 'down' || steps.login.outputs.result == 'down'
+        uses: actions/github-script@v7
         with:
-          command: update
-        env:
-          GH_PAT: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const down = [];
+            if ('${{ steps.website.outputs.result }}' === 'down') down.push('QuNeva Website (HTTP ${{ steps.website.outputs.status }})');
+            if ('${{ steps.login.outputs.result }}' === 'down') down.push('QuNeva Login (HTTP ${{ steps.login.outputs.status }})');
+            const title = `[Incident] Service disruption: ${down.join(', ')}`;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'incident'
+            });
+            const alreadyOpen = existing.data.some(i => i.title.startsWith('[Incident]'));
+            if (!alreadyOpen) {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, labels: ['incident'],
+                body: `## Service Disruption Detected\n\n**Time:** ${new Date().toISOString()}\n\n**Affected:** ${down.join(', ')}\n\nThis issue was automatically created by the uptime monitor. It will be closed automatically when services recover.`
+              });
+            }
+
+      - name: Commit status data
+        run: |
+          git config user.name "QuNeva Status Bot"
+          git config user.email "status-bot@quneva.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "chore: uptime check $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
+
+      - name: Summary
+        run: |
+          echo "## Uptime Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Status | HTTP | Response |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|------|----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| QuNeva Website | ${{ steps.website.outputs.result }} | ${{ steps.website.outputs.status }} | ${{ steps.website.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
+          echo "| Root Domain | ${{ steps.root.outputs.result }} | ${{ steps.root.outputs.status }} | ${{ steps.root.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
+          echo "| Login Page | ${{ steps.login.outputs.result }} | ${{ steps.login.outputs.status }} | ${{ steps.login.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
