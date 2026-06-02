@@ -1,20 +1,173 @@
-# QuNeva Status Page Setup Guide
+# QuNeva Status Page — Developer Setup Guide
 
-This repository contains the Upptime configuration for the QuNeva status page.
+Complete guide to setting up or restoring the QuNeva status page from scratch.
 
-## Quick Start
+---
 
-### Step 1: Create GitHub Repository
+## Prerequisites
 
-1. Go to https://github.com/new
-2. Repository name: `quneva-status`
-3. Visibility: **Public**
-4. Click "Create repository"
+- GitHub account with access to `Abdelrahman-Ezzat-G/quneva-status`
+- Access to Cloudflare DNS panel for `quneva.com`
+- No coding required — all steps use GitHub web UI
 
-### Step 2: Push Local Repository
+---
 
-```bash
-cd /home/ubuntu/quneva-status
-git remote add origin https://github.com/Abdelrahman-Ezzat-G/quneva-status.git
-git branch -M main
-git push -u origin main
+## Step 1: Upload all files to GitHub
+
+If the repository is empty, upload these files via GitHub web UI.
+
+Go to: https://github.com/Abdelrahman-Ezzat-G/quneva-status
+
+For each file, click **Add file → Create new file**, enter the filename and paste the content.
+
+### Files to create:
+
+| Path | Description |
+|------|-------------|
+| `index.html` | The status page itself |
+| `CNAME` | Custom domain (contains: `status.quneva.com`) |
+| `README.md` | Repository documentation |
+| `SETUP_GUIDE.md` | This file |
+| `.github/workflows/uptime.yml` | Uptime monitor workflow |
+| `.github/workflows/deploy.yml` | GitHub Pages deploy workflow |
+
+> **Tip:** For files inside `.github/workflows/`, type the full path in the filename field: `.github/workflows/uptime.yml`
+
+---
+
+## Step 2: Set GitHub Actions permissions
+
+Go to: https://github.com/Abdelrahman-Ezzat-G/quneva-status/settings/actions
+
+Under **Workflow permissions**:
+- Select: **Read and write permissions** ✅
+- Check: **Allow GitHub Actions to create and approve pull requests** ✅
+
+Click **Save**.
+
+This is required for the uptime workflow to commit `data/status.json` back to the repo.
+
+---
+
+## Step 3: Enable GitHub Pages
+
+Go to: https://github.com/Abdelrahman-Ezzat-G/quneva-status/settings/pages
+
+Under **Source**:
+- Select: **GitHub Actions**
+
+Click **Save**.
+
+> Note: With `deploy.yml` in place, GitHub Pages is deployed automatically via Actions — not from a branch. Select "GitHub Actions" as the source, not "Deploy from a branch".
+
+---
+
+## Step 4: Set custom domain in GitHub Pages
+
+In the same **Pages** settings page, under **Custom domain**:
+
+Enter: `status.quneva.com`
+
+Click **Save**.
+
+GitHub will attempt to verify DNS. Complete Step 5 first if verification fails.
+
+---
+
+## Step 5: Configure Cloudflare DNS
+
+Log in to Cloudflare: https://dash.cloudflare.com
+
+Select the `quneva.com` zone → **DNS** → **Add record**:
+
+```
+Type:   CNAME
+Name:   status
+Target: Abdelrahman-Ezzat-G.github.io
+Proxy:  DNS Only (grey cloud — NOT orange/proxied)
+TTL:    Auto
+```
+
+Click **Save**.
+
+> **Critical:** The proxy MUST be off (grey cloud). If Cloudflare is proxying the request, GitHub Pages cannot verify domain ownership and HTTPS will not work.
+
+---
+
+## Step 6: Trigger first deployment
+
+Go to: https://github.com/Abdelrahman-Ezzat-G/quneva-status/actions
+
+You should see two workflows:
+- **Uptime Monitor** — runs every 5 minutes
+- **Deploy Status Page** — deploys on every push
+
+Click **Uptime Monitor** → **Run workflow** → **Run workflow** (green button).
+
+Wait ~60 seconds, then click **Deploy Status Page** → **Run workflow**.
+
+---
+
+## Step 7: Verify
+
+After DNS propagates (5 min to 24 hours):
+
+1. Open: https://status.quneva.com
+2. Should show QuNeva branding with three services
+3. Check: https://github.com/Abdelrahman-Ezzat-G/quneva-status/actions — both workflows green ✅
+4. Check: `data/status.json` exists in the repo (created by first uptime run)
+
+---
+
+## Troubleshooting
+
+### Status page shows 404
+- GitHub Pages may not be enabled — check Settings → Pages
+- The deploy workflow may not have run yet — trigger it manually
+- DNS may not have propagated — test with `dig status.quneva.com CNAME`
+
+### Actions failing with "Permission denied"
+- Check workflow permissions are set to **Read and write** (Step 2)
+- If the uptime workflow can't push data: this is expected on first run — re-run after permissions are set
+
+### Custom domain not working / HTTPS errors
+- Verify Cloudflare proxy is **OFF** (grey cloud)
+- CNAME target must be exactly: `Abdelrahman-Ezzat-G.github.io`
+- DNS propagation can take up to 24 hours — be patient
+
+### Uptime checks showing wrong results
+- The page checks URLs directly from the browser using `fetch()` with `no-cors` mode
+- Because of CORS, the browser can't read the HTTP status code — it assumes UP if no network error occurs
+- The GitHub Actions workflow (server-side curl) is the authoritative uptime source
+- `data/status.json` is updated every 5 minutes with accurate results
+
+### Workflow runs but data/ files not created
+- Check that workflow permissions allow writing (Step 2)
+- Check the Actions log for git push errors
+- If the repo has branch protection, disable it for the `main` branch
+
+---
+
+## Maintenance
+
+### Changing check interval
+Edit `.github/workflows/uptime.yml`, line 4:
+```yaml
+cron: "*/5 * * * *"   # every 5 minutes
+cron: "*/15 * * * *"  # every 15 minutes
+cron: "0 * * * *"     # every hour
+```
+
+### Adding a new monitored service
+1. Add a new step in `uptime.yml` (copy an existing check step)
+2. Add the service to `SERVICES` array in `index.html`
+3. Commit and push
+
+### Viewing uptime history
+Raw history is in `data/history.csv` — open it in Excel or Google Sheets.
+
+Format: `timestamp, website_result, website_http, website_time, root_result, root_http, root_time, login_result, login_http, login_time`
+
+---
+
+*© 2026 QuNeva WFM — Maintained by [Abdelrahman Ezzat](https://www.abdelrahman-ezzat.vip)*

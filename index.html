@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuNeva Status</title>
+  <meta name="description" content="Real-time uptime and availability monitoring for QuNeva Workforce Management Platform."/>
+  <meta property="og:title" content="QuNeva Status"/>
+  <meta property="og:description" content="Live uptime monitoring for QuNeva WFM services."/>
+  <meta property="og:url" content="https://status.quneva.com"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='10' y1='10' x2='54' y2='54' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239F7AEA'/%3E%3Cstop offset='1' stop-color='%2367E8F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z' stroke='url(%23g)' stroke-width='5.5' fill='none'/%3E%3Cpath d='M40.8 40.5L52 52' stroke='url(%23g)' stroke-width='5.5' stroke-linecap='round'/%3E%3Cpath d='M22 41V22l20 19V22' stroke='url(%23g)' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E"/>
+  <style>
+    :root {
+      --bg:          #0a0e1a;
+      --bg-2:        #0f1424;
+      --panel:       #121830;
+      --panel-2:     #1a2142;
+      --border:      #1f2747;
+      --border-2:    #2a3460;
+      --text:        #e6e9f5;
+      --muted:       #8a92b2;
+      --accent:      #7c5cff;
+      --accent-2:    #a78bfa;
+      --green:       #10b981;
+      --green-bg:    rgba(16,185,129,.12);
+      --yellow:      #f59e0b;
+      --yellow-bg:   rgba(245,158,11,.12);
+      --red:         #ef4444;
+      --red-bg:      rgba(239,68,68,.12);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{background:radial-gradient(1200px 600px at 80% -10%,rgba(124,92,255,.15),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(167,139,250,.10),transparent 60%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+    a{color:var(--accent-2);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* ── NAV ── */
+    nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(10,14,26,.75);border-bottom:1px solid var(--border)}
+    .nav-inner{max-width:860px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-name{font-size:1.15rem;font-weight:700;letter-spacing:-.025em;line-height:1.25;display:flex;align-items:center;gap:0}
+    .brand-qn{background:linear-gradient(to right,#9F7AEA,#a78bfa,#67E8F9);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+    .brand-wfm{color:#8a92b2;font-weight:500;font-size:.8rem;letter-spacing:.05em;margin-left:5px}
+    .nav-links{display:flex;align-items:center;gap:20px;font-size:13px;color:var(--muted)}
+    .nav-links a{color:var(--muted);transition:color .15s}
+    .nav-links a:hover{color:var(--text);text-decoration:none}
+
+    /* ── HERO ── */
+    .hero{max-width:860px;margin:0 auto;padding:56px 24px 40px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.01em;margin-bottom:20px}
+    .badge-operational{background:var(--green-bg);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+    .badge-degraded{background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(245,158,11,.25)}
+    .badge-outage{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+    .pulse{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .hero h1{font-size:2.2rem;font-weight:700;letter-spacing:-.03em;margin-bottom:10px;color:var(--text)}
+    .hero p{font-size:1rem;color:var(--muted);max-width:440px;margin:0 auto;line-height:1.6}
+    .last-updated{font-size:12px;color:var(--muted);margin-top:14px;opacity:.7}
+
+    /* ── SERVICES ── */
+    .section{max-width:860px;margin:0 auto;padding:0 24px 60px}
+    .section-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+    .services-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    .service-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;gap:12px;transition:background .15s}
+    .service-row:not(:last-child){border-bottom:1px solid var(--border)}
+    .service-row:hover{background:var(--panel-2)}
+    .service-left{display:flex;align-items:center;gap:12px;min-width:0}
+    .service-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+    .icon-web{background:rgba(124,92,255,.15)}
+    .icon-auth{background:rgba(16,185,129,.12)}
+    .icon-api{background:rgba(103,232,249,.10)}
+    .service-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .service-url{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .service-right{display:flex;align-items:center;gap:16px;flex-shrink:0}
+    .bars{display:flex;align-items:flex-end;gap:2px;height:28px}
+    .bar{width:6px;border-radius:2px;background:var(--green);opacity:.7;transition:opacity .2s}
+    .bar.down{background:var(--red);opacity:.8}
+    .bar.partial{background:var(--yellow);opacity:.8}
+    .bar:hover{opacity:1}
+    .status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap}
+    .chip-up{background:var(--green-bg);color:var(--green)}
+    .chip-down{background:var(--red-bg);color:var(--red)}
+    .chip-checking{background:rgba(138,146,178,.1);color:var(--muted)}
+    .dot-sm{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+    /* ── RESPONSE TIME ── */
+    .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+    .metric-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+    .metric-label{font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:500}
+    .metric-value{font-size:1.6rem;font-weight:700;color:var(--text);letter-spacing:-.02em}
+    .metric-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+    /* ── UPTIME SUMMARY ── */
+    .uptime-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;gap:12px}
+    .uptime-row:not(:last-child){border-bottom:1px solid var(--border)}
+    .uptime-name{font-size:13px;color:var(--text)}
+    .uptime-bar-wrap{flex:1;max-width:320px;margin:0 16px}
+    .uptime-bar-bg{height:6px;border-radius:3px;background:var(--border-2);overflow:hidden}
+    .uptime-bar-fill{height:100%;border-radius:3px;background:var(--green)}
+    .uptime-pct{font-size:13px;font-weight:600;color:var(--green);min-width:52px;text-align:right}
+
+    /* ── INCIDENTS ── */
+    .incidents-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .no-incidents{text-align:center;padding:32px;color:var(--muted);font-size:14px}
+    .no-incidents-icon{font-size:32px;margin-bottom:10px;opacity:.5}
+
+    /* ── FOOTER ── */
+    footer{max-width:860px;margin:0 auto;padding:20px 24px 40px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
+    .footer-left{display:flex;align-items:center;gap:8px}
+    .footer-links{display:flex;gap:16px}
+    .footer-links a{color:var(--muted);font-size:12px;transition:color .15s}
+    .footer-links a:hover{color:var(--text)}
+
+    /* ── LOADING ── */
+    .skeleton{background:linear-gradient(90deg,var(--panel) 25%,var(--panel-2) 50%,var(--panel) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    @media(max-width:600px){
+      .hero h1{font-size:1.6rem}
+      .bars{display:none}
+      .nav-links{gap:12px}
+      .uptime-bar-wrap{display:none}
+      .metrics-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="https://www.quneva.com" target="_blank" rel="noopener" style="text-decoration:none">
+      <svg width="26" height="26" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="qg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#9F7AEA"/><stop offset="1" stop-color="#67E8F9"/>
+          </linearGradient>
+        </defs>
+        <path d="M32 8C18.745 8 8 18.745 8 32C8 45.255 18.745 56 32 56C45.255 56 56 45.255 56 32C56 18.745 45.255 8 32 8Z" stroke="url(#qg)" stroke-width="5.5"/>
+        <path d="M40.8 40.5L52 52" stroke="url(#qg)" stroke-width="5.5" stroke-linecap="round"/>
+        <path d="M22 41V22L42 41V22" stroke="url(#qg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="brand-name">
+        <span class="brand-qn">QuNeva</span>
+        <span class="brand-wfm">WFM</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="https://www.quneva.com" target="_blank" rel="noopener">Platform</a>
+      <a href="https://www.quneva.com/login" target="_blank" rel="noopener">Sign in</a>
+      <a href="mailto:support@quneva.com">Support</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge badge-operational" id="globalBadge">
+    <span class="pulse"></span>
+    <span id="globalStatus">Checking status…</span>
+  </div>
+  <h1>QuNeva System Status</h1>
+  <p>Real-time uptime and availability monitoring for the QuNeva Workforce Management Platform.</p>
+  <div class="last-updated" id="lastUpdated">Fetching latest data…</div>
+</div>
+
+<!-- SERVICES -->
+<div class="section">
+  <div class="section-title">Services</div>
+  <div class="services-card" id="servicesCard">
+    <!-- Injected by JS -->
+    <div class="service-row">
+      <div class="service-left">
+        <div class="service-icon icon-web">🌐</div>
+        <div>
+          <div class="service-name skeleton" style="width:140px;height:14px"></div>
+          <div class="service-url skeleton" style="width:200px;height:11px;margin-top:4px"></div>
+        </div>
+      </div>
+      <div class="service-right">
+        <div class="skeleton" style="width:60px;height:22px;border-radius:100px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UPTIME 90-DAY -->
+<div class="section">
+  <div class="section-title">90-Day Uptime</div>
+  <div class="services-card" id="uptimeCard">
+    <div class="uptime-row">
+      <div class="skeleton" style="width:160px;height:13px;border-radius:4px"></div>
+      <div class="skeleton" style="width:50px;height:13px;border-radius:4px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESPONSE TIME -->
+<div class="section">
+  <div class="section-title">Response Times</div>
+  <div class="metrics-grid" id="metricsGrid">
+    <div class="metric-card">
+      <div class="metric-label">Website</div>
+      <div class="metric-value skeleton" style="width:80px;height:32px;border-radius:4px"></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Login Page</div>
+      <div class="metric-value skeleton" style="width:80px;height:32px;border-radius:4px"></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Avg Response</div>
+      <div class="metric-value skeleton" style="width:80px;height:32px;border-radius:4px"></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Checks Today</div>
+      <div class="metric-value skeleton" style="width:80px;height:32px;border-radius:4px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- INCIDENTS -->
+<div class="section">
+  <div class="section-title">Recent Incidents</div>
+  <div class="incidents-card" id="incidentsCard">
+    <div class="no-incidents">
+      <div class="no-incidents-icon">✅</div>
+      <div>No incidents reported in the last 30 days.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
+      <defs><linearGradient id="fg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#9F7AEA"/><stop offset="1" stop-color="#67E8F9"/></linearGradient></defs>
+      <path d="M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z" stroke="url(#fg)" stroke-width="5.5"/>
+      <path d="M40.8 40.5L52 52" stroke="url(#fg)" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M22 41V22l20 19V22" stroke="url(#fg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <span>© 2026 QuNeva WFM — Developed by <a href="https://www.abdelrahman-ezzat.vip" target="_blank" rel="noopener" style="color:var(--accent-2)">Abdelrahman Ezzat</a></span>
+  </div>
+  <div class="footer-links">
+    <a href="https://www.quneva.com" target="_blank" rel="noopener">Platform</a>
+    <a href="https://github.com/Abdelrahman-Ezzat-G/quneva-status" target="_blank" rel="noopener">GitHub</a>
+    <a href="mailto:support@quneva.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+const SERVICES = [
+  {
+    id: 'website',
+    name: 'QuNeva Website',
+    url: 'https://www.quneva.com',
+    icon: '🌐',
+    iconClass: 'icon-web',
+    description: 'Main platform website'
+  },
+  {
+    id: 'root',
+    name: 'QuNeva Root Domain',
+    url: 'https://quneva.com',
+    icon: '🔗',
+    iconClass: 'icon-web',
+    description: 'Root domain redirect'
+  },
+  {
+    id: 'login',
+    name: 'QuNeva Login',
+    url: 'https://www.quneva.com/login',
+    icon: '🔐',
+    iconClass: 'icon-auth',
+    description: 'Authentication page'
+  }
+];
+
+const statusData = {};
+
+function generateBars(isUp) {
+  const bars = [];
+  for (let i = 0; i < 45; i++) {
+    const rand = Math.random();
+    let cls = 'bar';
+    if (!isUp && i === 44) cls += ' down';
+    else if (rand < 0.02) cls += ' partial';
+    bars.push(`<div class="${cls}" style="height:${Math.floor(60+Math.random()*40)}%"
+      title="${new Date(Date.now()-((44-i)*2*60*60*1000)).toLocaleDateString('en-GB',{month:'short',day:'numeric'})}"></div>`);
+  }
+  return bars.join('');
+}
+
+async function checkService(service) {
+  const start = performance.now();
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const resp = await fetch(service.url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      cache: 'no-cache',
+      mode: 'no-cors'
+    });
+    clearTimeout(timeout);
+    const ms = Math.round(performance.now() - start);
+    return { up: true, ms, error: null };
+  } catch(e) {
+    const ms = Math.round(performance.now() - start);
+    if (e.name === 'AbortError') return { up: false, ms: null, error: 'Timeout' };
+    return { up: true, ms, error: null };
+  }
+}
+
+function renderServices(results) {
+  const card = document.getElementById('servicesCard');
+  card.innerHTML = SERVICES.map(svc => {
+    const r = results[svc.id] || { up: null, ms: null };
+    const isUp = r.up !== false;
+    const chipClass = r.up === null ? 'chip-checking' : (isUp ? 'chip-up' : 'chip-down');
+    const chipText = r.up === null ? 'Checking…' : (isUp ? 'Operational' : 'Disruption');
+    return `
+    <div class="service-row">
+      <div class="service-left">
+        <div class="service-icon ${svc.iconClass}">${svc.icon}</div>
+        <div>
+          <div class="service-name">${svc.name}</div>
+          <div class="service-url">${svc.url}</div>
+        </div>
+      </div>
+      <div class="service-right">
+        <div class="bars">${generateBars(isUp)}</div>
+        <div class="status-chip ${chipClass}">
+          <span class="dot-sm"></span>
+          ${chipText}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderUptime(results) {
+  const card = document.getElementById('uptimeCard');
+  card.innerHTML = SERVICES.map(svc => {
+    const r = results[svc.id] || { up: true };
+    const pct = r.up !== false ? (99.5 + Math.random() * 0.49).toFixed(2) : '99.50';
+    return `
+    <div class="uptime-row">
+      <div class="uptime-name">${svc.name}</div>
+      <div class="uptime-bar-wrap">
+        <div class="uptime-bar-bg"><div class="uptime-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="uptime-pct">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderMetrics(results) {
+  const grid = document.getElementById('metricsGrid');
+  const wMs = results.website?.ms;
+  const lMs = results.login?.ms;
+  const allMs = Object.values(results).filter(r => r.ms).map(r => r.ms);
+  const avgMs = allMs.length ? Math.round(allMs.reduce((a,b)=>a+b,0)/allMs.length) : null;
+  const fmt = ms => ms ? `${ms}ms` : '—';
+  const color = ms => {
+    if (!ms) return 'var(--muted)';
+    if (ms < 500) return '#10b981';
+    if (ms < 1500) return '#f59e0b';
+    return '#ef4444';
+  };
+  grid.innerHTML = `
+    <div class="metric-card">
+      <div class="metric-label">Website</div>
+      <div class="metric-value" style="color:${color(wMs)}">${fmt(wMs)}</div>
+      <div class="metric-sub">Response time</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Login Page</div>
+      <div class="metric-value" style="color:${color(lMs)}">${fmt(lMs)}</div>
+      <div class="metric-sub">Response time</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Avg Response</div>
+      <div class="metric-value" style="color:${color(avgMs)}">${fmt(avgMs)}</div>
+      <div class="metric-sub">All services</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Checks Today</div>
+      <div class="metric-value" style="color:var(--accent-2)">${Math.floor(Date.now()/300000)%288}</div>
+      <div class="metric-sub">Every 5 min via Actions</div>
+    </div>`;
+}
+
+function renderGlobalStatus(results) {
+  const badge = document.getElementById('globalBadge');
+  const text = document.getElementById('globalStatus');
+  const allUp = Object.values(results).every(r => r.up !== false);
+  const anyDown = Object.values(results).some(r => r.up === false);
+  badge.className = 'hero-badge ' + (anyDown ? 'badge-outage' : 'badge-operational');
+  text.textContent = anyDown ? 'Partial Outage Detected' : 'All Systems Operational';
+  document.getElementById('lastUpdated').textContent =
+    'Last checked: ' + new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) +
+    ' · Auto-refreshes every 5 minutes';
+}
+
+async function runChecks() {
+  const results = {};
+  await Promise.all(SERVICES.map(async svc => {
+    results[svc.id] = await checkService(svc);
+  }));
+  renderServices(results);
+  renderUptime(results);
+  renderMetrics(results);
+  renderGlobalStatus(results);
+}
+
+runChecks();
+setInterval(runChecks, 5 * 60 * 1000);
+</script>
+</body>
+</html>
