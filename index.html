@@ -59,11 +59,7 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .section-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
 
 /* SERVICES GRID */
-.services-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:14px;
-}
+.services-grid{display:grid;grid-template-columns:1fr;gap:14px}
 
 /* SERVICE CARD */
 .service-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;transition:border-color .2s,transform .15s,box-shadow .15s;cursor:default}
@@ -82,7 +78,7 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .icon-ai{background:rgba(167,139,250,.15)}
 
 .service-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.service-url{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.service-url{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
 
 .status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0}
 .chip-up{background:var(--green-bg);color:var(--green)}
@@ -91,24 +87,11 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .dot-sm{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
 
 /* BARS inside card */
-.sc-bars{
-  display:grid;
-  grid-template-columns:repeat(40,1fr);
-  align-items:end;
-  gap:2px;
-  height:34px;
-}
-
-.bar{
-  width:100%;
-  align-self:end;
-  border-radius:2px;
-  background:var(--green);
-  opacity:.65;
-  transition:opacity .2s;
-}
+.sc-bars{display:grid;grid-template-columns:repeat(40,1fr);align-items:end;gap:2px;height:34px}
+.bar{width:100%;align-self:end;border-radius:2px;background:var(--green);opacity:.65;transition:opacity .2s}
 .bar.down{background:var(--red);opacity:.9}
 .bar.partial{background:var(--yellow);opacity:.8}
+.bar.nodata{background:var(--border-2);opacity:.5}
 .bar:hover{opacity:1}
 
 /* RESPONSE TIME in card */
@@ -118,6 +101,11 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .sc-uptime{text-align:right}
 .sc-uptime-pct{font-size:18px;font-weight:700;color:var(--green)}
 .sc-uptime-label{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* DATA SOURCE BADGE */
+.data-source{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;margin-top:4px}
+.source-live{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+.source-browser{background:rgba(138,146,178,.08);color:var(--muted);border:1px solid var(--border)}
 
 /* UPTIME SUMMARY */
 .uptime-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
@@ -140,6 +128,11 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .incidents-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px}
 .no-incidents{text-align:center;padding:32px;color:var(--muted);font-size:14px}
 .no-incidents-icon{font-size:32px;margin-bottom:10px;opacity:.5}
+.incident-item{padding:14px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start}
+.incident-item:last-child{border-bottom:none;padding-bottom:0}
+.incident-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:5px}
+.incident-title{font-size:13px;font-weight:600;color:var(--text)}
+.incident-time{font-size:11px;color:var(--muted);margin-top:3px}
 
 /* FOOTER */
 footer{max-width:900px;margin:0 auto;padding:20px 24px 40px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
@@ -147,10 +140,6 @@ footer{max-width:900px;margin:0 auto;padding:20px 24px 40px;border-top:1px solid
 .footer-links{display:flex;gap:16px}
 .footer-links a{color:var(--muted);font-size:12px;transition:color .15s}
 .footer-links a:hover{color:var(--text)}
-
-/* LOADING SHIMMER */
-.skeleton{background:linear-gradient(90deg,var(--panel) 25%,var(--panel-2) 50%,var(--panel) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 @media(max-width:640px){
   .hero h1{font-size:1.6rem}
@@ -191,35 +180,29 @@ footer{max-width:900px;margin:0 auto;padding:20px 24px 40px;border-top:1px solid
 <div class="hero">
   <div class="hero-badge badge-operational" id="globalBadge">
     <span class="pulse"></span>
-    <span id="globalStatus">Checking Systems…</span>
+    <span id="globalStatus">Loading…</span>
   </div>
   <h1>QuNeva System Status</h1>
   <p>Real-time uptime and availability monitoring for the QuNeva Workforce Management Platform.</p>
-  <div class="last-updated" id="lastUpdated">Checking all services…</div>
+  <div class="last-updated" id="lastUpdated">Fetching status data…</div>
 </div>
 
 <!-- SERVICES GRID -->
 <div class="section">
   <div class="section-title">Services</div>
-  <div class="services-grid" id="servicesGrid">
-    <!-- populated by JS -->
-  </div>
+  <div class="services-grid" id="servicesGrid"></div>
 </div>
 
 <!-- 90-DAY UPTIME -->
 <div class="section">
   <div class="section-title">90-Day Uptime</div>
-  <div class="uptime-card" id="uptimeCard">
-    <!-- populated by JS -->
-  </div>
+  <div class="uptime-card" id="uptimeCard"></div>
 </div>
 
 <!-- RESPONSE TIME METRICS -->
 <div class="section">
   <div class="section-title">Response Times</div>
-  <div class="metrics-grid" id="metricsGrid">
-    <!-- populated by JS -->
-  </div>
+  <div class="metrics-grid" id="metricsGrid"></div>
 </div>
 
 <!-- INCIDENTS -->
@@ -251,106 +234,133 @@ footer{max-width:900px;margin:0 auto;padding:20px 24px 40px;border-top:1px solid
 </footer>
 
 <script>
+// ─── Service definitions (must match uptime.yml step IDs) ───────────────────
 const SERVICES = [
-  {
-    id: 'abdelrahman',
-    name: 'Abdelrahman Ezzat',
-    url: 'https://www.abdelrahman-ezzat.com',
-    icon: '👤',
-    iconClass: 'icon-dev',
-    description: 'Personal portfolio website'
-  },
-  {
-    id: 'quneva',
-    name: 'QuNeva Website',
-    url: 'https://www.quneva.com',
-    icon: '🌐',
-    iconClass: 'icon-web',
-    description: 'Main platform website'
-  },
-  {
-    id: 'ha',
-    name: 'QuNeva HA',
-    url: 'https://ha.quneva.com',
-    icon: '🔄',
-    iconClass: 'icon-api',
-    description: 'High Availability endpoint'
-  },
-  {
-    id: 'status',
-    name: 'QuNeva Status',
-    url: 'https://status.quneva.com',
-    icon: '📊',
-    iconClass: 'icon-auth',
-    description: 'Status monitoring page'
-  },
-  {
-    id: 'ai',
-    name: 'QuNeva AI',
-    url: 'https://ai.quneva.com',
-    icon: '🤖',
-    iconClass: 'icon-ai',
-    description: 'AI services endpoint'
-  }
+  { id: 'abdelrahman', name: 'Abdelrahman Ezzat',  url: 'https://www.abdelrahman-ezzat.com', icon: '👤', iconClass: 'icon-dev' },
+  { id: 'website',     name: 'QuNeva Website',      url: 'https://www.quneva.com',            icon: '🌐', iconClass: 'icon-web' },
+  { id: 'ha',          name: 'QuNeva HA',            url: 'https://ha.quneva.com',             icon: '🔄', iconClass: 'icon-api' },
+  { id: 'ai',          name: 'QuNeva AI',            url: 'https://ai.quneva.com',             icon: '🤖', iconClass: 'icon-ai' },
+  { id: 'root',        name: 'QuNeva Root Domain',   url: 'https://quneva.com',                icon: '🔗', iconClass: 'icon-auth' },
 ];
 
-const results = {};
+// ─── State ───────────────────────────────────────────────────────────────────
+// authoritative = data from status.json (GitHub Actions server-side checks)
+// browser       = data from browser fetch() (live latency)
+const authoritative = {};  // { [id]: { status, http_status, response_time_s } }
+const browser       = {};  // { [id]: { up, ms } }
+const uptimePct     = {};  // { [id]: string like "99.98" }
+const barHistory    = {};  // { [id]: Array<'up'|'down'|'nodata'> } — stable, computed once
 
-function generateBars(isUp) {
-  const bars = [];
-  for (let i = 0; i < 40; i++) {
-    const rand = Math.random();
-    let cls = 'bar';
-    if (!isUp && i === 39) cls += ' down';
-    else if (rand < 0.025) cls += ' partial';
-    const h = Math.floor(55 + Math.random() * 45);
-    const d = new Date(Date.now() - ((39-i) * 2 * 60 * 60 * 1000));
-    const label = d.toLocaleDateString('en-GB',{month:'short',day:'numeric'});
-    bars.push(`<div class="${cls}" style="height:${h}%" title="${label}"></div>`);
-  }
-  return bars.join('');
+// ─── CSV uptime calculator ───────────────────────────────────────────────────
+// CSV column order (new format with headers):
+// timestamp, abdelrahman_result, abdelrahman_http, abdelrahman_time,
+//            website_result,     website_http,     website_time,
+//            ha_result,          ha_http,          ha_time,
+//            ai_result,          ai_http,          ai_time,
+//            root_result,        root_http,        root_time
+const CSV_COLS = {
+  abdelrahman: 1,
+  website:     4,
+  ha:          7,
+  ai:          10,
+  root:        13,
+};
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n').filter(l => l && !l.startsWith('timestamp'));
+  return lines.map(l => l.split(','));
 }
 
+function calcUptime(rows, colIdx) {
+  if (!rows.length) return null;
+  const total = rows.length;
+  const up = rows.filter(r => r[colIdx] && r[colIdx].trim() === 'up').length;
+  return ((up / total) * 100).toFixed(2);
+}
+
+// Build bar history: bucket last 40 × 6h windows from CSV
+function buildBarHistory(rows, colIdx) {
+  const NOW = Date.now();
+  const WINDOW = 6 * 60 * 60 * 1000; // 6 hours per bar
+  const bars = [];
+
+  for (let i = 39; i >= 0; i--) {
+    const end   = NOW - i * WINDOW;
+    const start = end - WINDOW;
+    const bucket = rows.filter(r => {
+      const ts = new Date(r[0]).getTime();
+      return ts >= start && ts < end;
+    });
+    if (!bucket.length) {
+      bars.push('nodata');
+    } else {
+      const anyDown = bucket.some(r => r[colIdx] && r[colIdx].trim() === 'down');
+      bars.push(anyDown ? 'down' : 'up');
+    }
+  }
+  return bars;
+}
+
+function renderBars(svcId) {
+  const history = barHistory[svcId];
+  if (!history) {
+    // Fallback: all green if no CSV yet
+    return Array(40).fill(0).map((_, i) => {
+      const h = 55 + ((i * 17 + svcId.length * 7) % 45);
+      return `<div class="bar" style="height:${h}%" title="No data"></div>`;
+    }).join('');
+  }
+  return history.map((state, i) => {
+    const cls = state === 'down' ? 'bar down' : state === 'nodata' ? 'bar nodata' : 'bar';
+    // Deterministic height based on index + svcId hash (stable across renders)
+    const h = 55 + ((i * 13 + svcId.charCodeAt(0) * 3) % 45);
+    return `<div class="${cls}" style="height:${h}%" title="${state}"></div>`;
+  }).join('');
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function msColor(ms) {
   if (!ms) return 'var(--muted)';
-  if (ms < 500) return '#10b981';
+  if (ms < 500)  return '#10b981';
   if (ms < 1500) return '#f59e0b';
   return '#ef4444';
 }
-
 function fmtMs(ms) { return ms ? `${ms}ms` : '—'; }
+function fmtS(s)   { return s  ? `${Math.round(s * 1000)}ms` : '—'; }
 
-function randomUptime() { return (99.5 + Math.random() * 0.495).toFixed(2); }
-
-async function checkService(svc) {
-  const start = performance.now();
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
-    await fetch(svc.url, { method: 'GET', signal: controller.signal, cache: 'no-cache', mode: 'no-cors' });
-    clearTimeout(timeout);
-    const ms = Math.round(performance.now() - start);
-    return { up: true, ms };
-  } catch(e) {
-    const ms = Math.round(performance.now() - start);
-    if (e.name === 'AbortError') return { up: false, ms: null, error: 'Timeout' };
-    // no-cors fetch throws on redirect/opaque — still means reachable
-    return { up: true, ms };
-  }
-}
-
+// ─── Render ──────────────────────────────────────────────────────────────────
 function renderGrid() {
   const grid = document.getElementById('servicesGrid');
   grid.innerHTML = SERVICES.map(svc => {
-    const r = results[svc.id] || {};
-    const isUp = r.up !== false;
-    const isChecking = r.up === undefined;
-    const cardClass = isChecking ? 'card-checking' : (isUp ? 'card-up' : 'card-down');
-    const chipClass = isChecking ? 'chip-checking' : (isUp ? 'chip-up' : 'chip-down');
-    const chipText = isChecking ? 'Checking…' : (isUp ? 'Operational' : 'Disruption');
-    const ms = r.ms;
-    const uptime = r.uptime || randomUptime();
-    if (!r.uptime) { if (!results[svc.id]) results[svc.id] = {}; results[svc.id].uptime = uptime; }
+    const auth = authoritative[svc.id];
+    const brow = browser[svc.id];
+
+    // Determine displayed status (prefer authoritative)
+    let isUp, isChecking, displayMs, sourceLabel;
+
+    if (auth) {
+      isUp       = auth.status === 'up';
+      isChecking = false;
+      displayMs  = Math.round(auth.response_time_s * 1000);
+      sourceLabel = `<span class="data-source source-live">⚡ Live via Actions</span>`;
+    } else if (brow && brow.up !== undefined) {
+      isUp       = brow.up !== false;
+      isChecking = false;
+      displayMs  = brow.ms;
+      sourceLabel = `<span class="data-source source-browser">🌐 Browser check</span>`;
+    } else {
+      isUp       = true;
+      isChecking = true;
+      displayMs  = null;
+      sourceLabel = '';
+    }
+
+    const cardClass  = isChecking ? 'card-checking' : (isUp ? 'card-up' : 'card-down');
+    const chipClass  = isChecking ? 'chip-checking' : (isUp ? 'chip-up' : 'chip-down');
+    const chipText   = isChecking ? 'Checking…'     : (isUp ? 'Operational' : 'Disruption');
+    const pct        = uptimePct[svc.id];
+    const uptimeDisp = pct ? `${pct}%` : (isChecking ? '—' : '100.00%');
+    const uptimeColor = pct && parseFloat(pct) < 99 ? (parseFloat(pct) < 95 ? 'var(--red)' : 'var(--yellow)') : 'var(--green)';
 
     return `
     <div class="service-card ${cardClass}">
@@ -367,14 +377,15 @@ function renderGrid() {
           ${chipText}
         </div>
       </div>
-      <div class="sc-bars">${generateBars(isUp)}</div>
+      <div class="sc-bars">${renderBars(svc.id)}</div>
       <div class="sc-footer">
         <div>
-          <div class="sc-ms" style="color:${msColor(ms)}">${fmtMs(ms)}</div>
+          <div class="sc-ms" style="color:${msColor(displayMs)}">${fmtMs(displayMs)}</div>
           <div class="sc-ms-label">Response time</div>
+          ${sourceLabel}
         </div>
         <div class="sc-uptime">
-          <div class="sc-uptime-pct">${isChecking ? '—' : uptime + '%'}</div>
+          <div class="sc-uptime-pct" style="color:${uptimeColor}">${uptimeDisp}</div>
           <div class="sc-uptime-label">90-day uptime</div>
         </div>
       </div>
@@ -385,27 +396,40 @@ function renderGrid() {
 function renderUptime() {
   const card = document.getElementById('uptimeCard');
   card.innerHTML = SERVICES.map(svc => {
-    const r = results[svc.id] || {};
-    const pct = r.uptime || '—';
-    const fillW = r.uptime ? r.uptime : '0';
+    const pct  = uptimePct[svc.id] || '100.00';
+    const fill = parseFloat(pct).toFixed(2);
+    const color = parseFloat(pct) < 99 ? (parseFloat(pct) < 95 ? 'var(--red)' : 'var(--yellow)') : 'var(--green)';
     return `
     <div class="uptime-row">
       <div class="uptime-name">${svc.name}</div>
       <div class="uptime-bar-wrap">
-        <div class="uptime-bar-bg"><div class="uptime-bar-fill" style="width:${fillW}%"></div></div>
+        <div class="uptime-bar-bg"><div class="uptime-bar-fill" style="width:${fill}%;background:${color}"></div></div>
       </div>
-      <div class="uptime-pct">${pct}${r.uptime ? '%' : ''}</div>
+      <div class="uptime-pct" style="color:${color}">${fill}%</div>
     </div>`;
   }).join('');
 }
 
 function renderMetrics() {
   const grid = document.getElementById('metricsGrid');
-  const allMs = Object.values(results).filter(r => r.ms).map(r => r.ms);
-  const avgMs = allMs.length ? Math.round(allMs.reduce((a,b)=>a+b,0)/allMs.length) : null;
+
+  // Prefer authoritative response times, fall back to browser
+  const allMs = SERVICES.map(svc => {
+    const auth = authoritative[svc.id];
+    if (auth) return Math.round(auth.response_time_s * 1000);
+    const brow = browser[svc.id];
+    return brow && brow.ms ? brow.ms : null;
+  }).filter(Boolean);
+
+  const avgMs     = allMs.length ? Math.round(allMs.reduce((a,b) => a+b, 0) / allMs.length) : null;
   const fastestMs = allMs.length ? Math.min(...allMs) : null;
   const slowestMs = allMs.length ? Math.max(...allMs) : null;
-  const checksToday = Math.floor((Date.now() / 300000) % 288) || 0;
+  const checksToday = (() => {
+    const start = new Date(); start.setUTCHours(0,0,0,0);
+    const elapsed = Date.now() - start.getTime();
+    return Math.floor(elapsed / (5 * 60 * 1000));
+  })();
+  const totalRows = Object.values(barHistory)[0]?.length ?? 0;
 
   grid.innerHTML = `
   <div class="metric-card">
@@ -436,15 +460,15 @@ function renderMetrics() {
 }
 
 function renderGlobalStatus() {
-  const badge = document.getElementById('globalBadge');
-  const text = document.getElementById('globalStatus');
-  const checked = Object.keys(results).length;
-  const anyDown = Object.values(results).some(r => r.up === false);
-  const allDone = checked === SERVICES.length;
+  const badge  = document.getElementById('globalBadge');
+  const text   = document.getElementById('globalStatus');
+  const hasAuth = Object.keys(authoritative).length > 0;
+  const anyDown = Object.values(authoritative).some(r => r.status === 'down') ||
+                  Object.values(browser).some(r => r.up === false);
 
-  if (!allDone) {
+  if (!hasAuth && Object.keys(browser).length === 0) {
     badge.className = 'hero-badge badge-degraded';
-    text.textContent = `Checking… (${checked}/${SERVICES.length})`;
+    text.textContent = 'Loading status data…';
   } else if (anyDown) {
     badge.className = 'hero-badge badge-outage';
     text.textContent = 'Partial Outage Detected';
@@ -452,30 +476,106 @@ function renderGlobalStatus() {
     badge.className = 'hero-badge badge-operational';
     text.textContent = 'All Systems Operational';
   }
-
-  document.getElementById('lastUpdated').textContent =
-    'Last checked: ' + new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) +
-    ' · Auto-refreshes every 5 minutes';
 }
 
-async function runChecks() {
-  // Reset and show loading state
-  SERVICES.forEach(svc => { results[svc.id] = {}; });
+function updateTimestamp(source) {
+  document.getElementById('lastUpdated').textContent =
+    `Last checked: ${new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'})} · ${source} · Auto-refreshes every 5 min`;
+}
+
+// ─── Data fetching ────────────────────────────────────────────────────────────
+
+// 1. Fetch latest status from GitHub Actions output (authoritative)
+async function fetchStatusJSON() {
+  try {
+    const res = await fetch('data/status.json?_=' + Date.now(), { cache: 'no-cache' });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.services) {
+      for (const [id, svc] of Object.entries(data.services)) {
+        authoritative[id] = svc;
+      }
+      updateTimestamp('Actions ' + (data.timestamp || ''));
+    }
+  } catch(e) {
+    console.warn('status.json not available yet:', e.message);
+  }
+}
+
+// 2. Parse history CSV and compute uptimes + bar history
+async function fetchHistoryCSV() {
+  try {
+    const res = await fetch('data/history.csv?_=' + Date.now(), { cache: 'no-cache' });
+    if (!res.ok) return;
+    const text = await res.text();
+    const rows = parseCSV(text);
+    if (!rows.length) return;
+
+    for (const [id, colIdx] of Object.entries(CSV_COLS)) {
+      const pct = calcUptime(rows, colIdx);
+      if (pct !== null) uptimePct[id] = pct;
+      // For services not yet in CSV (ha, ai, abdelrahman for old format), set 100
+      if (!uptimePct[id]) uptimePct[id] = '100.00';
+      barHistory[id] = buildBarHistory(rows, colIdx);
+    }
+
+    // For services with no CSV column (shouldn't happen after migration), default
+    for (const svc of SERVICES) {
+      if (!uptimePct[svc.id]) uptimePct[svc.id] = '100.00';
+      if (!barHistory[svc.id]) barHistory[svc.id] = null;
+    }
+  } catch(e) {
+    console.warn('history.csv not available yet:', e.message);
+  }
+}
+
+// 3. Browser-side live fetch (latency signal only — no-cors can't read status code)
+async function browserCheck(svc) {
+  const start = performance.now();
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 10000);
+    await fetch(svc.url, { method:'GET', signal:ctrl.signal, cache:'no-cache', mode:'no-cors' });
+    clearTimeout(timer);
+    browser[svc.id] = { up: true, ms: Math.round(performance.now() - start) };
+  } catch(e) {
+    const ms = Math.round(performance.now() - start);
+    // AbortError = timeout = likely down; TypeError on no-cors = still reachable
+    browser[svc.id] = e.name === 'AbortError'
+      ? { up: false, ms: null }
+      : { up: true, ms };
+  }
+}
+
+// ─── Main run loop ────────────────────────────────────────────────────────────
+async function runAll() {
+  // Phase 1: Load authoritative data first (fastest perceived load)
+  await Promise.all([fetchStatusJSON(), fetchHistoryCSV()]);
   renderGrid();
+  renderUptime();
+  renderMetrics();
   renderGlobalStatus();
 
-  // Check all services in parallel, update UI as each one finishes
+  // Phase 2: Run browser checks in parallel (updates latency numbers live)
   await Promise.all(SERVICES.map(async svc => {
-    const r = await checkService(svc);
-    results[svc.id] = { ...results[svc.id], ...r };
-    renderGrid();
-    renderUptime();
-    renderMetrics();
-    renderGlobalStatus();
+    // Skip browser check for status page itself to avoid false positives
+    if (svc.id === 'status') { browser[svc.id] = { up: true, ms: null }; return; }
+    await browserCheck(svc);
+    // Only update display ms if no authoritative data for this service
+    if (!authoritative[svc.id]) {
+      renderGrid();
+      renderMetrics();
+      renderGlobalStatus();
+    }
   }));
+
+  updateTimestamp('Live');
+  renderGrid();
+  renderMetrics();
+  renderGlobalStatus();
 }
 
-runChecks();
-setInterval(runChecks, 5 * 60 * 1000);
+runAll();
+setInterval(runAll, 5 * 60 * 1000);
 </script>
 </body></html>
