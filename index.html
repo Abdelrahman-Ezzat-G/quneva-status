@@ -8,77 +8,74 @@
 <meta property="og:url" content="https://status.quneva.com">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='10' y1='10' x2='54' y2='54' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239F7AEA'/%3E%3Cstop offset='1' stop-color='%2367E8F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z' stroke='url(%23g)' stroke-width='5.5' fill='none'/%3E%3Cpath d='M40.8 40.5L52 52' stroke='url(%23g)' stroke-width='5.5' stroke-linecap='round'/%3E%3Cpath d='M22 41V22l20 19V22' stroke='url(%23g)' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
 <style>
-:root {
-  --bg: #0a0e1a;
-  --bg-2: #0f1424;
-  --panel: #121830;
-  --panel-2: #1a2142;
-  --border: #1f2747;
-  --border-2: #2a3460;
-  --text: #e6e9f5;
-  --muted: #8a92b2;
-  --accent: #7c5cff;
-  --accent-2: #a78bfa;
-  --green: #10b981;
-  --green-bg: rgba(16,185,129,.12);
-  --yellow: #f59e0b;
-  --yellow-bg: rgba(245,158,11,.12);
-  --red: #ef4444;
-  --red-bg: rgba(239,68,68,.12);
+:root{
+  --bg:#0a0e1a;--panel:#121830;--panel-2:#1a2142;
+  --border:#1f2747;--border-2:#2a3460;
+  --text:#e6e9f5;--muted:#8a92b2;
+  --accent:#7c5cff;--accent-2:#a78bfa;
+  --green:#10b981;--green-bg:rgba(16,185,129,.12);
+  --yellow:#f59e0b;--yellow-bg:rgba(245,158,11,.12);
+  --red:#ef4444;--red-bg:rgba(239,68,68,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:radial-gradient(1200px 600px at 80% -10%,rgba(124,92,255,.15),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(167,139,250,.10),transparent 60%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
-a{color:var(--accent-2);text-decoration:none}
-a:hover{text-decoration:underline}
+a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}
 
 /* NAV */
 nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(10,14,26,.75);border-bottom:1px solid var(--border)}
-.nav-inner{max-width:900px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:10px}
-.brand-name{font-size:1.15rem;font-weight:700;letter-spacing:-.025em;line-height:1.25;display:flex;align-items:center;gap:0}
+.nav-inner{max-width:920px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-name{font-size:1.1rem;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center}
 .brand-qn{background:linear-gradient(to right,#9F7AEA,#a78bfa,#67E8F9);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
-.brand-wfm{color:#8a92b2;font-weight:500;font-size:.8rem;letter-spacing:.05em;margin-left:5px}
-.nav-links{display:flex;align-items:center;gap:20px;font-size:13px;color:var(--muted)}
-.nav-links a{color:var(--muted);transition:color .15s}
-.nav-links a:hover{color:var(--text);text-decoration:none}
+.brand-wfm{color:#8a92b2;font-weight:500;font-size:.75rem;letter-spacing:.06em;margin-left:5px}
+.nav-links{display:flex;align-items:center;gap:20px;font-size:13px}
+.nav-links a{color:var(--muted);transition:color .15s}.nav-links a:hover{color:var(--text);text-decoration:none}
 
 /* HERO */
-.hero{max-width:900px;margin:0 auto;padding:56px 24px 40px;text-align:center}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.01em;margin-bottom:20px}
+.hero{max-width:920px;margin:0 auto;padding:52px 24px 36px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;margin-bottom:18px}
 .badge-operational{background:var(--green-bg);color:var(--green);border:1px solid rgba(16,185,129,.25)}
 .badge-degraded{background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(245,158,11,.25)}
 .badge-outage{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.25)}
 .pulse{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.hero h1{font-size:2.2rem;font-weight:700;letter-spacing:-.03em;margin-bottom:10px;color:var(--text)}
-.hero p{font-size:1rem;color:var(--muted);max-width:440px;margin:0 auto;line-height:1.6}
-.last-updated{font-size:12px;color:var(--muted);margin-top:14px;opacity:.7}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{font-size:2.1rem;font-weight:700;letter-spacing:-.03em;margin-bottom:10px}
+.hero p{font-size:.97rem;color:var(--muted);max-width:440px;margin:0 auto;line-height:1.65}
+.last-updated{font-size:11.5px;color:var(--muted);margin-top:12px;opacity:.65}
 
 /* SECTION */
-.section{max-width:900px;margin:0 auto;padding:0 24px 48px}
-.section-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.section{max-width:920px;margin:0 auto;padding:0 24px 44px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.section-hint{font-size:11px;color:var(--muted);opacity:.6}
+
+/* SLA PILLS */
+.sla-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.sla-pill{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 16px;flex:1;min-width:120px;text-align:center}
+.sla-pill-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.sla-pill-value{font-size:1.25rem;font-weight:700;color:var(--green)}
 
 /* SERVICES GRID */
-.services-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.services-grid{display:grid;grid-template-columns:1fr;gap:12px}
 
 /* SERVICE CARD */
-.service-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;transition:border-color .2s,transform .15s,box-shadow .15s;cursor:default}
-.service-card:hover{border-color:var(--border-2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.service-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;transition:border-color .2s,transform .15s,box-shadow .15s}
+.service-card:hover{border-color:var(--border-2);transform:translateY(-1px);box-shadow:0 6px 28px rgba(0,0,0,.28)}
 .service-card.card-up{border-left:3px solid var(--green)}
 .service-card.card-down{border-left:3px solid var(--red)}
 .service-card.card-checking{border-left:3px solid var(--muted)}
 
 .sc-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .sc-left{display:flex;align-items:center;gap:10px;min-width:0}
-.service-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.service-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
 .icon-web{background:rgba(124,92,255,.15)}
 .icon-auth{background:rgba(16,185,129,.12)}
 .icon-api{background:rgba(103,232,249,.10)}
 .icon-dev{background:rgba(245,158,11,.12)}
 .icon-ai{background:rgba(167,139,250,.15)}
 
-.service-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.service-url{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.service-name{font-size:14px;font-weight:600;color:var(--text)}
+.service-url{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
 
 .status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0}
 .chip-up{background:var(--green-bg);color:var(--green)}
@@ -86,87 +83,117 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .chip-checking{background:rgba(138,146,178,.1);color:var(--muted)}
 .dot-sm{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
 
-/* BARS inside card */
-.sc-bars{display:grid;grid-template-columns:repeat(40,1fr);align-items:end;gap:2px;height:34px}
-.bar{width:100%;align-self:end;border-radius:2px;background:var(--green);opacity:.65;transition:opacity .2s;cursor:help}
-.bar.down{background:var(--red);opacity:.9}
-.bar.partial{background:var(--yellow);opacity:.8}
-.bar.nodata{background:var(--border-2);opacity:.5}
-.bar:hover{opacity:1}
+/* BARS */
+.sc-bars-wrap{position:relative}
+.sc-bars{display:grid;grid-template-columns:repeat(40,1fr);align-items:end;gap:2px;height:36px}
+/* bar height is FLAT (100%) when up — variable height only for response time mode */
+.bar{
+  width:100%;height:100%;border-radius:2px 2px 0 0;
+  background:var(--green);opacity:.6;
+  transition:opacity .15s,background .15s;
+  cursor:help;position:relative;
+}
+.bar.down{background:var(--red);opacity:.9;height:100%}
+.bar.slow{background:var(--yellow);opacity:.8}
+.bar.nodata{background:var(--border-2);opacity:.45;height:40%}
+.bar:hover{opacity:1;z-index:1}
 
-/* RESPONSE TIME in card */
+/* CUSTOM TOOLTIP */
+.bar-tooltip{
+  display:none;position:fixed;z-index:999;
+  background:#0d1220;border:1px solid var(--border-2);
+  border-radius:8px;padding:8px 11px;
+  font-size:11.5px;line-height:1.6;color:var(--text);
+  pointer-events:none;white-space:nowrap;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+  min-width:160px;
+}
+.bar-tooltip.visible{display:block}
+.tt-date{color:var(--muted);font-size:10.5px;margin-bottom:3px}
+.tt-status{font-weight:600}
+.tt-status.up{color:var(--green)}
+.tt-status.down{color:var(--red)}
+.tt-status.nodata{color:var(--muted)}
+.tt-row{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--muted);margin-top:1px}
+.tt-val{color:var(--text);font-weight:500}
+
+/* bar label strip */
+.sc-bar-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--muted);opacity:.5}
+
+/* FOOTER of card */
 .sc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
-.sc-ms{font-size:20px;font-weight:700;letter-spacing:-.02em}
-.sc-ms-label{font-size:11px;color:var(--muted);margin-top:2px}
+.sc-ms{font-size:19px;font-weight:700;letter-spacing:-.02em}
+.sc-ms-label{font-size:11px;color:var(--muted);margin-top:1px}
 .sc-uptime{text-align:right}
-.sc-uptime-pct{font-size:18px;font-weight:700;color:var(--green)}
-.sc-uptime-label{font-size:11px;color:var(--muted);margin-top:2px}
+.sc-uptime-pct{font-size:17px;font-weight:700}
+.sc-uptime-label{font-size:11px;color:var(--muted);margin-top:1px}
 
-/* DATA SOURCE BADGE */
-.data-source{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;margin-top:4px}
+/* SOURCE + LAST INCIDENT row */
+.sc-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.data-source{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500}
 .source-live{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
 .source-browser{background:rgba(138,146,178,.08);color:var(--muted);border:1px solid var(--border)}
+.last-incident{font-size:10.5px;color:var(--muted)}
+.last-incident span{color:var(--green);font-weight:500}
 
-/* UPTIME SUMMARY */
-.uptime-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-.uptime-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;gap:12px}
+/* 90-DAY UPTIME TABLE */
+.uptime-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.uptime-row{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;gap:12px}
 .uptime-row:not(:last-child){border-bottom:1px solid var(--border)}
-.uptime-name{font-size:13px;color:var(--text);min-width:180px}
-.uptime-bar-wrap{flex:1;max-width:320px;margin:0 16px}
-.uptime-bar-bg{height:6px;border-radius:3px;background:var(--border-2);overflow:hidden}
-.uptime-bar-fill{height:100%;border-radius:3px;background:var(--green);transition:width .5s ease}
-.uptime-pct{font-size:13px;font-weight:600;color:var(--green);min-width:52px;text-align:right}
+.uptime-name{font-size:13px;color:var(--text);min-width:160px}
+.uptime-periods{display:flex;gap:20px;align-items:center;flex:1;justify-content:flex-end}
+.uptime-period{text-align:center;min-width:64px}
+.uptime-period-label{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.uptime-period-val{font-size:13px;font-weight:600}
 
-/* METRICS ROW */
-.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:0}
-.metric-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
-.metric-label{font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:500}
-.metric-value{font-size:1.6rem;font-weight:700;color:var(--text);letter-spacing:-.02em}
-.metric-sub{font-size:11px;color:var(--muted);margin-top:3px}
+/* METRICS */
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
+.metric-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:15px 17px}
+.metric-label{font-size:10.5px;color:var(--muted);margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.metric-value{font-size:1.55rem;font-weight:700;color:var(--text);letter-spacing:-.02em}
+.metric-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
 
 /* INCIDENTS */
-.incidents-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px}
-.no-incidents{text-align:center;padding:32px;color:var(--muted);font-size:14px}
-.no-incidents-icon{font-size:32px;margin-bottom:10px;opacity:.5}
-.incident-item{padding:14px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start}
-.incident-item:last-child{border-bottom:none;padding-bottom:0}
-.incident-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:5px}
-.incident-title{font-size:13px;font-weight:600;color:var(--text)}
-.incident-time{font-size:11px;color:var(--muted);margin-top:3px}
+.incidents-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px}
+.no-incidents{text-align:center;padding:28px;color:var(--muted);font-size:14px}
+.no-incidents-icon{font-size:28px;margin-bottom:8px;opacity:.45}
 
 /* FOOTER */
-footer{max-width:900px;margin:0 auto;padding:20px 24px 40px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
+footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
 .footer-left{display:flex;align-items:center;gap:8px}
 .footer-links{display:flex;gap:16px}
-.footer-links a{color:var(--muted);font-size:12px;transition:color .15s}
-.footer-links a:hover{color:var(--text)}
+.footer-links a{color:var(--muted);transition:color .15s}.footer-links a:hover{color:var(--text)}
 
 @media(max-width:640px){
-  .hero h1{font-size:1.6rem}
+  .hero h1{font-size:1.55rem}
   .nav-links{gap:12px}
-  .uptime-bar-wrap{display:none}
-  .uptime-name{min-width:unset}
-  .metrics-grid{grid-template-columns:1fr 1fr}
-  .services-grid{grid-template-columns:1fr}
+  .uptime-periods{gap:10px}
+  .sla-strip{gap:6px}
+  .sla-pill{min-width:80px;padding:8px 10px}
+  .sla-pill-value{font-size:1rem}
 }
 </style>
 </head>
 <body>
 
+<div id="barTooltip" class="bar-tooltip">
+  <div class="tt-date" id="ttDate"></div>
+  <div class="tt-status" id="ttStatus"></div>
+  <div class="tt-row"><span>Avg response</span><span class="tt-val" id="ttMs">—</span></div>
+  <div class="tt-row"><span>Checks in window</span><span class="tt-val" id="ttChecks">—</span></div>
+</div>
+
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a class="brand" href="https://www.quneva.com" target="_blank" rel="noopener" style="text-decoration:none">
-      <svg width="26" height="26" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="qg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#9F7AEA"></stop><stop offset="1" stop-color="#67E8F9"></stop></linearGradient></defs>
-        <path d="M32 8C18.745 8 8 18.745 8 32C8 45.255 18.745 56 32 56C45.255 56 56 45.255 56 32C56 18.745 45.255 8 32 8Z" stroke="url(#qg)" stroke-width="5.5"></path>
-        <path d="M40.8 40.5L52 52" stroke="url(#qg)" stroke-width="5.5" stroke-linecap="round"></path>
-        <path d="M22 41V22L42 41V22" stroke="url(#qg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"></path>
+    <a class="brand" href="https://www.quneva.com" target="_blank" rel="noopener">
+      <svg width="25" height="25" viewBox="0 0 64 64" fill="none">
+        <defs><linearGradient id="qg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#9F7AEA"/><stop offset="1" stop-color="#67E8F9"/></linearGradient></defs>
+        <path d="M32 8C18.745 8 8 18.745 8 32C8 45.255 18.745 56 32 56C45.255 56 56 45.255 56 32C56 18.745 45.255 8 32 8Z" stroke="url(#qg)" stroke-width="5.5"/>
+        <path d="M40.8 40.5L52 52" stroke="url(#qg)" stroke-width="5.5" stroke-linecap="round"/>
+        <path d="M22 41V22L42 41V22" stroke="url(#qg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <div class="brand-name">
-        <span class="brand-qn">QuNeva</span>
-        <span class="brand-wfm">WFM</span>
-      </div>
+      <div class="brand-name"><span class="brand-qn">QuNeva</span><span class="brand-wfm">WFM</span></div>
     </a>
     <div class="nav-links">
       <a href="https://www.quneva.com" target="_blank" rel="noopener">Platform</a>
@@ -187,27 +214,35 @@ footer{max-width:900px;margin:0 auto;padding:20px 24px 40px;border-top:1px solid
   <div class="last-updated" id="lastUpdated">Fetching status data…</div>
 </div>
 
-<!-- SERVICES GRID -->
+<!-- SLA STRIP -->
 <div class="section">
-  <div class="section-title">Services</div>
+  <div class="sla-strip" id="slaStrip"></div>
+</div>
+
+<!-- SERVICES -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Services</div>
+    <div class="section-hint">Hover bars for details · 6h per bar · 10 days</div>
+  </div>
   <div class="services-grid" id="servicesGrid"></div>
 </div>
 
-<!-- 90-DAY UPTIME -->
+<!-- UPTIME TABLE -->
 <div class="section">
-  <div class="section-title">90-Day Uptime</div>
+  <div class="section-title" style="margin-bottom:14px">Uptime Summary</div>
   <div class="uptime-card" id="uptimeCard"></div>
 </div>
 
-<!-- RESPONSE TIME METRICS -->
+<!-- METRICS -->
 <div class="section">
-  <div class="section-title">Response Times</div>
+  <div class="section-title" style="margin-bottom:14px">Response Times</div>
   <div class="metrics-grid" id="metricsGrid"></div>
 </div>
 
 <!-- INCIDENTS -->
 <div class="section">
-  <div class="section-title">Recent Incidents</div>
+  <div class="section-title" style="margin-bottom:14px">Recent Incidents</div>
   <div class="incidents-card" id="incidentsCard">
     <div class="no-incidents">
       <div class="no-incidents-icon">✅</div>
@@ -219,132 +254,218 @@ footer{max-width:900px;margin:0 auto;padding:20px 24px 40px;border-top:1px solid
 <!-- FOOTER -->
 <footer>
   <div class="footer-left">
-    <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
-      <defs><linearGradient id="fg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#9F7AEA"></stop><stop offset="1" stop-color="#67E8F9"></stop></linearGradient></defs>
-      <path d="M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z" stroke="url(#fg)" stroke-width="5.5"></path>
-      <path d="M40.8 40.5L52 52" stroke="url(#fg)" stroke-width="5.5" stroke-linecap="round"></path>
-      <path d="M22 41V22l20 19V22" stroke="url(#fg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    <svg width="17" height="17" viewBox="0 0 64 64" fill="none">
+      <defs><linearGradient id="fg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop stop-color="#9F7AEA"/><stop offset="1" stop-color="#67E8F9"/></linearGradient></defs>
+      <path d="M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z" stroke="url(#fg)" stroke-width="5.5"/>
+      <path d="M40.8 40.5L52 52" stroke="url(#fg)" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M22 41V22l20 19V22" stroke="url(#fg)" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     </svg>
-    <span>© 2026 QuNeva WFM — Powered by <a href="https://www.abdelrahman-ezzat.com" target="_blank" rel="noopener" style="color:var(--accent-2)">Dev</a></span>
+    <span>© 2026 QuNeva WFM — Powered by <a href="https://www.abdelrahman-ezzat.com" target="_blank" rel="noopener" style="color:var(--accent-2)">Abdelrahman Ezzat</a></span>
   </div>
   <div class="footer-links">
+    <a href="https://github.com/Abdelrahman-Ezzat-G/quneva-status" target="_blank" rel="noopener">Source</a>
     <a href="https://www.quneva.com" target="_blank" rel="noopener">Platform</a>
     <a href="mailto:support@quneva.com">Contact</a>
   </div>
 </footer>
 
 <script>
-// ─── Service definitions (must match uptime.yml step IDs) ───────────────────
+// ─── Config ──────────────────────────────────────────────────────────────────
 const SERVICES = [
-  { id: 'abdelrahman', name: 'Abdelrahman Ezzat',  url: 'https://www.abdelrahman-ezzat.com', icon: '👤', iconClass: 'icon-dev' },
-  { id: 'website',     name: 'QuNeva Website',      url: 'https://www.quneva.com',            icon: '🌐', iconClass: 'icon-web' },
-  { id: 'ha',          name: 'QuNeva HA',            url: 'https://ha.quneva.com',             icon: '🔄', iconClass: 'icon-api' },
-  { id: 'ai',          name: 'QuNeva AI',            url: 'https://ai.quneva.com',             icon: '🤖', iconClass: 'icon-ai' },
-  { id: 'root',        name: 'QuNeva Root Domain',   url: 'https://quneva.com',                icon: '🔗', iconClass: 'icon-auth' },
+  { id:'abdelrahman', name:'Abdelrahman Ezzat',  url:'https://www.abdelrahman-ezzat.com', icon:'👤', iconClass:'icon-dev'  },
+  { id:'website',     name:'QuNeva Website',      url:'https://www.quneva.com',            icon:'🌐', iconClass:'icon-web'  },
+  { id:'ha',          name:'QuNeva HA',            url:'https://ha.quneva.com',             icon:'🔄', iconClass:'icon-api'  },
+  { id:'ai',          name:'QuNeva AI',            url:'https://ai.quneva.com',             icon:'🤖', iconClass:'icon-ai'   },
+  { id:'root',        name:'QuNeva Root Domain',   url:'https://quneva.com',                icon:'🔗', iconClass:'icon-auth' },
 ];
 
+// CSV columns: result at colIdx, http at colIdx+1, time at colIdx+2
+const CSV_COLS = { abdelrahman:1, website:4, ha:7, ai:10, root:13 };
+
 // ─── State ───────────────────────────────────────────────────────────────────
-// authoritative = data from status.json (GitHub Actions server-side checks)
-// browser       = data from browser fetch() (live latency)
-const authoritative = {};  // { [id]: { status, http_status, response_time_s } }
-const browser       = {};  // { [id]: { up, ms } }
-const uptimePct     = {};  // { [id]: string like "99.98" }
-const barHistory    = {};  // { [id]: Array<'up'|'down'|'nodata'> } — stable, computed once
+const authoritative = {};   // from status.json
+const browser       = {};   // from browser fetch
+const uptimePct     = {};   // { id: { d7, d30, d90 } }
+// barHistory: { id: Array<{ state:'up'|'down'|'nodata', avgMs:number|null, checks:number, winStart, winEnd }> }
+const barHistory    = {};
 
-// ─── CSV uptime calculator ───────────────────────────────────────────────────
-// CSV column order (new format with headers):
-// timestamp, abdelrahman_result, abdelrahman_http, abdelrahman_time,
-//            website_result,     website_http,     website_time,
-//            ha_result,          ha_http,          ha_time,
-//            ai_result,          ai_http,          ai_time,
-//            root_result,        root_http,        root_time
-const CSV_COLS = {
-  abdelrahman: 1,
-  website:     4,
-  ha:          7,
-  ai:          10,
-  root:        13,
-};
-
+// ─── CSV parsing ─────────────────────────────────────────────────────────────
 function parseCSV(text) {
-  const lines = text.trim().split('\n').filter(l => l && !l.startsWith('timestamp'));
-  return lines.map(l => l.split(','));
+  return text.trim().split('\n')
+    .filter(l => l && !l.startsWith('timestamp'))
+    .map(l => l.split(','));
 }
 
-function calcUptime(rows, colIdx) {
-  if (!rows.length) return null;
-  const total = rows.length;
-  const up = rows.filter(r => r[colIdx] && r[colIdx].trim() === 'up').length;
-  return ((up / total) * 100).toFixed(2);
+function calcUptimePeriod(rows, colIdx, daysAgo) {
+  const cutoff = Date.now() - daysAgo * 86400000;
+  const filtered = rows.filter(r => new Date(r[0]).getTime() >= cutoff);
+  if (!filtered.length) return null;
+  const up = filtered.filter(r => r[colIdx] && r[colIdx].trim() === 'up').length;
+  return ((up / filtered.length) * 100).toFixed(2);
 }
 
-// Build bar history: bucket last 40 × 6h windows from CSV
 function buildBarHistory(rows, colIdx) {
-  const NOW = Date.now();
-  const WINDOW = 6 * 60 * 60 * 1000; // 6 hours per bar
-  const bars = [];
+  const NOW    = Date.now();
+  const WINDOW = 6 * 60 * 60 * 1000;
+  const bars   = [];
 
   for (let i = 39; i >= 0; i--) {
-    const end   = NOW - i * WINDOW;
-    const start = end - WINDOW;
+    const winEnd   = NOW - i * WINDOW;
+    const winStart = winEnd - WINDOW;
+
     const bucket = rows.filter(r => {
       const ts = new Date(r[0]).getTime();
-      return ts >= start && ts < end;
+      return ts >= winStart && ts < winEnd;
     });
+
     if (!bucket.length) {
-      bars.push('nodata');
+      bars.push({ state:'nodata', avgMs:null, checks:0, winStart, winEnd });
     } else {
       const anyDown = bucket.some(r => r[colIdx] && r[colIdx].trim() === 'down');
-      bars.push(anyDown ? 'down' : 'up');
+      // avgMs: average response time (colIdx+2 = time_s)
+      const times = bucket
+        .map(r => parseFloat(r[colIdx + 2]))
+        .filter(v => !isNaN(v) && v > 0);
+      const avgMs = times.length
+        ? Math.round(times.reduce((a,b)=>a+b,0) / times.length * 1000)
+        : null;
+      bars.push({ state: anyDown ? 'down' : 'up', avgMs, checks: bucket.length, winStart, winEnd });
     }
   }
   return bars;
 }
 
+// ─── Tooltip ─────────────────────────────────────────────────────────────────
+const tooltip   = document.getElementById('barTooltip');
+const ttDate    = document.getElementById('ttDate');
+const ttStatus  = document.getElementById('ttStatus');
+const ttMs      = document.getElementById('ttMs');
+const ttChecks  = document.getElementById('ttChecks');
+
+function showTooltip(e, bar) {
+  const d1 = new Date(bar.winStart);
+  const d2 = new Date(bar.winEnd);
+  const fmt = d => d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})
+              + ' ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  ttDate.textContent   = fmt(d1) + ' → ' + d2.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  ttStatus.textContent = bar.state === 'up' ? '✅ Operational'
+                       : bar.state === 'down' ? '🔴 Outage' : '⬜ No data';
+  ttStatus.className   = 'tt-status ' + bar.state;
+  ttMs.textContent     = bar.avgMs !== null ? bar.avgMs + ' ms' : '—';
+  ttChecks.textContent = bar.checks ? bar.checks + (bar.checks === 1 ? ' check' : ' checks') : '—';
+  tooltip.classList.add('visible');
+  positionTooltip(e);
+}
+
+function positionTooltip(e) {
+  const TW = tooltip.offsetWidth || 180;
+  const TH = tooltip.offsetHeight || 90;
+  let x = e.clientX + 12;
+  let y = e.clientY - TH - 8;
+  if (x + TW > window.innerWidth - 8) x = e.clientX - TW - 12;
+  if (y < 8) y = e.clientY + 16;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top  = y + 'px';
+}
+
+document.addEventListener('mousemove', e => {
+  if (tooltip.classList.contains('visible')) positionTooltip(e);
+});
+
+function hideTooltip() { tooltip.classList.remove('visible'); }
+
+// ─── Render bars ─────────────────────────────────────────────────────────────
 function renderBars(svcId) {
   const history = barHistory[svcId];
   if (!history) {
-    // Fallback: all green if no CSV yet
-    return Array(40).fill(0).map((_, i) => {
-      const h = 55 + ((i * 17 + svcId.length * 7) % 45);
-      return `<div class="bar" style="height:${h}%" title="No data"></div>`;
-    }).join('');
+    return Array(40).fill(0).map(() =>
+      `<div class="bar nodata" style="height:40%"></div>`
+    ).join('');
   }
-  return history.map((state, i) => {
-    const cls = state === 'down' ? 'bar down' : state === 'nodata' ? 'bar nodata' : 'bar';
-    // Deterministic height based on index + svcId hash (stable across renders)
-    const h = 55 + ((i * 13 + svcId.charCodeAt(0) * 3) % 45);
-    // Compute the window start date for this bar
-    const barEnd   = Date.now() - (39 - i) * 6 * 60 * 60 * 1000;
-    const barStart = barEnd - 6 * 60 * 60 * 1000;
-    const label = new Date(barStart).toLocaleDateString('en-GB', {day:'2-digit',month:'short'})
-                + ' ' + new Date(barStart).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
-                + ' – ' + new Date(barEnd).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    const stateLabel = state === 'up' ? '✅ Operational' : state === 'down' ? '🔴 Outage' : '⬜ No data';
-    return `<div class="${cls}" style="height:${h}%" title="${label}\n${stateLabel}"></div>`;
+
+  return history.map((bar, i) => {
+    let cls = 'bar';
+    if      (bar.state === 'down')   cls = 'bar down';
+    else if (bar.state === 'nodata') cls = 'bar nodata';
+    else if (bar.avgMs !== null && bar.avgMs > 1500) cls = 'bar slow';
+
+    // Height: uniform 100% for up/down, 40% for nodata
+    const h = bar.state === 'nodata' ? 40 : 100;
+
+    return `<div class="${cls}" style="height:${h}%" data-svc="${svcId}" data-idx="${i}"></div>`;
   }).join('');
+}
+
+// Attach tooltip events after rendering
+function attachBarEvents() {
+  document.querySelectorAll('.bar[data-svc]').forEach(el => {
+    const svcId = el.dataset.svc;
+    const idx   = parseInt(el.dataset.idx);
+    el.addEventListener('mouseenter', e => {
+      const bar = barHistory[svcId]?.[idx];
+      if (bar) showTooltip(e, bar);
+    });
+    el.addEventListener('mouseleave', hideTooltip);
+  });
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function msColor(ms) {
   if (!ms) return 'var(--muted)';
-  if (ms < 500)  return '#10b981';
-  if (ms < 1500) return '#f59e0b';
-  return '#ef4444';
+  if (ms < 500)  return 'var(--green)';
+  if (ms < 1500) return 'var(--yellow)';
+  return 'var(--red)';
 }
-function fmtMs(ms) { return ms ? `${ms}ms` : '—'; }
-function fmtS(s)   { return s  ? `${Math.round(s * 1000)}ms` : '—'; }
+function uptimeColor(pct) {
+  const v = parseFloat(pct);
+  if (v >= 99.9) return 'var(--green)';
+  if (v >= 99)   return 'var(--yellow)';
+  return 'var(--red)';
+}
+function fmtMs(ms) { return ms ? ms + 'ms' : '—'; }
 
-// ─── Render ──────────────────────────────────────────────────────────────────
+// ─── SLA strip ───────────────────────────────────────────────────────────────
+function renderSLA() {
+  const strip = document.getElementById('slaStrip');
+  // Overall uptime across all services for each period
+  const periods = [7, 30, 90];
+  const labels  = ['7-Day', '30-Day', '90-Day'];
+
+  const html = periods.map((days, pi) => {
+    const vals = SERVICES.map(s => uptimePct[s.id]?.[`d${days}`]).filter(v => v !== null && v !== undefined);
+    const avg  = vals.length
+      ? (vals.reduce((a,b)=>a+parseFloat(b),0) / vals.length).toFixed(2)
+      : null;
+    const color = avg ? uptimeColor(avg) : 'var(--muted)';
+    return `<div class="sla-pill">
+      <div class="sla-pill-label">${labels[pi]} SLA</div>
+      <div class="sla-pill-value" style="color:${color}">${avg ? avg+'%' : '—'}</div>
+    </div>`;
+  }).join('');
+
+  // Total checks
+  const totalChecks = Object.values(barHistory)[0]?.reduce((a,b)=>a+b.checks,0) ?? 0;
+  const upChecks    = Object.values(barHistory)[0]?.filter(b=>b.state==='up').reduce((a,b)=>a+b.checks,0) ?? 0;
+
+  strip.innerHTML = html + `
+    <div class="sla-pill">
+      <div class="sla-pill-label">Total Checks</div>
+      <div class="sla-pill-value" style="color:var(--accent-2)">${totalChecks * SERVICES.length}</div>
+    </div>
+    <div class="sla-pill">
+      <div class="sla-pill-label">Monitoring Since</div>
+      <div class="sla-pill-value" style="font-size:.85rem;color:var(--accent-2)">02 Jun 2026</div>
+    </div>`;
+}
+
+// ─── Services grid ───────────────────────────────────────────────────────────
 function renderGrid() {
   const grid = document.getElementById('servicesGrid');
   grid.innerHTML = SERVICES.map(svc => {
     const auth = authoritative[svc.id];
     const brow = browser[svc.id];
 
-    // Determine displayed status (prefer authoritative)
     let isUp, isChecking, displayMs, sourceLabel;
-
     if (auth) {
       isUp       = auth.status === 'up';
       isChecking = false;
@@ -356,18 +477,30 @@ function renderGrid() {
       displayMs  = brow.ms;
       sourceLabel = `<span class="data-source source-browser">🌐 Browser check</span>`;
     } else {
-      isUp       = true;
-      isChecking = true;
-      displayMs  = null;
-      sourceLabel = '';
+      isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
 
-    const cardClass  = isChecking ? 'card-checking' : (isUp ? 'card-up' : 'card-down');
-    const chipClass  = isChecking ? 'chip-checking' : (isUp ? 'chip-up' : 'chip-down');
-    const chipText   = isChecking ? 'Checking…'     : (isUp ? 'Operational' : 'Disruption');
-    const pct        = uptimePct[svc.id];
-    const uptimeDisp = pct ? `${pct}%` : (isChecking ? '—' : '100.00%');
-    const uptimeColor = pct && parseFloat(pct) < 99 ? (parseFloat(pct) < 95 ? 'var(--red)' : 'var(--yellow)') : 'var(--green)';
+    const cardClass = isChecking ? 'card-checking' : (isUp ? 'card-up' : 'card-down');
+    const chipClass = isChecking ? 'chip-checking' : (isUp ? 'chip-up' : 'chip-down');
+    const chipText  = isChecking ? 'Checking…' : (isUp ? 'Operational' : 'Disruption');
+
+    const pct90   = uptimePct[svc.id]?.d90;
+    const uptimeDisp  = pct90 ? pct90+'%' : (isChecking ? '—' : '100.00%');
+    const uColor  = pct90 ? uptimeColor(pct90) : 'var(--green)';
+
+    // Last incident: find last 'down' bar
+    const hist = barHistory[svc.id] || [];
+    const lastDown = [...hist].reverse().find(b => b.state === 'down');
+    const lastIncidentHtml = lastDown
+      ? `<span class="last-incident">Last incident: <span style="color:var(--yellow)">${new Date(lastDown.winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</span></span>`
+      : `<span class="last-incident">Last incident: <span>None</span></span>`;
+
+    const oldestDate = hist.find(b=>b.state!=='nodata');
+    const newestDate = hist[hist.length-1];
+    const rangeLabel = oldestDate
+      ? new Date(oldestDate.winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})
+        + ' – ' + new Date(newestDate.winEnd).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})
+      : '';
 
     return `
     <div class="service-card ${cardClass}">
@@ -379,101 +512,100 @@ function renderGrid() {
             <div class="service-url">${svc.url.replace('https://','')}</div>
           </div>
         </div>
-        <div class="status-chip ${chipClass}">
-          <span class="dot-sm"></span>
-          ${chipText}
-        </div>
+        <div class="status-chip ${chipClass}"><span class="dot-sm"></span>${chipText}</div>
       </div>
-      <div class="sc-bars">${renderBars(svc.id)}</div>
+      <div class="sc-bars-wrap">
+        <div class="sc-bars">${renderBars(svc.id)}</div>
+        <div class="sc-bar-labels"><span>${rangeLabel ? rangeLabel.split(' – ')[0] : ''}</span><span>Now</span></div>
+      </div>
       <div class="sc-footer">
         <div>
           <div class="sc-ms" style="color:${msColor(displayMs)}">${fmtMs(displayMs)}</div>
           <div class="sc-ms-label">Response time</div>
-          ${sourceLabel}
         </div>
         <div class="sc-uptime">
-          <div class="sc-uptime-pct" style="color:${uptimeColor}">${uptimeDisp}</div>
+          <div class="sc-uptime-pct" style="color:${uColor}">${uptimeDisp}</div>
           <div class="sc-uptime-label">90-day uptime</div>
         </div>
       </div>
+      <div class="sc-meta">${sourceLabel}${lastIncidentHtml}</div>
     </div>`;
   }).join('');
+
+  attachBarEvents();
 }
 
+// ─── Uptime table ─────────────────────────────────────────────────────────────
 function renderUptime() {
-  const card = document.getElementById('uptimeCard');
-  card.innerHTML = SERVICES.map(svc => {
-    const pct  = uptimePct[svc.id] || '100.00';
-    const fill = parseFloat(pct).toFixed(2);
-    const color = parseFloat(pct) < 99 ? (parseFloat(pct) < 95 ? 'var(--red)' : 'var(--yellow)') : 'var(--green)';
-    return `
-    <div class="uptime-row">
+  document.getElementById('uptimeCard').innerHTML = SERVICES.map(svc => {
+    const p = uptimePct[svc.id] || {};
+    const row = [['7d', p.d7], ['30d', p.d30], ['90d', p.d90]].map(([lbl, val]) => {
+      const v = val || '100.00';
+      const c = uptimeColor(v);
+      return `<div class="uptime-period">
+        <div class="uptime-period-label">${lbl}</div>
+        <div class="uptime-period-val" style="color:${c}">${v}%</div>
+      </div>`;
+    }).join('');
+    return `<div class="uptime-row">
       <div class="uptime-name">${svc.name}</div>
-      <div class="uptime-bar-wrap">
-        <div class="uptime-bar-bg"><div class="uptime-bar-fill" style="width:${fill}%;background:${color}"></div></div>
-      </div>
-      <div class="uptime-pct" style="color:${color}">${fill}%</div>
+      <div class="uptime-periods">${row}</div>
     </div>`;
   }).join('');
 }
 
+// ─── Metrics ─────────────────────────────────────────────────────────────────
 function renderMetrics() {
-  const grid = document.getElementById('metricsGrid');
-
-  // Prefer authoritative response times, fall back to browser
-  const allMs = SERVICES.map(svc => {
-    const auth = authoritative[svc.id];
-    if (auth) return Math.round(auth.response_time_s * 1000);
-    const brow = browser[svc.id];
-    return brow && brow.ms ? brow.ms : null;
+  const allMs = SERVICES.map(s => {
+    const a = authoritative[s.id];
+    if (a) return Math.round(a.response_time_s * 1000);
+    const b = browser[s.id];
+    return b?.ms || null;
   }).filter(Boolean);
 
-  const avgMs     = allMs.length ? Math.round(allMs.reduce((a,b) => a+b, 0) / allMs.length) : null;
-  const fastestMs = allMs.length ? Math.min(...allMs) : null;
-  const slowestMs = allMs.length ? Math.max(...allMs) : null;
-  const checksToday = (() => {
-    const start = new Date(); start.setUTCHours(0,0,0,0);
-    const elapsed = Date.now() - start.getTime();
-    return Math.floor(elapsed / (5 * 60 * 1000));
-  })();
-  const totalRows = Object.values(barHistory)[0]?.length ?? 0;
+  const avg     = allMs.length ? Math.round(allMs.reduce((a,b)=>a+b)/allMs.length) : null;
+  const fastest = allMs.length ? Math.min(...allMs) : null;
+  const slowest = allMs.length ? Math.max(...allMs) : null;
 
-  grid.innerHTML = `
+  const checksToday = Math.floor((Date.now() - new Date().setUTCHours(0,0,0,0)) / 300000);
+  const totalRows   = Object.values(barHistory)[0]?.reduce((a,b)=>a+b.checks,0) ?? 0;
+
+  document.getElementById('metricsGrid').innerHTML = `
   <div class="metric-card">
     <div class="metric-label">Avg Response</div>
-    <div class="metric-value" style="color:${msColor(avgMs)}">${fmtMs(avgMs)}</div>
-    <div class="metric-sub">All services</div>
+    <div class="metric-value" style="color:${msColor(avg)}">${fmtMs(avg)}</div>
+    <div class="metric-sub">All services now</div>
   </div>
   <div class="metric-card">
     <div class="metric-label">Fastest</div>
-    <div class="metric-value" style="color:#10b981">${fmtMs(fastestMs)}</div>
-    <div class="metric-sub">Best response</div>
+    <div class="metric-value" style="color:var(--green)">${fmtMs(fastest)}</div>
+    <div class="metric-sub">Best endpoint</div>
   </div>
   <div class="metric-card">
     <div class="metric-label">Slowest</div>
-    <div class="metric-value" style="color:${msColor(slowestMs)}">${fmtMs(slowestMs)}</div>
-    <div class="metric-sub">Worst response</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Services</div>
-    <div class="metric-value" style="color:var(--accent-2)">${SERVICES.length}</div>
-    <div class="metric-sub">Monitored endpoints</div>
+    <div class="metric-value" style="color:${msColor(slowest)}">${fmtMs(slowest)}</div>
+    <div class="metric-sub">Worst endpoint</div>
   </div>
   <div class="metric-card">
     <div class="metric-label">Checks Today</div>
     <div class="metric-value" style="color:var(--accent-2)">${checksToday}</div>
-    <div class="metric-sub">Every 5 min via Actions</div>
+    <div class="metric-sub">Every 5 min</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Total Records</div>
+    <div class="metric-value" style="color:var(--accent-2)">${totalRows}</div>
+    <div class="metric-sub">In history</div>
   </div>`;
 }
 
-function renderGlobalStatus() {
-  const badge  = document.getElementById('globalBadge');
-  const text   = document.getElementById('globalStatus');
+// ─── Global badge ─────────────────────────────────────────────────────────────
+function renderGlobal() {
+  const badge = document.getElementById('globalBadge');
+  const text  = document.getElementById('globalStatus');
   const hasAuth = Object.keys(authoritative).length > 0;
-  const anyDown = Object.values(authoritative).some(r => r.status === 'down') ||
-                  Object.values(browser).some(r => r.up === false);
-
-  if (!hasAuth && Object.keys(browser).length === 0) {
+  const anyDown = Object.values(authoritative).some(r=>r.status==='down') ||
+                  Object.values(browser).some(r=>r.up===false);
+  if (!hasAuth && !Object.keys(browser).length) {
     badge.className = 'hero-badge badge-degraded';
     text.textContent = 'Loading status data…';
   } else if (anyDown) {
@@ -485,101 +617,74 @@ function renderGlobalStatus() {
   }
 }
 
-function updateTimestamp(source) {
+function updateTimestamp(src) {
   document.getElementById('lastUpdated').textContent =
-    `Last checked: ${new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'})} · ${source} · Auto-refreshes every 5 min`;
+    'Last checked: ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
+    + ' · ' + src + ' · Auto-refreshes every 5 min';
 }
 
 // ─── Data fetching ────────────────────────────────────────────────────────────
-
-// 1. Fetch latest status from GitHub Actions output (authoritative)
 async function fetchStatusJSON() {
   try {
-    const res = await fetch('data/status.json?_=' + Date.now(), { cache: 'no-cache' });
+    const res = await fetch('data/status.json?_='+Date.now(), {cache:'no-cache'});
     if (!res.ok) return;
     const data = await res.json();
     if (data.services) {
-      for (const [id, svc] of Object.entries(data.services)) {
-        authoritative[id] = svc;
-      }
-      updateTimestamp('Actions ' + (data.timestamp || ''));
+      Object.entries(data.services).forEach(([id,svc]) => authoritative[id] = svc);
+      updateTimestamp('Actions ' + (data.timestamp||''));
     }
-  } catch(e) {
-    console.warn('status.json not available yet:', e.message);
-  }
+  } catch(e) { console.warn('status.json unavailable', e.message); }
 }
 
-// 2. Parse history CSV and compute uptimes + bar history
 async function fetchHistoryCSV() {
   try {
-    const res = await fetch('data/history.csv?_=' + Date.now(), { cache: 'no-cache' });
+    const res = await fetch('data/history.csv?_='+Date.now(), {cache:'no-cache'});
     if (!res.ok) return;
-    const text = await res.text();
-    const rows = parseCSV(text);
+    const rows = parseCSV(await res.text());
     if (!rows.length) return;
 
     for (const [id, colIdx] of Object.entries(CSV_COLS)) {
-      const pct = calcUptime(rows, colIdx);
-      if (pct !== null) uptimePct[id] = pct;
-      // For services not yet in CSV (ha, ai, abdelrahman for old format), set 100
-      if (!uptimePct[id]) uptimePct[id] = '100.00';
+      uptimePct[id] = {
+        d7:  calcUptimePeriod(rows, colIdx, 7),
+        d30: calcUptimePeriod(rows, colIdx, 30),
+        d90: calcUptimePeriod(rows, colIdx, 90),
+      };
       barHistory[id] = buildBarHistory(rows, colIdx);
     }
-
-    // For services with no CSV column (shouldn't happen after migration), default
-    for (const svc of SERVICES) {
-      if (!uptimePct[svc.id]) uptimePct[svc.id] = '100.00';
-      if (!barHistory[svc.id]) barHistory[svc.id] = null;
-    }
-  } catch(e) {
-    console.warn('history.csv not available yet:', e.message);
-  }
+    // Default for services with no data
+    SERVICES.forEach(s => {
+      if (!uptimePct[s.id]) uptimePct[s.id] = {d7:'100.00',d30:'100.00',d90:'100.00'};
+      if (!barHistory[s.id]) barHistory[s.id] = null;
+    });
+  } catch(e) { console.warn('history.csv unavailable', e.message); }
 }
 
-// 3. Browser-side live fetch (latency signal only — no-cors can't read status code)
 async function browserCheck(svc) {
-  const start = performance.now();
+  const t0 = performance.now();
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 10000);
-    await fetch(svc.url, { method:'GET', signal:ctrl.signal, cache:'no-cache', mode:'no-cors' });
+    const timer = setTimeout(()=>ctrl.abort(), 10000);
+    await fetch(svc.url, {method:'GET', signal:ctrl.signal, cache:'no-cache', mode:'no-cors'});
     clearTimeout(timer);
-    browser[svc.id] = { up: true, ms: Math.round(performance.now() - start) };
+    browser[svc.id] = {up:true, ms:Math.round(performance.now()-t0)};
   } catch(e) {
-    const ms = Math.round(performance.now() - start);
-    // AbortError = timeout = likely down; TypeError on no-cors = still reachable
-    browser[svc.id] = e.name === 'AbortError'
-      ? { up: false, ms: null }
-      : { up: true, ms };
+    const ms = Math.round(performance.now()-t0);
+    browser[svc.id] = e.name==='AbortError' ? {up:false,ms:null} : {up:true,ms};
   }
 }
 
-// ─── Main run loop ────────────────────────────────────────────────────────────
+// ─── Main loop ────────────────────────────────────────────────────────────────
 async function runAll() {
-  // Phase 1: Load authoritative data first (fastest perceived load)
   await Promise.all([fetchStatusJSON(), fetchHistoryCSV()]);
-  renderGrid();
-  renderUptime();
-  renderMetrics();
-  renderGlobalStatus();
+  renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA();
 
-  // Phase 2: Run browser checks in parallel (updates latency numbers live)
   await Promise.all(SERVICES.map(async svc => {
-    // Skip browser check for status page itself to avoid false positives
-    if (svc.id === 'status') { browser[svc.id] = { up: true, ms: null }; return; }
     await browserCheck(svc);
-    // Only update display ms if no authoritative data for this service
-    if (!authoritative[svc.id]) {
-      renderGrid();
-      renderMetrics();
-      renderGlobalStatus();
-    }
+    if (!authoritative[svc.id]) { renderGrid(); renderMetrics(); renderGlobal(); }
   }));
 
   updateTimestamp('Live');
-  renderGrid();
-  renderMetrics();
-  renderGlobalStatus();
+  renderGrid(); renderMetrics(); renderGlobal();
 }
 
 runAll();
