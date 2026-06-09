@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-09T08:52:05Z",
+  "timestamp": "2026-06-09T08:59:14Z",
   "date": "2026-06-09",
   "services": {
     "website": {
@@ -7,21 +7,21 @@
       "url": "https://www.quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.144790
+      "response_time_s": 0.094507
     },
     "root": {
       "name": "QuNeva Root Domain",
       "url": "https://quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.450756
+      "response_time_s": 0.162957
     },
     "login": {
       "name": "QuNeva Login",
       "url": "https://www.quneva.com/login",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.151405
+      "response_time_s": 0.108371
     }
   }
 }
