@@ -14,13 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Check Abdelrahman Portfolio
         id: abdelrahman
+        continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://www.abdelrahman-ezzat.com)
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://www.abdelrahman-ezzat.com)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://www.abdelrahman-ezzat.com) || STATUS=0
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://www.abdelrahman-ezzat.com) || TIME=0
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Portfolio: HTTP $STATUS in ${TIME}s"
@@ -28,9 +29,10 @@ jobs:
 
       - name: Check QuNeva Website
         id: website
+        continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://www.quneva.com)
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://www.quneva.com)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://www.quneva.com) || STATUS=0
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://www.quneva.com) || TIME=0
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Website: HTTP $STATUS in ${TIME}s"
@@ -38,9 +40,10 @@ jobs:
 
       - name: Check QuNeva HA
         id: ha
+        continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://ha.quneva.com)
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://ha.quneva.com)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://ha.quneva.com) || STATUS=0
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://ha.quneva.com) || TIME=0
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "HA: HTTP $STATUS in ${TIME}s"
@@ -48,9 +51,10 @@ jobs:
 
       - name: Check QuNeva AI
         id: ai
+        continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://ai.quneva.com)
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://ai.quneva.com)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://ai.quneva.com) || STATUS=0
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://ai.quneva.com) || TIME=0
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "AI: HTTP $STATUS in ${TIME}s"
@@ -58,9 +62,10 @@ jobs:
 
       - name: Check QuNeva Root Domain
         id: root
+        continue-on-error: true
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://quneva.com)
-          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://quneva.com)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 --location https://quneva.com) || STATUS=0
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" --max-time 15 --location https://quneva.com) || TIME=0
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Root domain: HTTP $STATUS in ${TIME}s"
@@ -72,7 +77,7 @@ jobs:
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           DATE=$(date -u +"%Y-%m-%d")
 
-          cat > data/status.json << EOF
+          cat > data/status.json << JSONEOF
           {
             "timestamp": "$TIMESTAMP",
             "date": "$DATE",
@@ -81,40 +86,40 @@ jobs:
                 "name": "Abdelrahman Portfolio",
                 "url": "https://www.abdelrahman-ezzat.com",
                 "status": "${{ steps.abdelrahman.outputs.result }}",
-                "http_status": ${{ steps.abdelrahman.outputs.status }},
-                "response_time_s": ${{ steps.abdelrahman.outputs.time }}
+                "http_status": ${{ steps.abdelrahman.outputs.status || 0 }},
+                "response_time_s": ${{ steps.abdelrahman.outputs.time || 0 }}
               },
               "website": {
                 "name": "QuNeva Website",
                 "url": "https://www.quneva.com",
                 "status": "${{ steps.website.outputs.result }}",
-                "http_status": ${{ steps.website.outputs.status }},
-                "response_time_s": ${{ steps.website.outputs.time }}
+                "http_status": ${{ steps.website.outputs.status || 0 }},
+                "response_time_s": ${{ steps.website.outputs.time || 0 }}
               },
               "ha": {
                 "name": "QuNeva HA",
                 "url": "https://ha.quneva.com",
                 "status": "${{ steps.ha.outputs.result }}",
-                "http_status": ${{ steps.ha.outputs.status }},
-                "response_time_s": ${{ steps.ha.outputs.time }}
+                "http_status": ${{ steps.ha.outputs.status || 0 }},
+                "response_time_s": ${{ steps.ha.outputs.time || 0 }}
               },
               "ai": {
                 "name": "QuNeva AI",
                 "url": "https://ai.quneva.com",
                 "status": "${{ steps.ai.outputs.result }}",
-                "http_status": ${{ steps.ai.outputs.status }},
-                "response_time_s": ${{ steps.ai.outputs.time }}
+                "http_status": ${{ steps.ai.outputs.status || 0 }},
+                "response_time_s": ${{ steps.ai.outputs.time || 0 }}
               },
               "root": {
                 "name": "QuNeva Root Domain",
                 "url": "https://quneva.com",
                 "status": "${{ steps.root.outputs.result }}",
-                "http_status": ${{ steps.root.outputs.status }},
-                "response_time_s": ${{ steps.root.outputs.time }}
+                "http_status": ${{ steps.root.outputs.status || 0 }},
+                "response_time_s": ${{ steps.root.outputs.time || 0 }}
               }
             }
           }
-          EOF
+          JSONEOF
 
           echo "Status file written:"
           cat data/status.json
@@ -123,11 +128,10 @@ jobs:
         run: |
           mkdir -p data
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          # Add header if file is new
           if [ ! -f data/history.csv ]; then
             echo "timestamp,abdelrahman_result,abdelrahman_http,abdelrahman_time,website_result,website_http,website_time,ha_result,ha_http,ha_time,ai_result,ai_http,ai_time,root_result,root_http,root_time" > data/history.csv
           fi
-          echo "$TIMESTAMP,${{ steps.abdelrahman.outputs.result }},${{ steps.abdelrahman.outputs.status }},${{ steps.abdelrahman.outputs.time }},${{ steps.website.outputs.result }},${{ steps.website.outputs.status }},${{ steps.website.outputs.time }},${{ steps.ha.outputs.result }},${{ steps.ha.outputs.status }},${{ steps.ha.outputs.time }},${{ steps.ai.outputs.result }},${{ steps.ai.outputs.status }},${{ steps.ai.outputs.time }},${{ steps.root.outputs.result }},${{ steps.root.outputs.status }},${{ steps.root.outputs.time }}" >> data/history.csv
+          echo "$TIMESTAMP,${{ steps.abdelrahman.outputs.result || 'down' }},${{ steps.abdelrahman.outputs.status || 0 }},${{ steps.abdelrahman.outputs.time || 0 }},${{ steps.website.outputs.result || 'down' }},${{ steps.website.outputs.status || 0 }},${{ steps.website.outputs.time || 0 }},${{ steps.ha.outputs.result || 'down' }},${{ steps.ha.outputs.status || 0 }},${{ steps.ha.outputs.time || 0 }},${{ steps.ai.outputs.result || 'down' }},${{ steps.ai.outputs.status || 0 }},${{ steps.ai.outputs.time || 0 }},${{ steps.root.outputs.result || 'down' }},${{ steps.root.outputs.status || 0 }},${{ steps.root.outputs.time || 0 }}" >> data/history.csv
 
       - name: Open incident if down
         id: open_incident
@@ -137,20 +141,20 @@ jobs:
           steps.ha.outputs.result == 'down' ||
           steps.ai.outputs.result == 'down' ||
           steps.root.outputs.result == 'down'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const checks = {
               'Abdelrahman Portfolio': { result: '${{ steps.abdelrahman.outputs.result }}', http: '${{ steps.abdelrahman.outputs.status }}' },
-              'QuNeva Website': { result: '${{ steps.website.outputs.result }}', http: '${{ steps.website.outputs.status }}' },
-              'QuNeva HA': { result: '${{ steps.ha.outputs.result }}', http: '${{ steps.ha.outputs.status }}' },
-              'QuNeva AI': { result: '${{ steps.ai.outputs.result }}', http: '${{ steps.ai.outputs.status }}' },
-              'QuNeva Root Domain': { result: '${{ steps.root.outputs.result }}', http: '${{ steps.root.outputs.status }}' },
+              'QuNeva Website':        { result: '${{ steps.website.outputs.result }}',     http: '${{ steps.website.outputs.status }}' },
+              'QuNeva HA':             { result: '${{ steps.ha.outputs.result }}',           http: '${{ steps.ha.outputs.status }}' },
+              'QuNeva AI':             { result: '${{ steps.ai.outputs.result }}',           http: '${{ steps.ai.outputs.status }}' },
+              'QuNeva Root Domain':    { result: '${{ steps.root.outputs.result }}',         http: '${{ steps.root.outputs.status }}' },
             };
             const down = Object.entries(checks)
               .filter(([, v]) => v.result === 'down')
-              .map(([name, v]) => `${name} (HTTP ${v.http})`);
+              .map(([name, v]) => `${name} (HTTP ${v.http || 0})`);
 
             const existing = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -176,7 +180,7 @@ jobs:
           steps.ha.outputs.result == 'up' &&
           steps.ai.outputs.result == 'up' &&
           steps.root.outputs.result == 'up'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
