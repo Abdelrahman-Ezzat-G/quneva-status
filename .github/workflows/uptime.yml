@@ -2,9 +2,8 @@ name: Uptime Monitor
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
-
 
 permissions:
   contents: write
@@ -18,14 +17,19 @@ jobs:
   check-uptime:
     name: Check Services
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Sync latest main
         run: |
-          git pull --rebase origin main
-          
+          git fetch origin main
+          git reset --hard origin/main
+
       - name: Check Abdelrahman Portfolio
         id: abdelrahman
         continue-on-error: true
@@ -131,20 +135,21 @@ jobs:
           }
           JSONEOF
 
-          echo "Status file written:"
-          cat data/status.json
-
       - name: Append to history CSV
         run: |
           mkdir -p data
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
           if [ ! -f data/history.csv ]; then
             echo "timestamp,abdelrahman_result,abdelrahman_http,abdelrahman_time,website_result,website_http,website_time,ha_result,ha_http,ha_time,ai_result,ai_http,ai_time,root_result,root_http,root_time" > data/history.csv
           fi
+
           echo "$TIMESTAMP,${{ steps.abdelrahman.outputs.result || 'down' }},${{ steps.abdelrahman.outputs.status || 0 }},${{ steps.abdelrahman.outputs.time || 0 }},${{ steps.website.outputs.result || 'down' }},${{ steps.website.outputs.status || 0 }},${{ steps.website.outputs.time || 0 }},${{ steps.ha.outputs.result || 'down' }},${{ steps.ha.outputs.status || 0 }},${{ steps.ha.outputs.time || 0 }},${{ steps.ai.outputs.result || 'down' }},${{ steps.ai.outputs.status || 0 }},${{ steps.ai.outputs.time || 0 }},${{ steps.root.outputs.result || 'down' }},${{ steps.root.outputs.status || 0 }},${{ steps.root.outputs.time || 0 }}" >> data/history.csv
 
+          tail -n 500 data/history.csv > data/history.tmp
+          mv data/history.tmp data/history.csv
+
       - name: Open incident if down
-        id: open_incident
         if: |
           steps.abdelrahman.outputs.result == 'down' ||
           steps.website.outputs.result == 'down' ||
@@ -157,11 +162,12 @@ jobs:
           script: |
             const checks = {
               'Abdelrahman Portfolio': { result: '${{ steps.abdelrahman.outputs.result }}', http: '${{ steps.abdelrahman.outputs.status }}' },
-              'QuNeva Website':        { result: '${{ steps.website.outputs.result }}',     http: '${{ steps.website.outputs.status }}' },
-              'QuNeva HA':             { result: '${{ steps.ha.outputs.result }}',           http: '${{ steps.ha.outputs.status }}' },
-              'QuNeva AI':             { result: '${{ steps.ai.outputs.result }}',           http: '${{ steps.ai.outputs.status }}' },
-              'QuNeva Root Domain':    { result: '${{ steps.root.outputs.result }}',         http: '${{ steps.root.outputs.status }}' },
+              'QuNeva Website': { result: '${{ steps.website.outputs.result }}', http: '${{ steps.website.outputs.status }}' },
+              'QuNeva HA': { result: '${{ steps.ha.outputs.result }}', http: '${{ steps.ha.outputs.status }}' },
+              'QuNeva AI': { result: '${{ steps.ai.outputs.result }}', http: '${{ steps.ai.outputs.status }}' },
+              'QuNeva Root Domain': { result: '${{ steps.root.outputs.result }}', http: '${{ steps.root.outputs.status }}' },
             };
+
             const down = Object.entries(checks)
               .filter(([, v]) => v.result === 'down')
               .map(([name, v]) => `${name} (HTTP ${v.http || 0})`);
@@ -172,14 +178,16 @@ jobs:
               state: 'open',
               labels: 'incident'
             });
+
             const alreadyOpen = existing.data.some(i => i.title.startsWith('[Incident]'));
+
             if (!alreadyOpen) {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: `[Incident] Service disruption: ${down.join(', ')}`,
                 labels: ['incident'],
-                body: `## 🔴 Service Disruption Detected\n\n**Time:** ${new Date().toISOString()}\n\n**Affected services:**\n${down.map(d => `- ${d}`).join('\n')}\n\nThis issue was automatically created by the uptime monitor.\nIt will be **automatically closed** when all affected services recover.`
+                body: `## 🔴 Service Disruption Detected\n\n**Time:** ${new Date().toISOString()}\n\n**Affected services:**\n${down.map(d => `- ${d}`).join('\n')}\n\nThis issue was automatically created by the uptime monitor.`
               });
             }
 
@@ -200,6 +208,7 @@ jobs:
               state: 'open',
               labels: 'incident'
             });
+
             for (const issue of existing.data.filter(i => i.title.startsWith('[Incident]'))) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -207,6 +216,7 @@ jobs:
                 issue_number: issue.number,
                 body: `## ✅ All Systems Recovered\n\n**Time:** ${new Date().toISOString()}\n\nAll monitored services are back online. Closing this incident automatically.`
               });
+
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -220,19 +230,31 @@ jobs:
           git config user.name "QuNeva Status Bot"
           git config user.email "status-bot@quneva.com"
 
-          git add data/
+          git add data/status.json data/history.csv
 
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No status changes to commit"
             exit 0
           fi
 
           git commit -m "chore: uptime check $(date -u +'%Y-%m-%d %H:%M UTC')"
 
-          git pull --rebase origin main
-          git push origin main
+          for i in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main || git rebase --abort
+            if git push --force-with-lease origin HEAD:main; then
+              echo "Status data pushed successfully"
+              exit 0
+            fi
+            echo "Push failed, retrying in 10 seconds..."
+            sleep 10
+          done
+
+          echo "Failed to push status data after retries"
+          exit 1
 
       - name: Summary
+        if: always()
         run: |
           echo "## ⏱ Uptime Check Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
