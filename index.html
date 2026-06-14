@@ -1,202 +1,106 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>QuNeva Status</title>
-<meta name="description" content="Real-time uptime and availability monitoring for QuNeva Workforce Management Platform.">
-<meta property="og:title" content="QuNeva Status">
-<meta property="og:description" content="Live uptime monitoring for QuNeva WFM services.">
-<meta property="og:url" content="https://status.quneva.com">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='10' y1='10' x2='54' y2='54' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239F7AEA'/%3E%3Cstop offset='1' stop-color='%2367E8F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z' stroke='url(%23g)' stroke-width='5.5' fill='none'/%3E%3Cpath d='M40.8 40.5L52 52' stroke='url(%23g)' stroke-width='5.5' stroke-linecap='round'/%3E%3Cpath d='M22 41V22l20 19V22' stroke='url(%23g)' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<meta name="description" content="Real-time uptime and availability monitoring for QuNeva Workforce Management Platform." />
+<meta property="og:title" content="QuNeva Status" />
+<meta property="og:description" content="Live uptime monitoring for QuNeva WFM services." />
+<meta property="og:url" content="https://status.quneva.com" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='10' y1='10' x2='54' y2='54' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%239F7AEA'/%3E%3Cstop offset='1' stop-color='%2367E8F9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 8C18.745 8 8 18.745 8 32s10.745 24 24 24 24-10.745 24-24S45.255 8 32 8z' stroke='url(%23g)' stroke-width='5.5' fill='none'/%3E%3Cpath d='M40.8 40.5L52 52' stroke='url(%23g)' stroke-width='5.5' stroke-linecap='round'/%3E%3Cpath d='M22 41V22l20 19V22' stroke='url(%23g)' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
 <style>
 :root{
-  --bg:#0a0e1a;--panel:#121830;--panel-2:#1a2142;
-  --border:#1f2747;--border-2:#2a3460;
-  --text:#e6e9f5;--muted:#8a92b2;
-  --accent:#7c5cff;--accent-2:#a78bfa;
+  --bg:#0a0e1a;--panel:#121830;--border:#1f2747;--border-2:#2a3460;
+  --text:#e6e9f5;--muted:#8a92b2;--accent:#7c5cff;--accent-2:#a78bfa;
   --green:#10b981;--green-bg:rgba(16,185,129,.12);
   --yellow:#f59e0b;--yellow-bg:rgba(245,158,11,.12);
   --red:#ef4444;--red-bg:rgba(239,68,68,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:radial-gradient(1200px 600px at 80% -10%,rgba(124,92,255,.15),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(167,139,250,.10),transparent 60%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+html,body{background:radial-gradient(1200px 600px at 80% -10%,rgba(124,92,255,.15),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(167,139,250,.10),transparent 60%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;min-height:100vh}
 a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}
-
-/* NAV */
 nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(10,14,26,.75);border-bottom:1px solid var(--border)}
 .nav-inner{max-width:920px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.brand-name{font-size:1.1rem;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center}
-.brand-qn{background:linear-gradient(to right,#9F7AEA,#a78bfa,#67E8F9);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
-.brand-wfm{color:#8a92b2;font-weight:500;font-size:.75rem;letter-spacing:.06em;margin-left:5px}
-.nav-links{display:flex;align-items:center;gap:20px;font-size:13px}
-.nav-links a{color:var(--muted);transition:color .15s}.nav-links a:hover{color:var(--text);text-decoration:none}
-
-/* HERO */
+.brand-name{font-size:1.1rem;font-weight:700;letter-spacing:-.02em}
+.brand-qn{background:linear-gradient(to right,#9F7AEA,#a78bfa,#67E8F9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav-links{display:flex;gap:20px;font-size:13px}
+.nav-links a{color:var(--muted)}.nav-links a:hover{color:var(--text);text-decoration:none}
 .hero{max-width:920px;margin:0 auto;padding:52px 24px 36px;text-align:center}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600;margin-bottom:18px}
 .badge-operational{background:var(--green-bg);color:var(--green);border:1px solid rgba(16,185,129,.25)}
 .badge-degraded{background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(245,158,11,.25)}
 .badge-outage{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.25)}
-.pulse{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+.pulse,.dot-sm{border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+.pulse{width:8px;height:8px}.dot-sm{width:6px;height:6px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.hero h1{font-size:2.1rem;font-weight:700;letter-spacing:-.03em;margin-bottom:10px}
+.hero h1{font-size:2.1rem;font-weight:700;margin-bottom:10px}
 .hero p{font-size:.97rem;color:var(--muted);max-width:440px;margin:0 auto;line-height:1.65}
 .last-updated{font-size:11.5px;color:var(--muted);margin-top:12px;opacity:.65}
-
-/* SECTION */
 .section{max-width:920px;margin:0 auto;padding:0 24px 44px}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .section-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .section-hint{font-size:11px;color:var(--muted);opacity:.6}
-
-/* SLA PILLS */
 .sla-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .sla-pill{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 16px;flex:1;min-width:120px;text-align:center}
 .sla-pill-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
 .sla-pill-value{font-size:1.25rem;font-weight:700;color:var(--green)}
-
-/* SERVICES GRID */
 .services-grid{display:grid;grid-template-columns:1fr;gap:12px}
-
-/* SERVICE CARD */
-.service-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;transition:border-color .2s,transform .15s,box-shadow .15s}
-.service-card:hover{border-color:var(--border-2);transform:translateY(-1px);box-shadow:0 6px 28px rgba(0,0,0,.28)}
+.service-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
 .service-card.card-up{border-left:3px solid var(--green)}
 .service-card.card-down{border-left:3px solid var(--red)}
 .service-card.card-checking{border-left:3px solid var(--muted)}
-
 .sc-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .sc-left{display:flex;align-items:center;gap:10px;min-width:0}
-.service-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
-.icon-web{background:rgba(124,92,255,.15)}
-.icon-auth{background:rgba(16,185,129,.12)}
-.icon-api{background:rgba(103,232,249,.10)}
-.icon-dev{background:rgba(245,158,11,.12)}
-.icon-ai{background:rgba(167,139,250,.15)}
-
-.service-name{font-size:14px;font-weight:600;color:var(--text)}
+.service-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.icon-web{background:rgba(124,92,255,.15)}.icon-auth{background:rgba(16,185,129,.12)}.icon-api{background:rgba(103,232,249,.10)}.icon-dev{background:rgba(245,158,11,.12)}.icon-ai{background:rgba(167,139,250,.15)}
+.service-name{font-size:14px;font-weight:600}
 .service-url{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
-
-.status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap}
 .chip-up{background:var(--green-bg);color:var(--green)}
 .chip-down{background:var(--red-bg);color:var(--red)}
 .chip-checking{background:rgba(138,146,178,.1);color:var(--muted)}
-.dot-sm{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
-
-/* BARS */
-.sc-bars-wrap{position:relative}
-.sc-bars{display:grid;grid-template-columns:repeat(40,1fr);align-items:end;gap:2px;height:36px}
-/* bar height is FLAT (100%) when up — variable height only for response time mode */
-.bar{
-  width:100%;height:100%;border-radius:2px 2px 0 0;
-  background:var(--green);opacity:.6;
-  transition:opacity .15s,background .15s;
-  cursor:help;position:relative;
-}
-.bar.down{background:var(--red);opacity:.9;height:100%}
-.bar.slow{background:var(--yellow);opacity:.8}
-.bar.nodata{background:var(--border-2);opacity:.45;height:40%}
-.bar:hover{opacity:1;z-index:1}
-
-/* CUSTOM TOOLTIP */
-.bar-tooltip{
-  display:none;position:fixed;z-index:999;
-  background:#0d1220;border:1px solid var(--border-2);
-  border-radius:8px;padding:8px 11px;
-  font-size:11.5px;line-height:1.6;color:var(--text);
-  pointer-events:none;white-space:nowrap;
-  box-shadow:0 4px 20px rgba(0,0,0,.5);
-  min-width:160px;
-}
+.sc-bars{display:grid;grid-template-columns:repeat(24,1fr);align-items:end;gap:2px;height:36px}
+.bar{width:100%;height:100%;border-radius:2px 2px 0 0;background:var(--green);opacity:.65;cursor:help}
+.bar.down{background:var(--red);opacity:.9}
+.bar.slow{background:var(--yellow);opacity:.85}
+.bar.nodata{background:var(--border-2);opacity:.35;height:40%}
+.bar:hover{opacity:1}
+.bar-tooltip{display:none;position:fixed;z-index:999;background:#0d1220;border:1px solid var(--border-2);border-radius:8px;padding:8px 11px;font-size:11.5px;line-height:1.6;color:var(--text);pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);min-width:160px}
 .bar-tooltip.visible{display:block}
 .tt-date{color:var(--muted);font-size:10.5px;margin-bottom:3px}
-.tt-status{font-weight:600}
-.tt-status.up{color:var(--green)}
-.tt-status.down{color:var(--red)}
-.tt-status.nodata{color:var(--muted)}
-.tt-row{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--muted);margin-top:1px}
-.tt-val{color:var(--text);font-weight:500}
-
-/* bar label strip */
+.tt-status{font-weight:600}.tt-status.up{color:var(--green)}.tt-status.down{color:var(--red)}.tt-status.nodata{color:var(--muted)}
+.tt-row{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--muted);margin-top:1px}.tt-val{color:var(--text);font-weight:500}
 .sc-bar-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--muted);opacity:.5}
-
-/* FOOTER of card */
 .sc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
-.sc-ms{font-size:19px;font-weight:700;letter-spacing:-.02em}
-.sc-ms-label{font-size:11px;color:var(--muted);margin-top:1px}
-.sc-uptime{text-align:right}
-.sc-uptime-pct{font-size:17px;font-weight:700}
-.sc-uptime-label{font-size:11px;color:var(--muted);margin-top:1px}
-
-/* SOURCE + LAST INCIDENT row */
+.sc-ms{font-size:19px;font-weight:700}.sc-ms-label,.sc-uptime-label{font-size:11px;color:var(--muted);margin-top:1px}
+.sc-uptime{text-align:right}.sc-uptime-pct{font-size:17px;font-weight:700}
 .sc-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
 .data-source{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500}
 .source-live{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
 .source-browser{background:rgba(138,146,178,.08);color:var(--muted);border:1px solid var(--border)}
-.last-incident{font-size:10.5px;color:var(--muted)}
-.last-incident span{color:var(--green);font-weight:500}
-
-/* 90-DAY UPTIME TABLE */
-.uptime-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.last-incident{font-size:10.5px;color:var(--muted)}.last-incident span{color:var(--green);font-weight:500}
+.uptime-card,.incidents-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .uptime-row{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;gap:12px}
 .uptime-row:not(:last-child){border-bottom:1px solid var(--border)}
-.uptime-name{font-size:13px;color:var(--text);min-width:160px}
-.uptime-periods{display:flex;gap:20px;align-items:center;flex:1;justify-content:flex-end}
-.uptime-period{text-align:center;min-width:64px}
-.uptime-period-label{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.uptime-period-val{font-size:13px;font-weight:600}
-
-/* METRICS */
+.uptime-name{font-size:13px;min-width:160px}.uptime-periods{display:flex;gap:20px;align-items:center;flex:1;justify-content:flex-end}
+.uptime-period{text-align:center;min-width:64px}.uptime-period-label{font-size:9.5px;color:var(--muted);text-transform:uppercase}.uptime-period-val{font-size:13px;font-weight:600}
 .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
 .metric-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:15px 17px}
-.metric-label{font-size:10.5px;color:var(--muted);margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
-.metric-value{font-size:1.55rem;font-weight:700;color:var(--text);letter-spacing:-.02em}
-.metric-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
-
-/* INCIDENTS */
-.incidents-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px}
-.no-incidents{text-align:center;padding:28px;color:var(--muted);font-size:14px}
-.no-incidents-icon{font-size:28px;margin-bottom:8px;opacity:.45}
-.incident-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
-.incident-item:last-child{border-bottom:none;padding-bottom:0}
-.incident-item:first-child{padding-top:0}
-.incident-icon{font-size:18px;flex-shrink:0;margin-top:1px}
-.incident-body{flex:1;min-width:0}
-.incident-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
-.incident-title a{color:var(--text);text-decoration:none}
-.incident-title a:hover{color:var(--accent-2)}
-.incident-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.incident-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px}
-.badge-open{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.2)}
-.badge-closed{background:var(--green-bg);color:var(--green);border:1px solid rgba(16,185,129,.2)}
-.incident-time{font-size:11px;color:var(--muted)}
-.incident-loading{text-align:center;padding:20px;color:var(--muted);font-size:13px;opacity:.7}
-
-/* FOOTER */
+.metric-label{font-size:10.5px;color:var(--muted);margin-bottom:5px;text-transform:uppercase}.metric-value{font-size:1.55rem;font-weight:700}.metric-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
+.incidents-card{padding:20px}.no-incidents{text-align:center;padding:28px;color:var(--muted);font-size:14px}.no-incidents-icon{font-size:28px;margin-bottom:8px;opacity:.45}
+.incident-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}.incident-item:last-child{border-bottom:none;padding-bottom:0}.incident-icon{font-size:18px;flex-shrink:0}.incident-body{flex:1}.incident-title{font-size:13px;font-weight:600;margin-bottom:4px}.incident-title a{color:var(--text)}.incident-meta{display:flex;gap:10px;flex-wrap:wrap}.incident-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px}.badge-open{background:var(--red-bg);color:var(--red)}.badge-closed{background:var(--green-bg);color:var(--green)}.incident-time{font-size:11px;color:var(--muted)}
 footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
-.footer-left{display:flex;align-items:center;gap:8px}
-.footer-links{display:flex;gap:16px}
-.footer-links a{color:var(--muted);transition:color .15s}.footer-links a:hover{color:var(--text)}
-
+.footer-left{display:flex;align-items:center;gap:8px}.footer-links{display:flex;gap:16px}.footer-links a{color:var(--muted)}
 @media(max-width:640px){
-  .hero h1{font-size:1.55rem}
-  .nav-links{gap:12px}
-  .sla-strip{gap:6px}
-  .sla-pill{min-width:80px;padding:8px 10px}
-  .sla-pill-value{font-size:1rem}
-
-  /* Uptime table: stack name above periods on mobile */
-  .uptime-row{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 16px}
-  .uptime-name{min-width:unset;font-size:12px;color:var(--muted)}
-  .uptime-periods{width:100%;justify-content:space-between;gap:0}
-  .uptime-period{min-width:unset;flex:1}
-  .uptime-period-label{font-size:9px}
-  .uptime-period-val{font-size:14px}
+  .hero h1{font-size:1.55rem}.nav-links{gap:12px}.sla-pill{min-width:80px;padding:8px 10px}.sla-pill-value{font-size:1rem}
+  .uptime-row{flex-direction:column;align-items:flex-start}.uptime-name{min-width:unset;font-size:12px;color:var(--muted)}.uptime-periods{width:100%;justify-content:space-between;gap:0}.uptime-period{min-width:unset;flex:1}
 }
 </style>
 </head>
-<body>
 
+<body>
 <div id="barTooltip" class="bar-tooltip">
   <div class="tt-date" id="ttDate"></div>
   <div class="tt-status" id="ttStatus"></div>
@@ -204,7 +108,6 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
   <div class="tt-row"><span>Checks in window</span><span class="tt-val" id="ttChecks">—</span></div>
 </div>
 
-<!-- NAV -->
 <nav>
   <div class="nav-inner">
     <a class="brand" href="https://www.quneva.com" target="_blank" rel="noopener">
@@ -224,290 +127,42 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-badge badge-operational" id="globalBadge">
-    <span class="pulse"></span>
-    <span id="globalStatus">All Systems Operational</span>
-  </div>
+  <div class="hero-badge badge-degraded" id="globalBadge"><span class="pulse"></span><span id="globalStatus">Loading status data…</span></div>
   <h1>QuNeva System Status</h1>
   <p>Real-time uptime and availability monitoring for the QuNeva Workforce Management Platform.</p>
-  <div class="last-updated" id="lastUpdated">Last checked: 10:15:09 · Live · Auto-refreshes every 5 min</div>
+  <div class="last-updated" id="lastUpdated">Loading latest check…</div>
 </div>
 
-<!-- SLA STRIP -->
 <div class="section">
-  <div class="sla-strip" id="slaStrip"><div class="sla-pill">
-      <div class="sla-pill-label">7-Day SLA</div>
-      <div class="sla-pill-value" style="color:var(--muted)">—</div>
-    </div><div class="sla-pill">
-      <div class="sla-pill-label">30-Day SLA</div>
-      <div class="sla-pill-value" style="color:var(--muted)">—</div>
-    </div><div class="sla-pill">
-      <div class="sla-pill-label">90-Day SLA</div>
-      <div class="sla-pill-value" style="color:var(--muted)">—</div>
-    </div>
-    <div class="sla-pill">
-      <div class="sla-pill-label">Total Checks</div>
-      <div class="sla-pill-value" style="color:var(--accent-2)">0</div>
-    </div>
-    <div class="sla-pill">
-      <div class="sla-pill-label">Monitoring Since</div>
-      <div class="sla-pill-value" style="font-size:.85rem;color:var(--accent-2)">02 Jun 2026</div>
-    </div></div>
+  <div class="sla-strip" id="slaStrip"></div>
 </div>
 
-<!-- SERVICES -->
 <div class="section">
   <div class="section-header">
     <div class="section-title">Services</div>
-    <div class="section-hint">Hover bars for details · 6h per bar · 10 days</div>
+    <div class="section-hint">Hover bars for details · Last 24 checks</div>
   </div>
-  <div class="services-grid" id="servicesGrid">
-    <div class="service-card card-up">
-      <div class="sc-header">
-        <div class="sc-left">
-          <div class="service-icon icon-dev">👤</div>
-          <div>
-            <div class="service-name">Abdelrahman Ezzat</div>
-            <div class="service-url">www.abdelrahman-ezzat.com</div>
-          </div>
-        </div>
-        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
-      </div>
-      <div class="sc-bars-wrap">
-        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
-        <div class="sc-bar-labels"><span></span><span>Now</span></div>
-      </div>
-      <div class="sc-footer">
-        <div>
-          <div class="sc-ms" style="color:var(--green)">413ms</div>
-          <div class="sc-ms-label">Response time</div>
-        </div>
-        <div class="sc-uptime">
-          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
-          <div class="sc-uptime-label">90-day uptime</div>
-        </div>
-      </div>
-      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
-    </div>
-    <div class="service-card card-up">
-      <div class="sc-header">
-        <div class="sc-left">
-          <div class="service-icon icon-web">🌐</div>
-          <div>
-            <div class="service-name">QuNeva Website</div>
-            <div class="service-url">www.quneva.com</div>
-          </div>
-        </div>
-        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
-      </div>
-      <div class="sc-bars-wrap">
-        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
-        <div class="sc-bar-labels"><span></span><span>Now</span></div>
-      </div>
-      <div class="sc-footer">
-        <div>
-          <div class="sc-ms" style="color:var(--yellow)">520ms</div>
-          <div class="sc-ms-label">Response time</div>
-        </div>
-        <div class="sc-uptime">
-          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
-          <div class="sc-uptime-label">90-day uptime</div>
-        </div>
-      </div>
-      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
-    </div>
-    <div class="service-card card-up">
-      <div class="sc-header">
-        <div class="sc-left">
-          <div class="service-icon icon-api">🔄</div>
-          <div>
-            <div class="service-name">QuNeva HA</div>
-            <div class="service-url">ha.quneva.com</div>
-          </div>
-        </div>
-        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
-      </div>
-      <div class="sc-bars-wrap">
-        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
-        <div class="sc-bar-labels"><span></span><span>Now</span></div>
-      </div>
-      <div class="sc-footer">
-        <div>
-          <div class="sc-ms" style="color:var(--green)">458ms</div>
-          <div class="sc-ms-label">Response time</div>
-        </div>
-        <div class="sc-uptime">
-          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
-          <div class="sc-uptime-label">90-day uptime</div>
-        </div>
-      </div>
-      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
-    </div>
-    <div class="service-card card-up">
-      <div class="sc-header">
-        <div class="sc-left">
-          <div class="service-icon icon-ai">🤖</div>
-          <div>
-            <div class="service-name">QuNeva AI</div>
-            <div class="service-url">ai.quneva.com</div>
-          </div>
-        </div>
-        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
-      </div>
-      <div class="sc-bars-wrap">
-        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
-        <div class="sc-bar-labels"><span></span><span>Now</span></div>
-      </div>
-      <div class="sc-footer">
-        <div>
-          <div class="sc-ms" style="color:var(--yellow)">612ms</div>
-          <div class="sc-ms-label">Response time</div>
-        </div>
-        <div class="sc-uptime">
-          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
-          <div class="sc-uptime-label">90-day uptime</div>
-        </div>
-      </div>
-      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
-    </div>
-    <div class="service-card card-up">
-      <div class="sc-header">
-        <div class="sc-left">
-          <div class="service-icon icon-auth">🔗</div>
-          <div>
-            <div class="service-name">QuNeva Root Domain</div>
-            <div class="service-url">quneva.com</div>
-          </div>
-        </div>
-        <div class="status-chip chip-up"><span class="dot-sm"></span>Operational</div>
-      </div>
-      <div class="sc-bars-wrap">
-        <div class="sc-bars"><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div><div class="bar nodata" style="height:40%"></div></div>
-        <div class="sc-bar-labels"><span></span><span>Now</span></div>
-      </div>
-      <div class="sc-footer">
-        <div>
-          <div class="sc-ms" style="color:var(--yellow)">1453ms</div>
-          <div class="sc-ms-label">Response time</div>
-        </div>
-        <div class="sc-uptime">
-          <div class="sc-uptime-pct" style="color:var(--green)">100%</div>
-          <div class="sc-uptime-label">90-day uptime</div>
-        </div>
-      </div>
-      <div class="sc-meta"><span class="data-source source-browser">🌐 Browser check</span><span class="last-incident">Last incident: <span>None</span></span></div>
-    </div></div>
+  <div class="services-grid" id="servicesGrid"></div>
 </div>
 
-<!-- UPTIME TABLE -->
 <div class="section">
   <div class="section-title" style="margin-bottom:14px">Uptime Summary</div>
-  <div class="uptime-card" id="uptimeCard"><div class="uptime-row">
-      <div class="uptime-name">Abdelrahman Ezzat</div>
-      <div class="uptime-periods"><div class="uptime-period">
-        <div class="uptime-period-label">7d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">30d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">90d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div></div>
-    </div><div class="uptime-row">
-      <div class="uptime-name">QuNeva Website</div>
-      <div class="uptime-periods"><div class="uptime-period">
-        <div class="uptime-period-label">7d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">30d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">90d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div></div>
-    </div><div class="uptime-row">
-      <div class="uptime-name">QuNeva HA</div>
-      <div class="uptime-periods"><div class="uptime-period">
-        <div class="uptime-period-label">7d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">30d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">90d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div></div>
-    </div><div class="uptime-row">
-      <div class="uptime-name">QuNeva AI</div>
-      <div class="uptime-periods"><div class="uptime-period">
-        <div class="uptime-period-label">7d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">30d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">90d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div></div>
-    </div><div class="uptime-row">
-      <div class="uptime-name">QuNeva Root Domain</div>
-      <div class="uptime-periods"><div class="uptime-period">
-        <div class="uptime-period-label">7d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">30d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div><div class="uptime-period">
-        <div class="uptime-period-label">90d</div>
-        <div class="uptime-period-val" style="color:var(--green)">100%</div>
-      </div></div>
-    </div></div>
+  <div class="uptime-card" id="uptimeCard"></div>
 </div>
 
-<!-- METRICS -->
 <div class="section">
   <div class="section-title" style="margin-bottom:14px">Response Times</div>
-  <div class="metrics-grid" id="metricsGrid">
-  <div class="metric-card">
-    <div class="metric-label">Avg Response</div>
-    <div class="metric-value" style="color:var(--yellow)">691ms</div>
-    <div class="metric-sub">All services now</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Fastest</div>
-    <div class="metric-value" style="color:var(--green)">413ms</div>
-    <div class="metric-sub">Best endpoint</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Slowest</div>
-    <div class="metric-value" style="color:var(--yellow)">1453ms</div>
-    <div class="metric-sub">Worst endpoint</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Checks Today</div>
-    <div class="metric-value" style="color:var(--accent-2)">87</div>
-    <div class="metric-sub">Every 5 min</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Total Records</div>
-    <div class="metric-value" style="color:var(--accent-2)">0</div>
-    <div class="metric-sub">In history</div>
-  </div></div>
+  <div class="metrics-grid" id="metricsGrid"></div>
 </div>
 
-<!-- INCIDENTS -->
 <div class="section">
   <div class="section-title" style="margin-bottom:14px">Recent Incidents</div>
-  <div class="incidents-card" id="incidentsCard"><div class="no-incidents">
-        <div class="no-incidents-icon">✅</div>
-        <div>No incidents reported in the last 30 days.</div>
-      </div></div>
+  <div class="incidents-card" id="incidentsCard">
+    <div class="no-incidents"><div class="no-incidents-icon">⏳</div><div>Loading incident history...</div></div>
+  </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-left">
     <svg width="17" height="17" viewBox="0 0 64 64" fill="none">
@@ -525,187 +180,152 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 </footer>
 
 <script>
-// ─── Config ──────────────────────────────────────────────────────────────────
+const BAR_COUNT = 24;
+
 const SERVICES = [
-  { id:'abdelrahman', name:'Abdelrahman Ezzat',  url:'https://www.abdelrahman-ezzat.com', icon:'👤', iconClass:'icon-dev'  },
-  { id:'website',     name:'QuNeva Website',      url:'https://www.quneva.com',            icon:'🌐', iconClass:'icon-web'  },
-  { id:'ha',          name:'QuNeva HA',            url:'https://ha.quneva.com',             icon:'🔄', iconClass:'icon-api'  },
-  { id:'ai',          name:'QuNeva AI',            url:'https://ai.quneva.com',             icon:'🤖', iconClass:'icon-ai'   },
-  { id:'root',        name:'QuNeva Root Domain',   url:'https://quneva.com',                icon:'🔗', iconClass:'icon-auth' },
+  { id:'abdelrahman', name:'Abdelrahman Ezzat', url:'https://www.abdelrahman-ezzat.com', icon:'👤', iconClass:'icon-dev' },
+  { id:'website', name:'QuNeva Website', url:'https://www.quneva.com', icon:'🌐', iconClass:'icon-web' },
+  { id:'ha', name:'QuNeva HA', url:'https://ha.quneva.com', icon:'🔄', iconClass:'icon-api' },
+  { id:'ai', name:'QuNeva AI', url:'https://ai.quneva.com', icon:'🤖', iconClass:'icon-ai' },
+  { id:'root', name:'QuNeva Root Domain', url:'https://quneva.com', icon:'🔗', iconClass:'icon-auth' },
 ];
 
-// CSV columns: result at colIdx, http at colIdx+1, time at colIdx+2
 const CSV_COLS = { abdelrahman:1, website:4, ha:7, ai:10, root:13 };
 
-// ─── State ───────────────────────────────────────────────────────────────────
-const authoritative = {};   // from status.json
-const browser       = {};   // from browser fetch
-const uptimePct     = {};   // { id: { d7, d30, d90 } }
-// barHistory: { id: Array<{ state:'up'|'down'|'nodata', avgMs:number|null, checks:number, winStart, winEnd }> }
-const barHistory    = {};
+const authoritative = {};
+const browser = {};
+const uptimePct = {};
+const barHistory = {};
+let allRows = [];
 
-// ─── CSV parsing ─────────────────────────────────────────────────────────────
-function parseCSV(text) {
+function parseCSV(text){
   return text.trim().split('\n')
     .filter(l => l && !l.startsWith('timestamp'))
-    .map(l => l.split(','));
+    .map(l => l.split(','))
+    .filter(r => r.length >= 16 && !isNaN(new Date(r[0]).getTime()))
+    .sort((a,b) => new Date(a[0]) - new Date(b[0]));
 }
 
-function calcUptimePeriod(rows, colIdx, daysAgo) {
+function calcUptimePeriod(rows,colIdx,daysAgo){
   const cutoff = Date.now() - daysAgo * 86400000;
   const filtered = rows.filter(r => new Date(r[0]).getTime() >= cutoff);
-  if (!filtered.length) return null;
+  if(!filtered.length) return null;
   const up = filtered.filter(r => r[colIdx] && r[colIdx].trim() === 'up').length;
   return ((up / filtered.length) * 100).toFixed(0);
 }
 
-function buildBarHistory(rows, colIdx) {
-  const NOW    = Date.now();
-  const WINDOW = 60 * 60 * 1000;
-  const bars   = [];
+function buildBarHistory(rows,colIdx){
+  const recent = rows.slice(-BAR_COUNT);
+  const missing = Math.max(0, BAR_COUNT - recent.length);
+  const bars = Array(missing).fill(0).map(() => ({
+    state:'nodata', avgMs:null, checks:0, ts:null
+  }));
 
-  for (let i = 39; i >= 0; i--) {
-    const winEnd   = NOW - i * WINDOW;
-    const winStart = winEnd - WINDOW;
-
-    const bucket = rows.filter(r => {
-      const ts = new Date(r[0]).getTime();
-      return ts >= winStart && ts < winEnd;
+  recent.forEach(r => {
+    const state = r[colIdx]?.trim() === 'down' ? 'down' : 'up';
+    const sec = parseFloat(r[colIdx + 2]);
+    bars.push({
+      state,
+      avgMs: !isNaN(sec) && sec > 0 ? Math.round(sec * 1000) : null,
+      checks: 1,
+      ts: new Date(r[0]).getTime()
     });
+  });
 
-    if (!bucket.length) {
-      bars.push({ state:'nodata', avgMs:null, checks:0, winStart, winEnd });
-    } else {
-      const anyDown = bucket.some(r => r[colIdx] && r[colIdx].trim() === 'down');
-      // avgMs: average response time (colIdx+2 = time_s)
-      const times = bucket
-        .map(r => parseFloat(r[colIdx + 2]))
-        .filter(v => !isNaN(v) && v > 0);
-      const avgMs = times.length
-        ? Math.round(times.reduce((a,b)=>a+b,0) / times.length * 1000)
-        : null;
-      bars.push({ state: anyDown ? 'down' : 'up', avgMs, checks: bucket.length, winStart, winEnd });
-    }
-  }
   return bars;
 }
 
-// ─── Tooltip ─────────────────────────────────────────────────────────────────
-const tooltip   = document.getElementById('barTooltip');
-const ttDate    = document.getElementById('ttDate');
-const ttStatus  = document.getElementById('ttStatus');
-const ttMs      = document.getElementById('ttMs');
-const ttChecks  = document.getElementById('ttChecks');
+const tooltip = document.getElementById('barTooltip');
+const ttDate = document.getElementById('ttDate');
+const ttStatus = document.getElementById('ttStatus');
+const ttMs = document.getElementById('ttMs');
+const ttChecks = document.getElementById('ttChecks');
 
-function showTooltip(e, bar) {
-  const d1 = new Date(bar.winStart);
-  const d2 = new Date(bar.winEnd);
-  const fmt = d => d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})
-              + ' ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  ttDate.textContent   = fmt(d1) + ' → ' + d2.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  ttStatus.textContent = bar.state === 'up' ? '✅ Operational'
-                       : bar.state === 'down' ? '🔴 Outage' : '⬜ No data';
-  ttStatus.className   = 'tt-status ' + bar.state;
-  ttMs.textContent     = bar.avgMs !== null ? bar.avgMs + ' ms' : '—';
-  ttChecks.textContent = bar.checks ? bar.checks + (bar.checks === 1 ? ' check' : ' checks') : '—';
+function showTooltip(e,bar){
+  if(bar.ts){
+    const d = new Date(bar.ts);
+    ttDate.textContent = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  } else {
+    ttDate.textContent = 'No historical record';
+  }
+  ttStatus.textContent = bar.state === 'up' ? '✅ Operational' : bar.state === 'down' ? '🔴 Outage' : '⬜ No data';
+  ttStatus.className = 'tt-status ' + bar.state;
+  ttMs.textContent = bar.avgMs !== null ? bar.avgMs + ' ms' : '—';
+  ttChecks.textContent = bar.checks ? bar.checks + ' check' : '—';
   tooltip.classList.add('visible');
   positionTooltip(e);
 }
 
-function positionTooltip(e) {
+function positionTooltip(e){
   const TW = tooltip.offsetWidth || 180;
   const TH = tooltip.offsetHeight || 90;
   let x = e.clientX + 12;
   let y = e.clientY - TH - 8;
-  if (x + TW > window.innerWidth - 8) x = e.clientX - TW - 12;
-  if (y < 8) y = e.clientY + 16;
+  if(x + TW > window.innerWidth - 8) x = e.clientX - TW - 12;
+  if(y < 8) y = e.clientY + 16;
   tooltip.style.left = x + 'px';
-  tooltip.style.top  = y + 'px';
+  tooltip.style.top = y + 'px';
 }
+document.addEventListener('mousemove',e => { if(tooltip.classList.contains('visible')) positionTooltip(e); });
+function hideTooltip(){ tooltip.classList.remove('visible'); }
 
-document.addEventListener('mousemove', e => {
-  if (tooltip.classList.contains('visible')) positionTooltip(e);
-});
-
-function hideTooltip() { tooltip.classList.remove('visible'); }
-
-// ─── Render bars ─────────────────────────────────────────────────────────────
-function renderBars(svcId) {
+function renderBars(svcId){
   const history = barHistory[svcId];
-  if (!history) {
-    return Array(40).fill(0).map(() =>
-      `<div class="bar nodata" style="height:40%"></div>`
-    ).join('');
-  }
-
-  return history.map((bar, i) => {
+  if(!history) return Array(BAR_COUNT).fill(0).map(() => `<div class="bar nodata" style="height:40%"></div>`).join('');
+  return history.map((bar,i) => {
     let cls = 'bar';
-    if      (bar.state === 'down')   cls = 'bar down';
-    else if (bar.state === 'nodata') cls = 'bar nodata';
-    else if (bar.avgMs !== null && bar.avgMs > 1500) cls = 'bar slow';
-
-    // Height: uniform 100% for up/down, 40% for nodata
+    if(bar.state === 'down') cls = 'bar down';
+    else if(bar.state === 'nodata') cls = 'bar nodata';
+    else if(bar.avgMs !== null && bar.avgMs > 1500) cls = 'bar slow';
     const h = bar.state === 'nodata' ? 40 : 100;
-
     return `<div class="${cls}" style="height:${h}%" data-svc="${svcId}" data-idx="${i}"></div>`;
   }).join('');
 }
 
-// Attach tooltip events after rendering
-function attachBarEvents() {
+function attachBarEvents(){
   document.querySelectorAll('.bar[data-svc]').forEach(el => {
     const svcId = el.dataset.svc;
-    const idx   = parseInt(el.dataset.idx);
+    const idx = parseInt(el.dataset.idx,10);
     el.addEventListener('mouseenter', e => {
       const bar = barHistory[svcId]?.[idx];
-      if (bar) showTooltip(e, bar);
+      if(bar) showTooltip(e,bar);
     });
     el.addEventListener('mouseleave', hideTooltip);
   });
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function msColor(ms) {
-  if (!ms) return 'var(--muted)';
-  if (ms < 500)  return 'var(--green)';
-  if (ms < 1500) return 'var(--yellow)';
+function msColor(ms){
+  if(!ms) return 'var(--muted)';
+  if(ms < 500) return 'var(--green)';
+  if(ms < 1500) return 'var(--yellow)';
   return 'var(--red)';
 }
-function uptimeColor(pct) {
+function uptimeColor(pct){
   const v = parseFloat(pct);
-  if (v >= 99.9) return 'var(--green)';
-  if (v >= 99)   return 'var(--yellow)';
+  if(v >= 99.9) return 'var(--green)';
+  if(v >= 99) return 'var(--yellow)';
   return 'var(--red)';
 }
-function fmtMs(ms) { return ms ? ms + 'ms' : '—'; }
+function fmtMs(ms){ return ms ? ms + 'ms' : '—'; }
 
-// ─── SLA strip ───────────────────────────────────────────────────────────────
-function renderSLA() {
+function renderSLA(){
   const strip = document.getElementById('slaStrip');
-  // Overall uptime across all services for each period
-  const periods = [7, 30, 90];
-  const labels  = ['7-Day', '30-Day', '90-Day'];
+  const periods = [7,30,90];
+  const labels = ['7-Day','30-Day','90-Day'];
 
-  const html = periods.map((days, pi) => {
+  const html = periods.map((days,i) => {
     const vals = SERVICES.map(s => uptimePct[s.id]?.[`d${days}`]).filter(v => v !== null && v !== undefined);
-    const avg  = vals.length
-      ? (vals.reduce((a,b)=>a+parseFloat(b),0) / vals.length).toFixed(0)
-      : null;
-    const color = avg ? uptimeColor(avg) : 'var(--muted)';
+    const avg = vals.length ? (vals.reduce((a,b) => a + parseFloat(b),0) / vals.length).toFixed(0) : null;
     return `<div class="sla-pill">
-      <div class="sla-pill-label">${labels[pi]} SLA</div>
-      <div class="sla-pill-value" style="color:${color}">${avg ? avg+'%' : '—'}</div>
+      <div class="sla-pill-label">${labels[i]} SLA</div>
+      <div class="sla-pill-value" style="color:${avg ? uptimeColor(avg) : 'var(--muted)'}">${avg ? avg + '%' : '—'}</div>
     </div>`;
   }).join('');
-
-  // Total checks
-  const totalChecks = Object.values(barHistory)[0]?.reduce((a,b)=>a+b.checks,0) ?? 0;
-  const upChecks    = Object.values(barHistory)[0]?.filter(b=>b.state==='up').reduce((a,b)=>a+b.checks,0) ?? 0;
 
   strip.innerHTML = html + `
     <div class="sla-pill">
       <div class="sla-pill-label">Total Checks</div>
-      <div class="sla-pill-value" style="color:var(--accent-2)">${totalChecks * SERVICES.length}</div>
+      <div class="sla-pill-value" style="color:var(--accent-2)">${allRows.length * SERVICES.length}</div>
     </div>
     <div class="sla-pill">
       <div class="sla-pill-label">Monitoring Since</div>
@@ -713,52 +333,45 @@ function renderSLA() {
     </div>`;
 }
 
-// ─── Services grid ───────────────────────────────────────────────────────────
-function renderGrid() {
+function renderGrid(){
   const grid = document.getElementById('servicesGrid');
   grid.innerHTML = SERVICES.map(svc => {
     const auth = authoritative[svc.id];
     const brow = browser[svc.id];
 
     let isUp, isChecking, displayMs, sourceLabel;
-    if (auth) {
-      isUp       = auth.status === 'up';
+    if(auth){
+      isUp = auth.status === 'up';
       isChecking = false;
-      displayMs  = Math.round(auth.response_time_s * 1000);
+      displayMs = Math.round(auth.response_time_s * 1000);
       sourceLabel = `<span class="data-source source-live">⚡ Live via Actions</span>`;
-    } else if (brow && brow.up !== undefined) {
-      isUp       = brow.up !== false;
+    } else if(brow && brow.up !== undefined){
+      isUp = brow.up !== false;
       isChecking = false;
-      displayMs  = brow.ms;
+      displayMs = brow.ms;
       sourceLabel = `<span class="data-source source-browser">🌐 Browser check</span>`;
     } else {
       isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
 
-    const cardClass = isChecking ? 'card-checking' : (isUp ? 'card-up' : 'card-down');
-    const chipClass = isChecking ? 'chip-checking' : (isUp ? 'chip-up' : 'chip-down');
-    const chipText  = isChecking ? 'Checking…' : (isUp ? 'Operational' : 'Disruption');
+    const cardClass = isChecking ? 'card-checking' : isUp ? 'card-up' : 'card-down';
+    const chipClass = isChecking ? 'chip-checking' : isUp ? 'chip-up' : 'chip-down';
+    const chipText = isChecking ? 'Checking…' : isUp ? 'Operational' : 'Disruption';
 
-    const pct90   = uptimePct[svc.id]?.d90;
-    const uptimeDisp  = pct90 ? pct90+'%' : (isChecking ? '—' : '100%');
-    const uColor  = pct90 ? uptimeColor(pct90) : 'var(--green)';
+    const pct90 = uptimePct[svc.id]?.d90;
+    const uptimeDisp = pct90 ? pct90 + '%' : (isChecking ? '—' : '100%');
+    const uColor = pct90 ? uptimeColor(pct90) : 'var(--green)';
 
-    // Last incident: find last 'down' bar
     const hist = barHistory[svc.id] || [];
     const lastDown = [...hist].reverse().find(b => b.state === 'down');
     const lastIncidentHtml = lastDown
-      ? `<span class="last-incident">Last incident: <span style="color:var(--yellow)">${new Date(lastDown.winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</span></span>`
+      ? `<span class="last-incident">Last incident: <span style="color:var(--yellow)">${lastDown.ts ? new Date(lastDown.ts).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : 'Unknown'}</span></span>`
       : `<span class="last-incident">Last incident: <span>None</span></span>`;
 
-    const oldestDate = hist.find(b=>b.state!=='nodata');
-    const newestDate = hist[hist.length-1];
-    const rangeLabel = oldestDate
-      ? new Date(oldestDate.winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})
-        + ' – ' + new Date(newestDate.winEnd).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})
-      : '';
+    const firstReal = hist.find(b => b.ts);
+    const rangeLabel = firstReal ? new Date(firstReal.ts).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : '';
 
-    return `
-    <div class="service-card ${cardClass}">
+    return `<div class="service-card ${cardClass}">
       <div class="sc-header">
         <div class="sc-left">
           <div class="service-icon ${svc.iconClass}">${svc.icon}</div>
@@ -771,7 +384,7 @@ function renderGrid() {
       </div>
       <div class="sc-bars-wrap">
         <div class="sc-bars">${renderBars(svc.id)}</div>
-        <div class="sc-bar-labels"><span>${rangeLabel ? rangeLabel.split(' – ')[0] : ''}</span><span>Now</span></div>
+        <div class="sc-bar-labels"><span>${rangeLabel}</span><span>Latest</span></div>
       </div>
       <div class="sc-footer">
         <div>
@@ -786,84 +399,55 @@ function renderGrid() {
       <div class="sc-meta">${sourceLabel}${lastIncidentHtml}</div>
     </div>`;
   }).join('');
-
   attachBarEvents();
 }
 
-// ─── Uptime table ─────────────────────────────────────────────────────────────
-function renderUptime() {
+function renderUptime(){
   document.getElementById('uptimeCard').innerHTML = SERVICES.map(svc => {
     const p = uptimePct[svc.id] || {};
-    const row = [['7d', p.d7], ['30d', p.d30], ['90d', p.d90]].map(([lbl, val]) => {
+    const row = [['7d',p.d7],['30d',p.d30],['90d',p.d90]].map(([lbl,val]) => {
       const v = val || '100';
-      const c = uptimeColor(v);
       return `<div class="uptime-period">
         <div class="uptime-period-label">${lbl}</div>
-        <div class="uptime-period-val" style="color:${c}">${v}%</div>
+        <div class="uptime-period-val" style="color:${uptimeColor(v)}">${v}%</div>
       </div>`;
     }).join('');
-    return `<div class="uptime-row">
-      <div class="uptime-name">${svc.name}</div>
-      <div class="uptime-periods">${row}</div>
-    </div>`;
+    return `<div class="uptime-row"><div class="uptime-name">${svc.name}</div><div class="uptime-periods">${row}</div></div>`;
   }).join('');
 }
 
-// ─── Metrics ─────────────────────────────────────────────────────────────────
-function renderMetrics() {
+function renderMetrics(){
   const allMs = SERVICES.map(s => {
     const a = authoritative[s.id];
-    if (a) return Math.round(a.response_time_s * 1000);
-    const b = browser[s.id];
-    return b?.ms || null;
+    if(a) return Math.round(a.response_time_s * 1000);
+    return browser[s.id]?.ms || null;
   }).filter(Boolean);
 
-  const avg     = allMs.length ? Math.round(allMs.reduce((a,b)=>a+b)/allMs.length) : null;
+  const avg = allMs.length ? Math.round(allMs.reduce((a,b)=>a+b,0)/allMs.length) : null;
   const fastest = allMs.length ? Math.min(...allMs) : null;
   const slowest = allMs.length ? Math.max(...allMs) : null;
 
-  const checksToday = Math.floor((Date.now() - new Date().setUTCHours(0,0,0,0)) / 300000);
-  const totalRows   = Object.values(barHistory)[0]?.reduce((a,b)=>a+b.checks,0) ?? 0;
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const checksToday = allRows.filter(r => new Date(r[0]) >= todayStart).length;
 
   document.getElementById('metricsGrid').innerHTML = `
-  <div class="metric-card">
-    <div class="metric-label">Avg Response</div>
-    <div class="metric-value" style="color:${msColor(avg)}">${fmtMs(avg)}</div>
-    <div class="metric-sub">All services now</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Fastest</div>
-    <div class="metric-value" style="color:var(--green)">${fmtMs(fastest)}</div>
-    <div class="metric-sub">Best endpoint</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Slowest</div>
-    <div class="metric-value" style="color:${msColor(slowest)}">${fmtMs(slowest)}</div>
-    <div class="metric-sub">Worst endpoint</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Checks Today</div>
-    <div class="metric-value" style="color:var(--accent-2)">${checksToday}</div>
-    <div class="metric-sub">Every 5 min</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-label">Total Records</div>
-    <div class="metric-value" style="color:var(--accent-2)">${totalRows}</div>
-    <div class="metric-sub">In history</div>
-  </div>`;
+  <div class="metric-card"><div class="metric-label">Avg Response</div><div class="metric-value" style="color:${msColor(avg)}">${fmtMs(avg)}</div><div class="metric-sub">All services now</div></div>
+  <div class="metric-card"><div class="metric-label">Fastest</div><div class="metric-value" style="color:var(--green)">${fmtMs(fastest)}</div><div class="metric-sub">Best endpoint</div></div>
+  <div class="metric-card"><div class="metric-label">Slowest</div><div class="metric-value" style="color:${msColor(slowest)}">${fmtMs(slowest)}</div><div class="metric-sub">Worst endpoint</div></div>
+  <div class="metric-card"><div class="metric-label">Checks Today</div><div class="metric-value" style="color:var(--accent-2)">${checksToday}</div><div class="metric-sub">History rows today</div></div>
+  <div class="metric-card"><div class="metric-label">Total Records</div><div class="metric-value" style="color:var(--accent-2)">${allRows.length}</div><div class="metric-sub">In history</div></div>`;
 }
 
-// ─── Global badge ─────────────────────────────────────────────────────────────
-function renderGlobal() {
+function renderGlobal(){
   const badge = document.getElementById('globalBadge');
-  const text  = document.getElementById('globalStatus');
+  const text = document.getElementById('globalStatus');
   const hasAuth = Object.keys(authoritative).length > 0;
-  const anyDown = Object.values(authoritative).some(r=>r.status==='down') ||
-                  Object.values(browser).some(r=>r.up===false);
-  if (!hasAuth && !Object.keys(browser).length) {
+  const anyDown = Object.values(authoritative).some(r => r.status === 'down') || Object.values(browser).some(r => r.up === false);
+
+  if(!hasAuth && !Object.keys(browser).length){
     badge.className = 'hero-badge badge-degraded';
     text.textContent = 'Loading status data…';
-  } else if (anyDown) {
+  } else if(anyDown){
     badge.className = 'hero-badge badge-outage';
     text.textContent = 'Partial Outage Detected';
   } else {
@@ -872,146 +456,117 @@ function renderGlobal() {
   }
 }
 
-function updateTimestamp(src) {
+function updateTimestamp(src){
   document.getElementById('lastUpdated').textContent =
     'Last checked: ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
     + ' · ' + src + ' · Auto-refreshes every 5 min';
 }
 
-// ─── Data fetching ────────────────────────────────────────────────────────────
-async function fetchStatusJSON() {
-  try {
-    const res = await fetch('data/status.json?_='+Date.now(), {cache:'no-cache'});
-    if (!res.ok) return;
+async function fetchStatusJSON(){
+  try{
+    const res = await fetch('data/status.json?_=' + Date.now(), {cache:'no-cache'});
+    if(!res.ok) return;
     const data = await res.json();
-    if (data.services) {
+    if(data.services){
       Object.entries(data.services).forEach(([id,svc]) => authoritative[id] = svc);
-      updateTimestamp('Actions ' + (data.timestamp||''));
+      updateTimestamp('Actions ' + (data.timestamp || ''));
     }
-  } catch(e) { console.warn('status.json unavailable', e.message); }
+  } catch(e){ console.warn('status.json unavailable', e.message); }
 }
 
-async function fetchHistoryCSV() {
-  try {
-    const res = await fetch('data/history.csv?_='+Date.now(), {cache:'no-cache'});
-    if (!res.ok) return;
-    const rows = parseCSV(await res.text());
-    if (!rows.length) return;
+async function fetchHistoryCSV(){
+  try{
+    const res = await fetch('data/history.csv?_=' + Date.now(), {cache:'no-cache'});
+    if(!res.ok) return;
+    allRows = parseCSV(await res.text());
+    if(!allRows.length) return;
 
-    for (const [id, colIdx] of Object.entries(CSV_COLS)) {
+    for(const [id,colIdx] of Object.entries(CSV_COLS)){
       uptimePct[id] = {
-        d7:  calcUptimePeriod(rows, colIdx, 7),
-        d30: calcUptimePeriod(rows, colIdx, 30),
-        d90: calcUptimePeriod(rows, colIdx, 90),
+        d7: calcUptimePeriod(allRows,colIdx,7),
+        d30: calcUptimePeriod(allRows,colIdx,30),
+        d90: calcUptimePeriod(allRows,colIdx,90),
       };
-      barHistory[id] = buildBarHistory(rows, colIdx);
+      barHistory[id] = buildBarHistory(allRows,colIdx);
     }
-    // Default for services with no data
-    SERVICES.forEach(s => {
-      if (!uptimePct[s.id]) uptimePct[s.id] = {d7:'100',d30:'100',d90:'100'};
-      if (!barHistory[s.id]) barHistory[s.id] = null;
-    });
-  } catch(e) { console.warn('history.csv unavailable', e.message); }
+  } catch(e){ console.warn('history.csv unavailable', e.message); }
 }
 
-// ─── Incidents from GitHub Issues API ────────────────────────────────────────
-async function fetchIncidents() {
+async function fetchIncidents(){
   const card = document.getElementById('incidentsCard');
-  try {
+  try{
     const OWNER = 'Abdelrahman-Ezzat-G';
-    const REPO  = 'quneva-status';
+    const REPO = 'quneva-status';
     const cutoff = Date.now() - 30 * 86400000;
 
-    // Fetch open + closed incidents from last 30 days
-    const [openRes, closedRes] = await Promise.all([
+    const [openRes,closedRes] = await Promise.all([
       fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues?labels=incident&state=open&per_page=10`, {cache:'no-cache'}),
       fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues?labels=incident&state=closed&per_page=20&sort=updated&direction=desc`, {cache:'no-cache'})
     ]);
 
-    const openIssues   = openRes.ok   ? await openRes.json()   : [];
+    const openIssues = openRes.ok ? await openRes.json() : [];
     const closedIssues = closedRes.ok ? await closedRes.json() : [];
+    const all = [...openIssues,...closedIssues].filter(i => new Date(i.created_at).getTime() >= cutoff).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
 
-    // Merge and filter last 30 days, sort newest first
-    const all = [...openIssues, ...closedIssues]
-      .filter(i => new Date(i.created_at).getTime() >= cutoff)
-      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-
-    if (!all.length) {
-      card.innerHTML = `<div class="no-incidents">
-        <div class="no-incidents-icon">✅</div>
-        <div>No incidents reported in the last 30 days.</div>
-      </div>`;
+    if(!all.length){
+      card.innerHTML = `<div class="no-incidents"><div class="no-incidents-icon">✅</div><div>No incidents reported in the last 30 days.</div></div>`;
       return;
     }
 
     card.innerHTML = all.map(issue => {
-      const isOpen   = issue.state === 'open';
-      const created  = new Date(issue.created_at);
-      const dateStr  = created.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})
-                     + ' ' + created.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-      // Duration: for closed issues show how long it lasted
+      const isOpen = issue.state === 'open';
+      const created = new Date(issue.created_at);
+      const dateStr = created.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) + ' ' + created.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
       let durationStr = '';
-      if (!isOpen && issue.closed_at) {
+      if(!isOpen && issue.closed_at){
         const mins = Math.round((new Date(issue.closed_at) - created) / 60000);
-        durationStr = mins < 60
-          ? ` · ${mins}m duration`
-          : ` · ${Math.round(mins/60)}h ${mins%60}m duration`;
+        durationStr = mins < 60 ? ` · ${mins}m duration` : ` · ${Math.round(mins/60)}h ${mins%60}m duration`;
       }
-      // Strip "[Incident] " prefix from title for cleaner display
-      const title = issue.title.replace(/^\[Incident\]\s*/i, '');
-
+      const title = issue.title.replace(/^\[Incident\]\s*/i,'');
       return `<div class="incident-item">
         <div class="incident-icon">${isOpen ? '🔴' : '✅'}</div>
         <div class="incident-body">
-          <div class="incident-title">
-            <a href="${issue.html_url}" target="_blank" rel="noopener">${title}</a>
-          </div>
-          <div class="incident-meta">
-            <span class="incident-badge ${isOpen ? 'badge-open' : 'badge-closed'}">${isOpen ? 'Ongoing' : 'Resolved'}</span>
-            <span class="incident-time">${dateStr}${durationStr}</span>
-          </div>
+          <div class="incident-title"><a href="${issue.html_url}" target="_blank" rel="noopener">${title}</a></div>
+          <div class="incident-meta"><span class="incident-badge ${isOpen ? 'badge-open' : 'badge-closed'}">${isOpen ? 'Ongoing' : 'Resolved'}</span><span class="incident-time">${dateStr}${durationStr}</span></div>
         </div>
       </div>`;
     }).join('');
-
-  } catch(e) {
-    card.innerHTML = `<div class="no-incidents">
-      <div class="no-incidents-icon">⚠️</div>
-      <div>Could not load incident history.</div>
-    </div>`;
-    console.warn('incidents fetch failed', e.message);
+  } catch(e){
+    card.innerHTML = `<div class="no-incidents"><div class="no-incidents-icon">⚠️</div><div>Could not load incident history.</div></div>`;
   }
 }
 
-async function browserCheck(svc) {
+async function browserCheck(svc){
   const t0 = performance.now();
-  try {
+  try{
     const ctrl = new AbortController();
-    const timer = setTimeout(()=>ctrl.abort(), 10000);
+    const timer = setTimeout(() => ctrl.abort(), 10000);
     await fetch(svc.url, {method:'GET', signal:ctrl.signal, cache:'no-cache', mode:'no-cors'});
     clearTimeout(timer);
-    browser[svc.id] = {up:true, ms:Math.round(performance.now()-t0)};
-  } catch(e) {
-    const ms = Math.round(performance.now()-t0);
-    browser[svc.id] = e.name==='AbortError' ? {up:false,ms:null} : {up:true,ms};
+    browser[svc.id] = {up:true, ms:Math.round(performance.now() - t0)};
+  } catch(e){
+    const ms = Math.round(performance.now() - t0);
+    browser[svc.id] = e.name === 'AbortError' ? {up:false, ms:null} : {up:true, ms};
   }
 }
 
-// ─── Main loop ────────────────────────────────────────────────────────────────
-async function runAll() {
+async function runAll(){
   await Promise.all([fetchStatusJSON(), fetchHistoryCSV(), fetchIncidents()]);
   renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA();
 
   await Promise.all(SERVICES.map(async svc => {
     await browserCheck(svc);
-    if (!authoritative[svc.id]) { renderGrid(); renderMetrics(); renderGlobal(); }
+    if(!authoritative[svc.id]){
+      renderGrid(); renderMetrics(); renderGlobal();
+    }
   }));
 
   updateTimestamp('Live');
-  renderGrid(); renderMetrics(); renderGlobal();
+  renderGrid(); renderMetrics(); renderGlobal(); renderSLA();
 }
 
 runAll();
 setInterval(runAll, 5 * 60 * 1000);
 </script>
-</body></html>
+</body>
+</html>
