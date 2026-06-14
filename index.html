@@ -510,12 +510,18 @@ function renderGrid(){
       isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
 
-    const q90 = qualityPct[svc.id]?.d90;
-    const hasQualityIssue = q90 !== null && q90 !== undefined && parseFloat(q90) < 99.9;
+const q90 = qualityPct[svc.id]?.d90;
 
-    const cardClass = isChecking ? 'card-checking' : (!isUp ? 'card-down' : hasQualityIssue ? 'card-degraded' : 'card-up');
-    const chipClass = isChecking ? 'chip-checking' : (!isUp ? 'chip-down' : hasQualityIssue ? 'chip-degraded' : 'chip-up');
-    const chipText = isChecking ? 'Checking…' : (!isUp ? 'Disruption' : hasQualityIssue ? 'Operational · Slow periods' : 'Operational');
+const hist = barHistory[svc.id] || [];
+const lastRealBar = [...hist].reverse().find(b => b.state !== 'nodata');
+const lastBarState = lastRealBar?.state || 'up';
+
+const isCurrentSlow = isUp && lastBarState === 'slow';
+const isCurrentDown = !isUp || lastBarState === 'down';
+
+const cardClass = isChecking ? 'card-checking' : (isCurrentDown ? 'card-down' : isCurrentSlow ? 'card-degraded' : 'card-up');
+const chipClass = isChecking ? 'chip-checking' : (isCurrentDown ? 'chip-down' : isCurrentSlow ? 'chip-degraded' : 'chip-up');
+const chipText = isChecking ? 'Checking…' : (isCurrentDown ? 'Disruption' : isCurrentSlow ? 'Operational · Slow now' : 'Operational');
 
     const pct90 = uptimePct[svc.id]?.d90;
     const uptimeDisp = fmtPct(pct90 ?? 100);
@@ -523,7 +529,7 @@ function renderGrid(){
     const qDisp = fmtPct(q90 ?? 100);
     const qColor = scoreColor(q90 ?? 100);
 
-    const hist = barHistory[svc.id] || [];
+    
     const lastDown = [...hist].reverse().find(b => b.state === 'down');
     const lastIncidentHtml = lastDown
       ? `<span class="last-incident">Last incident: <span style="color:var(--yellow)">${new Date(lastDown.winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</span></span>`
@@ -615,24 +621,17 @@ function renderGlobal(){
   const hasAuth = Object.keys(authoritative).length > 0;
   const anyDown = Object.values(authoritative).some(r => r.status === 'down') || Object.values(browser).some(r => r.up === false);
 
-  const qVals = SERVICES.map(s => qualityPct[s.id]?.d7).filter(v => v !== null && v !== undefined);
-  const qAvg = qVals.length ? (qVals.reduce((a,b)=>a+parseFloat(b),0)/qVals.length) : null;
-
   if(!hasAuth && !Object.keys(browser).length){
     badge.className = 'hero-badge badge-degraded';
     text.textContent = 'Loading status data…';
   } else if(anyDown){
     badge.className = 'hero-badge badge-outage';
     text.textContent = 'Partial Outage Detected';
-  } else if(qAvg !== null && qAvg < 99.9){
-    badge.className = 'hero-badge badge-degraded';
-    text.textContent = 'Operational · Slow periods detected';
   } else {
     badge.className = 'hero-badge badge-operational';
     text.textContent = 'All Systems Operational';
   }
 }
-
 function updateTimestamp(src){
   document.getElementById('lastUpdated').textContent =
     'Last checked: ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
