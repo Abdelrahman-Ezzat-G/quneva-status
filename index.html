@@ -55,6 +55,7 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .service-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
 .service-card.card-up{border-left:3px solid var(--green)}
 .service-card.card-down{border-left:3px solid var(--red)}
+.service-card.card-degraded{border-left:3px solid var(--yellow)}
 .service-card.card-checking{border-left:3px solid var(--muted)}
 .sc-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .sc-left{display:flex;align-items:center;gap:10px;min-width:0}
@@ -66,32 +67,34 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap}
 .chip-up{background:var(--green-bg);color:var(--green)}
 .chip-down{background:var(--red-bg);color:var(--red)}
+.chip-degraded{background:var(--yellow-bg);color:var(--yellow)}
 .chip-checking{background:rgba(138,146,178,.1);color:var(--muted)}
 
 .sc-bars{display:grid;grid-template-columns:repeat(40,1fr);align-items:end;gap:2px;height:46px}
 .bar{
   width:100%;
   border-radius:2px 2px 0 0;
-  opacity:.9;
+  opacity:.92;
   cursor:help;
   background:var(--green);
   min-height:14px;
 }
 .bar.down{background:var(--red)}
 .bar.slow{background:var(--yellow)}
+.bar.mixed{background:var(--green)}
 .bar.nodata{background:var(--border-2);opacity:.35;height:35%}
 .bar:hover{opacity:1;filter:brightness(1.12)}
 
-.bar-tooltip{display:none;position:fixed;z-index:999;background:#0d1220;border:1px solid var(--border-2);border-radius:8px;padding:9px 12px;font-size:11.5px;line-height:1.65;color:var(--text);pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);min-width:220px}
+.bar-tooltip{display:none;position:fixed;z-index:999;background:#0d1220;border:1px solid var(--border-2);border-radius:8px;padding:9px 12px;font-size:11.5px;line-height:1.65;color:var(--text);pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);min-width:245px}
 .bar-tooltip.visible{display:block}
 .tt-date{color:var(--muted);font-size:10.5px;margin-bottom:3px}
 .tt-status{font-weight:700}.tt-status.up{color:var(--green)}.tt-status.down{color:var(--red)}.tt-status.slow{color:var(--yellow)}.tt-status.nodata{color:var(--muted)}
 .tt-row{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--muted);margin-top:1px}.tt-val{color:var(--text);font-weight:600}
 
 .sc-bar-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--muted);opacity:.5}
-.sc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
+.sc-footer{display:flex;align-items:flex-start;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);gap:12px}
 .sc-ms{font-size:19px;font-weight:700}.sc-ms-label,.sc-uptime-label{font-size:11px;color:var(--muted);margin-top:1px}
-.sc-uptime{text-align:right}.sc-uptime-pct{font-size:17px;font-weight:700}
+.sc-uptime{text-align:right}.sc-uptime-pct{font-size:17px;font-weight:700}.sc-quality{font-size:11px;color:var(--muted);margin-top:4px}.sc-quality span{font-weight:700}
 .sc-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
 .data-source{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500}
 .source-live{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
@@ -125,6 +128,8 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 <div id="barTooltip" class="bar-tooltip">
   <div class="tt-date" id="ttDate"></div>
   <div class="tt-status" id="ttStatus"></div>
+  <div class="tt-row"><span>Uptime in window</span><span class="tt-val" id="ttWinUptime">—</span></div>
+  <div class="tt-row"><span>Quality in window</span><span class="tt-val" id="ttWinQuality">—</span></div>
   <div class="tt-row"><span>Avg response</span><span class="tt-val" id="ttMs">—</span></div>
   <div class="tt-row"><span>Best response</span><span class="tt-val" id="ttBest">—</span></div>
   <div class="tt-row"><span>Worst response</span><span class="tt-val" id="ttWorst">—</span></div>
@@ -220,6 +225,7 @@ const CSV_COLS = { abdelrahman:1, website:4, ha:7, ai:10, root:13 };
 const authoritative = {};
 const browser = {};
 const uptimePct = {};
+const qualityPct = {};
 const barHistory = {};
 let allRows = [];
 
@@ -229,14 +235,6 @@ function parseCSV(text){
     .map(l => l.split(','))
     .filter(r => r.length >= 16 && !isNaN(new Date(r[0]).getTime()))
     .sort((a,b) => new Date(a[0]) - new Date(b[0]));
-}
-
-function calcUptimePeriod(rows,colIdx,daysAgo){
-  const cutoff = Date.now() - daysAgo * 86400000;
-  const filtered = rows.filter(r => new Date(r[0]).getTime() >= cutoff);
-  if(!filtered.length) return null;
-  const up = filtered.filter(r => r[colIdx] && r[colIdx].trim() === 'up').length;
-  return ((up / filtered.length) * 100).toFixed(0);
 }
 
 function classifyCheck(row,colIdx){
@@ -250,11 +248,35 @@ function classifyCheck(row,colIdx){
   return { type:'good', ms };
 }
 
-function buildGradient(good, slow, down){
+function calcUptimePeriod(rows,colIdx,daysAgo){
+  const cutoff = Date.now() - daysAgo * 86400000;
+  const filtered = rows.filter(r => new Date(r[0]).getTime() >= cutoff);
+  if(!filtered.length) return null;
+  let up = 0;
+  filtered.forEach(r => {
+    const c = classifyCheck(r,colIdx);
+    if(c.type !== 'down') up++;
+  });
+  return ((up / filtered.length) * 100).toFixed(1);
+}
+
+function calcQualityPeriod(rows,colIdx,daysAgo){
+  const cutoff = Date.now() - daysAgo * 86400000;
+  const filtered = rows.filter(r => new Date(r[0]).getTime() >= cutoff);
+  if(!filtered.length) return null;
+  let score = 0;
+  filtered.forEach(r => {
+    const c = classifyCheck(r,colIdx);
+    if(c.type === 'good') score += 1;
+    else if(c.type === 'slow') score += 0.5;
+  });
+  return ((score / filtered.length) * 100).toFixed(1);
+}
+
+function buildGradientVertical(good, slow, down){
   const total = good + slow + down;
   if(!total) return null;
 
-  const colors = [];
   const parts = [
     { count: good, color: 'var(--green)' },
     { count: slow, color: 'var(--yellow)' },
@@ -262,14 +284,15 @@ function buildGradient(good, slow, down){
   ].filter(p => p.count > 0);
 
   let start = 0;
+  const stops = [];
   parts.forEach((p, index) => {
-    const width = (p.count / total) * 100;
-    const end = index === parts.length - 1 ? 100 : start + width;
-    colors.push(`${p.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`);
+    const height = (p.count / total) * 100;
+    const end = index === parts.length - 1 ? 100 : start + height;
+    stops.push(`${p.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`);
     start = end;
   });
 
-  return `linear-gradient(to right, ${colors.join(', ')})`;
+  return `linear-gradient(to top, ${stops.join(', ')})`;
 }
 
 function buildBarHistory(rows,colIdx){
@@ -288,7 +311,7 @@ function buildBarHistory(rows,colIdx){
     if(!bucket.length){
       bars.push({
         state:'nodata', avgMs:null, bestMs:null, worstMs:null, checks:0,
-        good:0, slow:0, down:0, winStart, winEnd, gradient:null
+        good:0, slow:0, down:0, uptime:null, quality:null, winStart, winEnd, gradient:null
       });
       continue;
     }
@@ -304,26 +327,21 @@ function buildBarHistory(rows,colIdx){
       if(c.ms !== null) times.push(c.ms);
     });
 
+    const checks = bucket.length;
     const avgMs = times.length ? Math.round(times.reduce((a,b)=>a+b,0) / times.length) : null;
     const bestMs = times.length ? Math.min(...times) : null;
     const worstMs = times.length ? Math.max(...times) : null;
+    const uptime = ((good + slow) / checks) * 100;
+    const quality = ((good + slow * 0.5) / checks) * 100;
 
     let state = 'up';
     if(down > 0) state = 'down';
     else if(slow > 0) state = 'slow';
 
     bars.push({
-      state,
-      avgMs,
-      bestMs,
-      worstMs,
-      checks: bucket.length,
-      good,
-      slow,
-      down,
-      winStart,
-      winEnd,
-      gradient: buildGradient(good, slow, down)
+      state, avgMs, bestMs, worstMs, checks, good, slow, down,
+      uptime, quality, winStart, winEnd,
+      gradient: buildGradientVertical(good, slow, down)
     });
   }
 
@@ -333,6 +351,8 @@ function buildBarHistory(rows,colIdx){
 const tooltip = document.getElementById('barTooltip');
 const ttDate = document.getElementById('ttDate');
 const ttStatus = document.getElementById('ttStatus');
+const ttWinUptime = document.getElementById('ttWinUptime');
+const ttWinQuality = document.getElementById('ttWinQuality');
 const ttMs = document.getElementById('ttMs');
 const ttBest = document.getElementById('ttBest');
 const ttWorst = document.getElementById('ttWorst');
@@ -359,6 +379,8 @@ function showTooltip(e,bar){
     '⬜ No data';
 
   ttStatus.className = 'tt-status ' + bar.state;
+  ttWinUptime.textContent = bar.uptime !== null ? bar.uptime.toFixed(1) + '%' : '—';
+  ttWinQuality.textContent = bar.quality !== null ? bar.quality.toFixed(1) + '%' : '—';
   ttMs.textContent = bar.avgMs !== null ? bar.avgMs + ' ms' : '—';
   ttBest.textContent = bar.bestMs !== null ? bar.bestMs + ' ms' : '—';
   ttWorst.textContent = bar.worstMs !== null ? bar.worstMs + ' ms' : '—';
@@ -370,8 +392,8 @@ function showTooltip(e,bar){
 }
 
 function positionTooltip(e){
-  const TW = tooltip.offsetWidth || 240;
-  const TH = tooltip.offsetHeight || 120;
+  const TW = tooltip.offsetWidth || 250;
+  const TH = tooltip.offsetHeight || 140;
   let x = e.clientX + 12;
   let y = e.clientY - TH - 8;
   if(x + TW > window.innerWidth - 8) x = e.clientX - TW - 12;
@@ -393,6 +415,7 @@ function renderBars(svcId){
     if(bar.state === 'down') cls = 'bar down';
     else if(bar.state === 'slow') cls = 'bar slow';
     else if(bar.state === 'nodata') cls = 'bar nodata';
+    else if((bar.slow || bar.down) && bar.good) cls = 'bar mixed';
 
     let h = 100;
     if(bar.state === 'nodata'){
@@ -428,12 +451,13 @@ function msColor(ms){
   if(ms < 1500) return 'var(--yellow)';
   return 'var(--red)';
 }
-function uptimeColor(pct){
-  const v = parseFloat(pct);
-  if(v >= 99.9) return 'var(--green)';
-  if(v >= 99) return 'var(--yellow)';
+function scoreColor(score){
+  if(score === null || score === undefined) return 'var(--muted)';
+  if(score >= 99.9) return 'var(--green)';
+  if(score >= 95) return 'var(--yellow)';
   return 'var(--red)';
 }
+function fmtPct(v){ return v === null || v === undefined ? '—' : Number(v).toFixed(1).replace('.0','') + '%'; }
 function fmtMs(ms){ return ms ? ms + 'ms' : '—'; }
 
 function renderSLA(){
@@ -443,21 +467,24 @@ function renderSLA(){
 
   const html = periods.map((days,i) => {
     const vals = SERVICES.map(s => uptimePct[s.id]?.[`d${days}`]).filter(v => v !== null && v !== undefined);
-    const avg = vals.length ? (vals.reduce((a,b) => a + parseFloat(b),0) / vals.length).toFixed(0) : null;
+    const avg = vals.length ? (vals.reduce((a,b) => a + parseFloat(b),0) / vals.length) : null;
     return `<div class="sla-pill">
-      <div class="sla-pill-label">${labels[i]} SLA</div>
-      <div class="sla-pill-value" style="color:${avg ? uptimeColor(avg) : 'var(--muted)'}">${avg ? avg + '%' : '—'}</div>
+      <div class="sla-pill-label">${labels[i]} Uptime</div>
+      <div class="sla-pill-value" style="color:${scoreColor(avg)}">${fmtPct(avg)}</div>
     </div>`;
   }).join('');
 
+  const qVals = SERVICES.map(s => qualityPct[s.id]?.d7).filter(v => v !== null && v !== undefined);
+  const qAvg = qVals.length ? (qVals.reduce((a,b) => a + parseFloat(b),0) / qVals.length) : null;
+
   strip.innerHTML = html + `
+    <div class="sla-pill">
+      <div class="sla-pill-label">7-Day Quality</div>
+      <div class="sla-pill-value" style="color:${scoreColor(qAvg)}">${fmtPct(qAvg)}</div>
+    </div>
     <div class="sla-pill">
       <div class="sla-pill-label">Total Checks</div>
       <div class="sla-pill-value" style="color:var(--accent-2)">${allRows.length * SERVICES.length}</div>
-    </div>
-    <div class="sla-pill">
-      <div class="sla-pill-label">Monitoring Since</div>
-      <div class="sla-pill-value" style="font-size:.85rem;color:var(--accent-2)">02 Jun 2026</div>
     </div>`;
 }
 
@@ -483,13 +510,18 @@ function renderGrid(){
       isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
 
-    const cardClass = isChecking ? 'card-checking' : isUp ? 'card-up' : 'card-down';
-    const chipClass = isChecking ? 'chip-checking' : isUp ? 'chip-up' : 'chip-down';
-    const chipText = isChecking ? 'Checking…' : isUp ? 'Operational' : 'Disruption';
+    const q90 = qualityPct[svc.id]?.d90;
+    const hasQualityIssue = q90 !== null && q90 !== undefined && parseFloat(q90) < 99.9;
+
+    const cardClass = isChecking ? 'card-checking' : (!isUp ? 'card-down' : hasQualityIssue ? 'card-degraded' : 'card-up');
+    const chipClass = isChecking ? 'chip-checking' : (!isUp ? 'chip-down' : hasQualityIssue ? 'chip-degraded' : 'chip-up');
+    const chipText = isChecking ? 'Checking…' : (!isUp ? 'Disruption' : hasQualityIssue ? 'Operational · Slow periods' : 'Operational');
 
     const pct90 = uptimePct[svc.id]?.d90;
-    const uptimeDisp = pct90 ? pct90 + '%' : (isChecking ? '—' : '100%');
-    const uColor = pct90 ? uptimeColor(pct90) : 'var(--green)';
+    const uptimeDisp = fmtPct(pct90 ?? 100);
+    const uColor = scoreColor(pct90 ?? 100);
+    const qDisp = fmtPct(q90 ?? 100);
+    const qColor = scoreColor(q90 ?? 100);
 
     const hist = barHistory[svc.id] || [];
     const lastDown = [...hist].reverse().find(b => b.state === 'down');
@@ -520,11 +552,12 @@ function renderGrid(){
       <div class="sc-footer">
         <div>
           <div class="sc-ms" style="color:${msColor(displayMs)}">${fmtMs(displayMs)}</div>
-          <div class="sc-ms-label">Response time</div>
+          <div class="sc-ms-label">Current response</div>
         </div>
         <div class="sc-uptime">
           <div class="sc-uptime-pct" style="color:${uColor}">${uptimeDisp}</div>
           <div class="sc-uptime-label">90-day uptime</div>
+          <div class="sc-quality">Quality: <span style="color:${qColor}">${qDisp}</span></div>
         </div>
       </div>
 
@@ -538,11 +571,12 @@ function renderGrid(){
 function renderUptime(){
   document.getElementById('uptimeCard').innerHTML = SERVICES.map(svc => {
     const p = uptimePct[svc.id] || {};
-    const row = [['7d',p.d7],['30d',p.d30],['90d',p.d90]].map(([lbl,val]) => {
-      const v = val || '100';
+    const q = qualityPct[svc.id] || {};
+    const row = [['7d Up',p.d7],['30d Up',p.d30],['90d Up',p.d90],['7d Quality',q.d7]].map(([lbl,val]) => {
+      const v = val ?? 100;
       return `<div class="uptime-period">
         <div class="uptime-period-label">${lbl}</div>
-        <div class="uptime-period-val" style="color:${uptimeColor(v)}">${v}%</div>
+        <div class="uptime-period-val" style="color:${scoreColor(v)}">${fmtPct(v)}</div>
       </div>`;
     }).join('');
     return `<div class="uptime-row"><div class="uptime-name">${svc.name}</div><div class="uptime-periods">${row}</div></div>`;
@@ -563,10 +597,14 @@ function renderMetrics(){
   const todayStart = new Date(); todayStart.setHours(0,0,0,0);
   const checksToday = allRows.filter(r => new Date(r[0]) >= todayStart).length;
 
+  const qVals = SERVICES.map(s => qualityPct[s.id]?.d7).filter(v => v !== null && v !== undefined);
+  const qAvg = qVals.length ? (qVals.reduce((a,b)=>a+parseFloat(b),0)/qVals.length) : null;
+
   document.getElementById('metricsGrid').innerHTML = `
   <div class="metric-card"><div class="metric-label">Avg Response</div><div class="metric-value" style="color:${msColor(avg)}">${fmtMs(avg)}</div><div class="metric-sub">All services now</div></div>
   <div class="metric-card"><div class="metric-label">Fastest</div><div class="metric-value" style="color:var(--green)">${fmtMs(fastest)}</div><div class="metric-sub">Best endpoint</div></div>
   <div class="metric-card"><div class="metric-label">Slowest</div><div class="metric-value" style="color:${msColor(slowest)}">${fmtMs(slowest)}</div><div class="metric-sub">Worst endpoint</div></div>
+  <div class="metric-card"><div class="metric-label">7-Day Quality</div><div class="metric-value" style="color:${scoreColor(qAvg)}">${fmtPct(qAvg)}</div><div class="metric-sub">Penalizes slow periods</div></div>
   <div class="metric-card"><div class="metric-label">Checks Today</div><div class="metric-value" style="color:var(--accent-2)">${checksToday}</div><div class="metric-sub">History rows today</div></div>
   <div class="metric-card"><div class="metric-label">Total Records</div><div class="metric-value" style="color:var(--accent-2)">${allRows.length}</div><div class="metric-sub">In history</div></div>`;
 }
@@ -577,12 +615,18 @@ function renderGlobal(){
   const hasAuth = Object.keys(authoritative).length > 0;
   const anyDown = Object.values(authoritative).some(r => r.status === 'down') || Object.values(browser).some(r => r.up === false);
 
+  const qVals = SERVICES.map(s => qualityPct[s.id]?.d7).filter(v => v !== null && v !== undefined);
+  const qAvg = qVals.length ? (qVals.reduce((a,b)=>a+parseFloat(b),0)/qVals.length) : null;
+
   if(!hasAuth && !Object.keys(browser).length){
     badge.className = 'hero-badge badge-degraded';
     text.textContent = 'Loading status data…';
   } else if(anyDown){
     badge.className = 'hero-badge badge-outage';
     text.textContent = 'Partial Outage Detected';
+  } else if(qAvg !== null && qAvg < 99.9){
+    badge.className = 'hero-badge badge-degraded';
+    text.textContent = 'Operational · Slow periods detected';
   } else {
     badge.className = 'hero-badge badge-operational';
     text.textContent = 'All Systems Operational';
@@ -619,6 +663,11 @@ async function fetchHistoryCSV(){
         d7: calcUptimePeriod(allRows,colIdx,7),
         d30: calcUptimePeriod(allRows,colIdx,30),
         d90: calcUptimePeriod(allRows,colIdx,90),
+      };
+      qualityPct[id] = {
+        d7: calcQualityPeriod(allRows,colIdx,7),
+        d30: calcQualityPeriod(allRows,colIdx,30),
+        d90: calcQualityPeriod(allRows,colIdx,90),
       };
       barHistory[id] = buildBarHistory(allRows,colIdx);
     }
