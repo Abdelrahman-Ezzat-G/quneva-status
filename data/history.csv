@@ -1,4 +1,3 @@
-timestamp,abdelrahman_result,abdelrahman_http,abdelrahman_time,website_result,website_http,website_time,ha_result,ha_http,ha_time,ai_result,ai_http,ai_time,root_result,root_http,root_time
 2026-06-02T13:13:47Z,up,200,0.100,up,301,0.072458,up,200,0.100,up,200,0.100,up,200,0.326061
 2026-06-02T13:14:46Z,up,200,0.100,up,301,0.058111,up,200,0.100,up,200,0.100,up,200,0.511166
 2026-06-02T13:15:51Z,up,200,0.100,up,301,0.045017,up,200,0.100,up,200,0.100,up,200,0.434244
@@ -498,3 +497,4 @@ timestamp,abdelrahman_result,abdelrahman_http,abdelrahman_time,website_result,we
 2026-06-23T11:00:23Z,up,200,0.101873,up,200,0.074695,up,200,0.431982,up,200,0.107286,up,200,0.073468
 2026-06-23T11:30:23Z,up,200,0.077473,up,200,0.063130,up,200,0.493908,up,200,0.078780,up,200,0.076583
 2026-06-23T12:00:25Z,up,200,0.085153,up,200,0.097367,up,200,0.518460,up,200,0.097122,up,200,0.079301
+2026-06-23T12:30:21Z,up,200,0.093071,up,200,0.065880,up,200,0.437642,up,200,0.111501,up,200,0.070765
