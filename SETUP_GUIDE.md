@@ -136,10 +136,10 @@ After DNS propagates (5 min to 24 hours):
 - DNS propagation can take up to 24 hours — be patient
 
 ### Uptime checks showing wrong results
-- The page checks URLs directly from the browser using `fetch()` with `no-cors` mode
-- Because of CORS, the browser can't read the HTTP status code — it assumes UP if no network error occurs
-- The GitHub Actions workflow (server-side curl) is the authoritative uptime source
+- The GitHub Actions workflow (server-side `curl`) is the single authoritative uptime source
+- The page renders `data/status.json` (latest check) and `data/history.csv` + archives (history) — it does not probe the services from the browser
 - `data/status.json` is updated every hour with accurate results
+- If the page looks stale, confirm the latest **Uptime Monitor** run succeeded and committed to `main`
 
 ### Workflow runs but data/ files not created
 - Check that workflow permissions allow writing (Step 2)

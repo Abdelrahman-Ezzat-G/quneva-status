@@ -224,7 +224,6 @@ const CSV_COLS = { website:1, ha:4, ai:7, root:10 };
 const MIN_CSV_COLS = 13;
 
 const authoritative = {};
-const browser = {};
 const uptimePct = {};
 const qualityPct = {};
 const barHistory = {};
@@ -504,7 +503,6 @@ function renderGrid(){
 
   grid.innerHTML = SERVICES.map(svc => {
     const auth = authoritative[svc.id];
-    const brow = browser[svc.id];
 
     let isUp, isChecking, displayMs, sourceLabel;
     if(auth){
@@ -512,11 +510,6 @@ function renderGrid(){
       isChecking = false;
       displayMs = Math.round(auth.response_time_s * 1000);
       sourceLabel = `<span class="data-source source-live">⚡ Live via Actions</span>`;
-    } else if(brow && brow.up !== undefined){
-      isUp = brow.up !== false;
-      isChecking = false;
-      displayMs = brow.ms;
-      sourceLabel = `<span class="data-source source-live">🌐 Browser check</span>`;
     } else {
       isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
@@ -552,7 +545,7 @@ const chipText = isChecking ? 'Checking…' : (isCurrentDown ? 'Disruption' : is
     return `<div class="service-card ${cardClass}">
       <div class="sc-header">
         <div class="sc-left">
-          <div class="service-icon ${svc.iconClass}">${svc.icon}</div>
+          <div class="service-icon ${svc.iconClass}" aria-hidden="true">${svc.icon}</div>
           <div>
             <div class="service-name">${svc.name}</div>
             <div class="service-url">${svc.url.replace('https://','')}</div>
@@ -562,7 +555,7 @@ const chipText = isChecking ? 'Checking…' : (isCurrentDown ? 'Disruption' : is
       </div>
 
       <div class="sc-bars-wrap">
-        <div class="sc-bars">${renderBars(svc.id)}</div>
+        <div class="sc-bars" role="img" aria-label="${svc.name} uptime history over the last 10 days: ${uptimeDisp} (90-day)">${renderBars(svc.id)}</div>
         <div class="sc-bar-labels"><span>${rangeLabel}</span><span>Now</span></div>
       </div>
 
@@ -603,8 +596,7 @@ function renderUptime(){
 function renderMetrics(){
   const allMs = SERVICES.map(s => {
     const a = authoritative[s.id];
-    if(a) return Math.round(a.response_time_s * 1000);
-    return browser[s.id]?.ms || null;
+    return a ? Math.round(a.response_time_s * 1000) : null;
   }).filter(Boolean);
 
   const avg = allMs.length ? Math.round(allMs.reduce((a,b)=>a+b,0)/allMs.length) : null;
@@ -630,9 +622,9 @@ function renderGlobal(){
   const badge = document.getElementById('globalBadge');
   const text = document.getElementById('globalStatus');
   const hasAuth = Object.keys(authoritative).length > 0;
-  const anyDown = Object.values(authoritative).some(r => r.status === 'down') || Object.values(browser).some(r => r.up === false);
+  const anyDown = Object.values(authoritative).some(r => r.status === 'down');
 
-  if(!hasAuth && !Object.keys(browser).length){
+  if(!hasAuth){
     badge.className = 'hero-badge badge-degraded';
     text.textContent = 'Loading status data…';
   } else if(anyDown){
@@ -671,20 +663,33 @@ function recentMonthKeys(n){
   return keys;
 }
 
+async function fetchCSV(src){
+  try{
+    const res = await fetch(src + '?_=' + Date.now(), {cache:'no-cache'});
+    return res.ok ? await res.text() : '';
+  } catch(e){ return ''; }
+}
+
+// Past-month archives don't change between refreshes, so fetch them once.
+let archiveRowsCache = null;
+async function loadArchiveRows(){
+  if(archiveRowsCache) return archiveRowsCache;
+  const texts = await Promise.all(recentMonthKeys(4).map(m => fetchCSV(`data/history-archive-${m}.csv`)));
+  const rows = [];
+  texts.forEach(t => { if(t) rows.push(...parseCSV(t)); });
+  archiveRowsCache = rows;
+  return rows;
+}
+
 async function fetchHistoryCSV(){
   try{
     // The live file holds only the most recent rows; monthly archives extend the
     // window so 30/90-day figures reflect real data instead of the last ~500 rows.
-    const sources = ['data/history.csv', ...recentMonthKeys(4).map(m => `data/history-archive-${m}.csv`)];
-    const texts = await Promise.all(sources.map(async src => {
-      try{
-        const res = await fetch(src + '?_=' + Date.now(), {cache:'no-cache'});
-        return res.ok ? await res.text() : '';
-      } catch(e){ return ''; }
-    }));
+    const [liveText, archiveRows] = await Promise.all([fetchCSV('data/history.csv'), loadArchiveRows()]);
 
     const byTs = new Map();
-    texts.forEach(t => { if(t) parseCSV(t).forEach(r => byTs.set(r[0], r)); });
+    archiveRows.forEach(r => byTs.set(r[0], r));
+    if(liveText) parseCSV(liveText).forEach(r => byTs.set(r[0], r));
     allRows = [...byTs.values()].sort((a,b) => new Date(a[0]) - new Date(b[0]));
     if(!allRows.length) return;
 
@@ -728,7 +733,7 @@ async function fetchIncidents(){
       const title = escapeHtml(String(issue.title || '').replace(/^\[Incident\]\s*/i,''));
       const url = safeUrl(issue.html_url);
       return `<div class="incident-item">
-        <div class="incident-icon">${isOpen ? '🔴' : '✅'}</div>
+        <div class="incident-icon" aria-hidden="true">${isOpen ? '🔴' : '✅'}</div>
         <div class="incident-body">
           <div class="incident-title"><a href="${url}" target="_blank" rel="noopener">${title}</a></div>
           <div class="incident-meta"><span class="incident-badge ${isOpen ? 'badge-open' : 'badge-closed'}">${isOpen ? 'Ongoing' : 'Resolved'}</span><span class="incident-time">${dateStr}${durationStr}</span></div>
@@ -740,37 +745,14 @@ async function fetchIncidents(){
   }
 }
 
-async function browserCheck(svc){
-  const t0 = performance.now();
-  try{
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 10000);
-    await fetch(svc.url, {method:'GET', signal:ctrl.signal, cache:'no-cache', mode:'no-cors'});
-    clearTimeout(timer);
-    browser[svc.id] = {up:true, ms:Math.round(performance.now() - t0)};
-  } catch(e){
-    const ms = Math.round(performance.now() - t0);
-    browser[svc.id] = e.name === 'AbortError' ? {up:false, ms:null} : {up:true, ms};
-  }
-}
-
 async function runAll(){
   await Promise.all([fetchStatusJSON(), fetchHistoryCSV(), fetchIncidents()]);
   renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA();
-
-  await Promise.all(SERVICES.map(async svc => {
-    await browserCheck(svc);
-    if(!authoritative[svc.id]){
-      renderGrid(); renderMetrics(); renderGlobal();
-    }
-  }));
-
-  updateTimestamp('Live');
-  renderGrid(); renderMetrics(); renderGlobal(); renderSLA();
 }
 
 runAll();
-setInterval(runAll, 5 * 60 * 1000);
+// Underlying checks run hourly; refresh the page periodically to pick up new data.
+setInterval(runAll, 10 * 60 * 1000);
 </script>
 </body>
 </html>
