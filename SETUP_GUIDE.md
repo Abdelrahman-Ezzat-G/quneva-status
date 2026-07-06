@@ -171,4 +171,4 @@ Format: `timestamp, website_result, website_http, website_time, ha_result, ha_ht
 
 ---
 
-*© 2026 QuNeva WFM — Maintained by [Abdelrahman Ezzat](https://www.abdelrahman-ezzat.vip)*
+*© 2026 QuNeva WFM — Maintained by [Abdelrahman Ezzat](https://www.abdelrahman-ezzat.com)*
