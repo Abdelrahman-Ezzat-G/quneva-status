@@ -116,6 +116,20 @@ nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(
 .uptime-name{font-size:13px;min-width:160px}.uptime-periods{display:flex;gap:20px;align-items:center;flex:1;justify-content:flex-end}
 .uptime-period{text-align:center;min-width:64px}.uptime-period-label{font-size:9.5px;color:var(--muted);text-transform:uppercase}.uptime-period-val{font-size:13px;font-weight:600}
 
+.maint-banner{background:var(--yellow-bg);border:1px solid rgba(245,158,11,.28);border-left:3px solid var(--yellow);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.maint-head{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.06em}
+.maint-item{display:flex;gap:11px;align-items:flex-start}.maint-item:not(:last-child){padding-bottom:10px;border-bottom:1px solid rgba(245,158,11,.15)}
+.maint-icon{font-size:15px;flex-shrink:0}.maint-body{flex:1;min-width:0}
+.maint-title{font-size:13px;font-weight:600;color:var(--text)}.maint-title a{color:var(--text)}
+.maint-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.maint-time{font-size:11px;color:var(--muted);margin-top:3px}
+
+.trend-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 18px 12px}
+.trend-svg{width:100%;height:auto;display:block;overflow:visible}
+.trend-empty{text-align:center;color:var(--muted);font-size:13px;padding:24px}
+.trend-axis{fill:var(--muted);font-size:10px}
+.trend-legend{display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;color:var(--muted)}
+
 .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
 .metric-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:15px 17px}
 .metric-label{font-size:10.5px;color:var(--muted);margin-bottom:5px;text-transform:uppercase}.metric-value{font-size:1.55rem;font-weight:700}.metric-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
@@ -180,6 +194,10 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
   <div class="last-updated" id="lastUpdated">Loading latest check…</div>
 </div>
 
+<div class="section" id="maintenanceSection" style="display:none">
+  <div id="maintenanceBanner"></div>
+</div>
+
 <div class="section"><div class="sla-strip" id="slaStrip"></div></div>
 
 <div class="section">
@@ -198,6 +216,14 @@ footer{max-width:920px;margin:0 auto;padding:18px 24px 36px;border-top:1px solid
 <div class="section">
   <h2 class="section-title" style="margin-bottom:14px">Response Times</h2>
   <div class="metrics-grid" id="metricsGrid"></div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <h2 class="section-title">Response Time Trend</h2>
+    <div class="section-hint">Avg across all services · 6h buckets · 10 days</div>
+  </div>
+  <div class="trend-card" id="trendCard"></div>
 </div>
 
 <div class="section">
@@ -801,9 +827,85 @@ async function fetchIncidents(){
   }
 }
 
+async function fetchMaintenance(){
+  const section = document.getElementById('maintenanceSection');
+  const banner = document.getElementById('maintenanceBanner');
+  try{
+    const res = await fetch('data/maintenance.json?_=' + Date.now(), {cache:'no-cache'});
+    if(!res.ok) throw new Error('maintenance.json unavailable');
+    const items = await res.json();
+    if(!Array.isArray(items) || !items.length){ section.style.display = 'none'; return; }
+
+    banner.innerHTML = `<div class="maint-banner">
+      <div class="maint-head"><span aria-hidden="true">🛠️</span> Scheduled Maintenance</div>
+      ${items.map(m => {
+        const when = new Date(m.created_at);
+        const dateStr = when.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) + ' ' + when.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+        const title = escapeHtml(m.title || 'Maintenance');
+        const url = safeUrl(m.html_url);
+        const desc = m.body ? `<div class="maint-desc">${escapeHtml(m.body)}</div>` : '';
+        return `<div class="maint-item">
+          <div class="maint-icon" aria-hidden="true">🗓️</div>
+          <div class="maint-body">
+            <div class="maint-title"><a href="${url}" target="_blank" rel="noopener">${title}</a></div>
+            ${desc}
+            <div class="maint-time">Posted ${dateStr}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+    section.style.display = '';
+  } catch(e){ section.style.display = 'none'; }
+}
+
+function renderTrend(){
+  const card = document.getElementById('trendCard');
+  const svcIds = SERVICES.map(s => s.id).filter(id => barHistory[id]);
+  const n = BAR_COUNT;
+  const pts = [];
+  for(let i = 0; i < n; i++){
+    const vals = [];
+    svcIds.forEach(id => { const b = barHistory[id][i]; if(b && b.avgMs != null) vals.push(b.avgMs); });
+    const avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0) / vals.length) : null;
+    const ref = svcIds.map(id => barHistory[id][i]).find(Boolean);
+    pts.push({ i, avg, winStart: ref?.winStart });
+  }
+  const real = pts.filter(p => p.avg != null);
+  if(real.length < 2){ card.innerHTML = `<div class="trend-empty">Not enough data yet to plot a trend.</div>`; return; }
+
+  const W = 1000, H = 200, padL = 46, padR = 12, padT = 14, padB = 20;
+  const maxV = Math.max(...real.map(p => p.avg));
+  const niceMax = Math.max(100, Math.ceil(maxV / 50) * 50);
+  const x = i => padL + (i / (n - 1)) * (W - padL - padR);
+  const y = v => padT + (1 - v / niceMax) * (H - padT - padB);
+
+  let d = '', started = false;
+  pts.forEach(p => {
+    if(p.avg == null){ started = false; return; }
+    d += (started ? ' L' : ' M') + x(p.i).toFixed(1) + ' ' + y(p.avg).toFixed(1);
+    started = true;
+  });
+  const areaPts = real.map(p => `${x(p.i).toFixed(1)},${y(p.avg).toFixed(1)}`).join(' ');
+  const area = `${x(real[0].i).toFixed(1)},${y(0).toFixed(1)} ${areaPts} ${x(real[real.length-1].i).toFixed(1)},${y(0).toFixed(1)}`;
+
+  const grid = [0, niceMax/2, niceMax].map(v =>
+    `<line x1="${padL}" y1="${y(v).toFixed(1)}" x2="${W-padR}" y2="${y(v).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>` +
+    `<text class="trend-axis" x="${padL-8}" y="${(y(v)+3).toFixed(1)}" text-anchor="end">${Math.round(v)}ms</text>`
+  ).join('');
+
+  const startLabel = real[0].winStart ? new Date(real[0].winStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : '';
+  card.innerHTML = `<svg class="trend-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Average response time trend across all services over the last 10 days, peak ${maxV} ms">
+    <defs><linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <polygon points="${area}" fill="url(#trendFill)"/>
+    <path d="${d.trim()}" fill="none" stroke="var(--accent-2)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>
+  <div class="trend-legend"><span>${startLabel}</span><span>Now</span></div>`;
+}
+
 async function runAll(){
-  await Promise.all([fetchStatusJSON(), fetchHistoryCSV(), fetchIncidents()]);
-  renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA();
+  await Promise.all([fetchStatusJSON(), fetchHistoryCSV(), fetchIncidents(), fetchMaintenance()]);
+  renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA(); renderTrend();
 }
 
 runAll();

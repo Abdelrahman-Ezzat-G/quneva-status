@@ -26,8 +26,31 @@ Public status page for [QuNeva WFM](https://www.quneva.com) — Enterprise Workf
 - **GitHub Actions** runs uptime checks every hour (`uptime.yml`)
 - Results are saved to `data/status.json`, `data/history.csv`, and monthly `data/history-archive-YYYY-MM.csv`
 - **GitHub Pages** hosts the status page (`index.html`)
-- Incidents are automatically created as GitHub Issues when downtime is detected, and exported to `data/incidents.json`
-- The status page fetches live results directly from the monitored URLs
+- Incidents are automatically created as GitHub Issues when downtime is detected, and exported to `data/incidents.json` and an Atom feed at `data/incidents.xml`
+- Optional email alerts are sent on new incidents and on recovery (see below)
+- The status page shows live status, a response-time trend, incidents, and any scheduled maintenance
+
+---
+
+## Email Alerts (optional)
+
+The monitor emails you when a new incident opens and when everything recovers. It's off until you add SMTP credentials as repository secrets (**Settings → Secrets and variables → Actions**):
+
+| Secret | Required | Default | Notes |
+|--------|----------|---------|-------|
+| `MAIL_USERNAME` | ✅ | — | SMTP login / from-address (e.g. your Outlook address) |
+| `MAIL_PASSWORD` | ✅ | — | SMTP password or **app password** |
+| `MAIL_TO` | — | `abdelrahman-ezzat@outlook.com` | Where alerts are delivered |
+| `SMTP_HOST` | — | `smtp-mail.outlook.com` | SMTP server |
+| `SMTP_PORT` | — | `587` | SMTP port (STARTTLS) |
+
+If `MAIL_USERNAME` / `MAIL_PASSWORD` are absent the email step is skipped harmlessly. Alerts fire only on **state changes** (new outage / full recovery), never every hour.
+
+---
+
+## Posting a Scheduled Maintenance Notice
+
+Create a GitHub Issue and add the **`maintenance`** label. While the issue is open it appears as a banner on the status page (title + first lines of the body). Close the issue to remove the banner. Data is written to `data/maintenance.json`.
 
 ---
 
@@ -36,14 +59,21 @@ Public status page for [QuNeva WFM](https://www.quneva.com) — Enterprise Workf
 ```
 quneva-status/
 ├── index.html                    ← Status page (hosted on GitHub Pages)
+├── 404.html                      ← Branded not-found page
 ├── CNAME                         ← Custom domain: status.quneva.com
+├── manifest.webmanifest          ← PWA manifest (add to home screen)
+├── robots.txt / sitemap.xml      ← SEO
+├── og.png / icon-*.png           ← Social share image + PWA/apple icons
 ├── README.md                     ← This file
 ├── SETUP_GUIDE.md                ← Developer setup guide
 ├── data/
 │   ├── status.json               ← Latest check results (auto-updated)
 │   ├── history.csv               ← Rolling recent history, last 500 rows (auto-updated)
 │   ├── history-archive-*.csv     ← Permanent monthly archive (append-only)
-│   └── incidents.json            ← Recent incidents, last 30 days (auto-updated)
+│   ├── archives.json             ← Manifest of available archives
+│   ├── incidents.json            ← Recent incidents, last 30 days (auto-updated)
+│   ├── incidents.xml             ← Atom/RSS feed of incidents (auto-updated)
+│   └── maintenance.json          ← Open maintenance notices (auto-updated)
 └── .github/
     └── workflows/
         ├── uptime.yml            ← Uptime monitor (hourly)

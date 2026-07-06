@@ -166,6 +166,7 @@ jobs:
           cat data/archives.json
 
       - name: Open incident if down
+        id: incident
         if: |
           steps.abdelrahman.outputs.result == 'down' ||
           steps.website.outputs.result == 'down' ||
@@ -216,9 +217,13 @@ jobs:
                 labels: ['incident'],
                 body: `## 🔴 Service Disruption Detected\n\n**Time:** ${new Date().toISOString()}\n\n**Affected services:**\n${down.map(d => `- ${d}`).join('\n')}\n\nThis issue was automatically created by the uptime monitor.`
               });
+              // Signal the email step that this is a NEW incident (avoids hourly re-alerts).
+              core.setOutput('created', 'true');
+              core.setOutput('down', down.join(', '));
             }
 
       - name: Auto-close incident if all services recovered
+        id: recover
         if: |
           steps.abdelrahman.outputs.result == 'up' &&
           steps.website.outputs.result == 'up' &&
@@ -236,7 +241,8 @@ jobs:
               labels: 'incident'
             });
 
-            for (const issue of existing.data.filter(i => i.title.startsWith('[Incident]'))) {
+            const open = existing.data.filter(i => i.title.startsWith('[Incident]'));
+            for (const issue of open) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -251,6 +257,60 @@ jobs:
                 state: 'closed'
               });
             }
+            // Only signal recovery if we actually closed something (state changed).
+            if (open.length > 0) core.setOutput('recovered', 'true');
+
+      - name: Email alert on state change
+        if: always()
+        continue-on-error: true
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST || 'smtp-mail.outlook.com' }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT || '587' }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO || 'abdelrahman-ezzat@outlook.com' }}
+          NEW_INCIDENT: ${{ steps.incident.outputs.created }}
+          DOWN_LIST: ${{ steps.incident.outputs.down }}
+          RECOVERED: ${{ steps.recover.outputs.recovered }}
+        run: |
+          if [ -z "$MAIL_USERNAME" ] || [ -z "$MAIL_PASSWORD" ]; then
+            echo "SMTP secrets not set — skipping email. Add MAIL_USERNAME and MAIL_PASSWORD to enable alerts."
+            exit 0
+          fi
+
+          NOW=$(date -u +'%Y-%m-%d %H:%M UTC')
+          if [ "$NEW_INCIDENT" = "true" ]; then
+            SUBJECT="[QuNeva Status] 🔴 Service disruption: $DOWN_LIST"
+            BODY="A service disruption was detected.\n\nAffected: $DOWN_LIST\nTime: $NOW\n\nLive status: https://status.quneva.com"
+          elif [ "$RECOVERED" = "true" ]; then
+            SUBJECT="[QuNeva Status] ✅ All systems recovered"
+            BODY="All monitored services are back online.\n\nTime: $NOW\n\nLive status: https://status.quneva.com"
+          else
+            echo "No state change this run — no email."
+            exit 0
+          fi
+
+          FROM_ADDR="$MAIL_USERNAME"
+          {
+            printf 'From: QuNeva Status <%s>\r\n' "$FROM_ADDR"
+            printf 'To: %s\r\n' "$MAIL_TO"
+            printf 'Subject: %s\r\n' "$SUBJECT"
+            printf 'MIME-Version: 1.0\r\n'
+            printf 'Content-Type: text/plain; charset=UTF-8\r\n'
+            printf '\r\n'
+            printf '%b\r\n' "$BODY"
+          } > /tmp/mail.txt
+
+          if curl --silent --show-error --ssl-reqd \
+               --url "smtp://$SMTP_HOST:$SMTP_PORT" \
+               --user "$MAIL_USERNAME:$MAIL_PASSWORD" \
+               --mail-from "$FROM_ADDR" \
+               --mail-rcpt "$MAIL_TO" \
+               --upload-file /tmp/mail.txt; then
+            echo "Alert email sent to $MAIL_TO"
+          else
+            echo "Email send failed (check SMTP secrets / provider settings)"
+          fi
 
       - name: Build incidents JSON
         continue-on-error: true
@@ -317,6 +377,31 @@ jobs:
             L.push('</feed>');
             fs.writeFileSync('data/incidents.xml', L.join('\n') + '\n');
             console.log(`Wrote Atom feed with ${all.length} entries to data/incidents.xml`);
+
+      - name: Build maintenance JSON
+        continue-on-error: true
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            // Open issues labelled 'maintenance' are shown as maintenance notices.
+            const res = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'maintenance', per_page: 20,
+              sort: 'created', direction: 'desc'
+            });
+            const items = res.data
+              .filter(i => !i.pull_request)
+              .map(i => ({
+                title: i.title.replace(/^\[Maintenance\]\s*/i, ''),
+                html_url: i.html_url,
+                created_at: i.created_at,
+                body: (i.body || '').slice(0, 400)
+              }));
+            fs.mkdirSync('data', { recursive: true });
+            fs.writeFileSync('data/maintenance.json', JSON.stringify(items, null, 2) + '\n');
+            console.log(`Wrote ${items.length} maintenance notices to data/maintenance.json`);
 
       - name: Commit status data
         run: |
