@@ -674,7 +674,17 @@ async function fetchCSV(src){
 let archiveRowsCache = null;
 async function loadArchiveRows(){
   if(archiveRowsCache) return archiveRowsCache;
-  const texts = await Promise.all(recentMonthKeys(4).map(m => fetchCSV(`data/history-archive-${m}.csv`)));
+  // Prefer the manifest of archives that actually exist; fall back to guessing
+  // the recent months if it's unavailable.
+  let months;
+  try{
+    const res = await fetch('data/archives.json?_=' + Date.now(), {cache:'no-cache'});
+    months = res.ok ? await res.json() : null;
+  } catch(e){ months = null; }
+  if(!Array.isArray(months) || !months.length) months = recentMonthKeys(4);
+  // Only the most recent months are needed for the 90-day window.
+  const recent = months.slice(-4);
+  const texts = await Promise.all(recent.map(m => fetchCSV(`data/history-archive-${m}.csv`)));
   const rows = [];
   texts.forEach(t => { if(t) rows.push(...parseCSV(t)); });
   archiveRowsCache = rows;

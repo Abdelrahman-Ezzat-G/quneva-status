@@ -140,6 +140,17 @@ jobs:
           fi
           echo "$ROW" >> "$ARCHIVE"
 
+      - name: Build archive manifest
+        run: |
+          # List available monthly archives so the dashboard fetches exactly
+          # what exists (no guessing, no 404s).
+          ls data/history-archive-*.csv 2>/dev/null \
+            | sed -E 's|.*history-archive-(.+)\.csv|\1|' \
+            | sort \
+            | python3 -c "import sys, json; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))" \
+            > data/archives.json
+          cat data/archives.json
+
       - name: Open incident if down
         if: |
           steps.website.outputs.result == 'down' ||
