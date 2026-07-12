@@ -4,5 +4,13 @@
   <link href="https://status.quneva.com/data/incidents.xml" rel="self"/>
   <link href="https://status.quneva.com"/>
   <id>https://status.quneva.com/</id>
-  <updated>2026-07-12T10:31:12.113Z</updated>
+  <updated>2026-07-12T10:40:18.000Z</updated>
+  <entry>
+    <title>[Incident] Service disruption: QuNeva HA (HTTP 0)</title>
+    <link href="https://github.com/Abdelrahman-Ezzat-G/quneva-status/issues/4"/>
+    <id>https://github.com/Abdelrahman-Ezzat-G/quneva-status/issues/4</id>
+    <updated>2026-07-12T10:40:18.000Z</updated>
+    <published>2026-07-12T10:31:11.000Z</published>
+    <summary>Resolved incident</summary>
+  </entry>
 </feed>
