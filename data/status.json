@@ -4,10 +4,10 @@
   "services": {
     "website": {
       "name": "QuNeva Website",
-      "url": "https://www.quneva.com",
+      "url": "https://quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.163887
+      "response_time_s": 0.106810
     },
     "ai": {
       "name": "QuNeva AI",
@@ -15,13 +15,6 @@
       "status": "up",
       "http_status": 200,
       "response_time_s": 0.160863
-    },
-    "root": {
-      "name": "QuNeva Root Domain",
-      "url": "https://quneva.com",
-      "status": "up",
-      "http_status": 200,
-      "response_time_s": 0.106810
     }
   }
 }

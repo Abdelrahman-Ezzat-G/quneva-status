@@ -13,9 +13,8 @@ Public status page for [QuNeva WFM](https://www.quneva.com) — Enterprise Workf
 
 | Service | URL | Probe |
 |---------|-----|-------|
-| QuNeva Website | https://www.quneva.com | homepage |
+| QuNeva Website | https://quneva.com | `/healthz` |
 | QuNeva AI | https://ai.quneva.com | subdomain root |
-| QuNeva Root Domain | https://quneva.com | `/healthz` |
 
 ---
 
