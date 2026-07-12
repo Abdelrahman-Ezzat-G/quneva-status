@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-12T23:31:03Z",
+  "timestamp": "2026-07-12T23:46:26Z",
   "date": "2026-07-12",
   "services": {
     "website": {
@@ -7,14 +7,14 @@
       "url": "https://quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.191141
+      "response_time_s": 0.107143
     },
     "ai": {
       "name": "QuNeva AI",
       "url": "https://ai.quneva.com",
       "status": "up",
       "http_status": 200,
-      "response_time_s": 0.253389
+      "response_time_s": 0.166359
     }
   }
 }
