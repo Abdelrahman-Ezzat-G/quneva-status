@@ -11,13 +11,11 @@ Public status page for [QuNeva WFM](https://www.quneva.com) — Enterprise Workf
 
 ## Monitored Services
 
-| Service | URL |
-|---------|-----|
-| Abdelrahman Ezzat | https://www.abdelrahman-ezzat.com |
-| QuNeva Website | https://www.quneva.com |
-| QuNeva HA | https://ha.quneva.com |
-| QuNeva AI | https://ai.quneva.com |
-| QuNeva Root Domain | https://quneva.com |
+| Service | URL | Probe |
+|---------|-----|-------|
+| QuNeva Website | https://www.quneva.com | homepage |
+| QuNeva AI | https://ai.quneva.com | subdomain root |
+| QuNeva Root Domain | https://quneva.com | `/healthz` |
 
 ---
 

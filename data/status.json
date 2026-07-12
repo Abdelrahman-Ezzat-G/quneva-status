@@ -2,26 +2,12 @@
   "timestamp": "2026-07-12T10:31:10Z",
   "date": "2026-07-12",
   "services": {
-    "abdelrahman": {
-      "name": "Abdelrahman Portfolio",
-      "url": "https://www.abdelrahman-ezzat.com",
-      "status": "up",
-      "http_status": 200,
-      "response_time_s": 0.215356
-    },
     "website": {
       "name": "QuNeva Website",
       "url": "https://www.quneva.com",
       "status": "up",
       "http_status": 200,
       "response_time_s": 0.163887
-    },
-    "ha": {
-      "name": "QuNeva HA",
-      "url": "https://ha.quneva.com",
-      "status": "down",
-      "http_status": 0,
-      "response_time_s": 0
     },
     "ai": {
       "name": "QuNeva AI",

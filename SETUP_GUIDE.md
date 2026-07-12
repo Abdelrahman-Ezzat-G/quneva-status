@@ -113,7 +113,7 @@ Wait ~60 seconds, then click **Deploy Status Page** → **Run workflow**.
 After DNS propagates (5 min to 24 hours):
 
 1. Open: https://status.quneva.com
-2. Should show QuNeva branding with five services
+2. Should show QuNeva branding with three services
 3. Check: https://github.com/Abdelrahman-Ezzat-G/quneva-status/actions — both workflows green ✅
 4. Check: `data/status.json` exists in the repo (created by first uptime run)
 
@@ -167,7 +167,7 @@ cron: "*/5 * * * *"   # every 5 minutes
 ### Viewing uptime history
 Raw history is in `data/history.csv` — open it in Excel or Google Sheets.
 
-Format: `timestamp, abdelrahman_result, abdelrahman_http, abdelrahman_time, website_result, website_http, website_time, ha_result, ha_http, ha_time, ai_result, ai_http, ai_time, root_result, root_http, root_time`
+Format: `timestamp, website_result, website_http, website_time, ai_result, ai_http, ai_time, root_result, root_http, root_time`
 
 ---
 

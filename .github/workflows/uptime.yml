@@ -26,17 +26,6 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Check Abdelrahman Portfolio
-        id: abdelrahman
-        continue-on-error: true
-        run: |
-          OUT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" --max-time 15 --retry 2 --retry-delay 2 --location https://www.abdelrahman-ezzat.com) || OUT="0 0"
-          STATUS="${OUT%% *}"; TIME="${OUT##* }"
-          echo "status=$STATUS" >> $GITHUB_OUTPUT
-          echo "time=$TIME" >> $GITHUB_OUTPUT
-          echo "Portfolio: HTTP $STATUS in ${TIME}s"
-          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
-
       - name: Check QuNeva Website
         id: website
         continue-on-error: true
@@ -46,17 +35,6 @@ jobs:
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "time=$TIME" >> $GITHUB_OUTPUT
           echo "Website: HTTP $STATUS in ${TIME}s"
-          [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
-
-      - name: Check QuNeva HA
-        id: ha
-        continue-on-error: true
-        run: |
-          OUT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" --max-time 15 --retry 2 --retry-delay 2 --location https://ha.quneva.com) || OUT="0 0"
-          STATUS="${OUT%% *}"; TIME="${OUT##* }"
-          echo "status=$STATUS" >> $GITHUB_OUTPUT
-          echo "time=$TIME" >> $GITHUB_OUTPUT
-          echo "HA: HTTP $STATUS in ${TIME}s"
           [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
 
       - name: Check QuNeva AI
@@ -94,26 +72,12 @@ jobs:
             "timestamp": "$TIMESTAMP",
             "date": "$DATE",
             "services": {
-              "abdelrahman": {
-                "name": "Abdelrahman Portfolio",
-                "url": "https://www.abdelrahman-ezzat.com",
-                "status": "${{ steps.abdelrahman.outputs.result }}",
-                "http_status": ${{ steps.abdelrahman.outputs.status || 0 }},
-                "response_time_s": ${{ steps.abdelrahman.outputs.time || 0 }}
-              },
               "website": {
                 "name": "QuNeva Website",
                 "url": "https://www.quneva.com",
                 "status": "${{ steps.website.outputs.result }}",
                 "http_status": ${{ steps.website.outputs.status || 0 }},
                 "response_time_s": ${{ steps.website.outputs.time || 0 }}
-              },
-              "ha": {
-                "name": "QuNeva HA",
-                "url": "https://ha.quneva.com",
-                "status": "${{ steps.ha.outputs.result }}",
-                "http_status": ${{ steps.ha.outputs.status || 0 }},
-                "response_time_s": ${{ steps.ha.outputs.time || 0 }}
               },
               "ai": {
                 "name": "QuNeva AI",
@@ -138,8 +102,8 @@ jobs:
           mkdir -p data
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           MONTH=$(date -u +"%Y-%m")
-          HEADER="timestamp,abdelrahman_result,abdelrahman_http,abdelrahman_time,website_result,website_http,website_time,ha_result,ha_http,ha_time,ai_result,ai_http,ai_time,root_result,root_http,root_time"
-          ROW="$TIMESTAMP,${{ steps.abdelrahman.outputs.result || 'down' }},${{ steps.abdelrahman.outputs.status || 0 }},${{ steps.abdelrahman.outputs.time || 0 }},${{ steps.website.outputs.result || 'down' }},${{ steps.website.outputs.status || 0 }},${{ steps.website.outputs.time || 0 }},${{ steps.ha.outputs.result || 'down' }},${{ steps.ha.outputs.status || 0 }},${{ steps.ha.outputs.time || 0 }},${{ steps.ai.outputs.result || 'down' }},${{ steps.ai.outputs.status || 0 }},${{ steps.ai.outputs.time || 0 }},${{ steps.root.outputs.result || 'down' }},${{ steps.root.outputs.status || 0 }},${{ steps.root.outputs.time || 0 }}"
+          HEADER="timestamp,website_result,website_http,website_time,ai_result,ai_http,ai_time,root_result,root_http,root_time"
+          ROW="$TIMESTAMP,${{ steps.website.outputs.result || 'down' }},${{ steps.website.outputs.status || 0 }},${{ steps.website.outputs.time || 0 }},${{ steps.ai.outputs.result || 'down' }},${{ steps.ai.outputs.status || 0 }},${{ steps.ai.outputs.time || 0 }},${{ steps.root.outputs.result || 'down' }},${{ steps.root.outputs.status || 0 }},${{ steps.root.outputs.time || 0 }}"
 
           # Live file used by the dashboard (kept to the most recent 500 rows)
           if [ ! -f data/history.csv ]; then
@@ -170,19 +134,13 @@ jobs:
       - name: Open incident if down
         id: incident
         if: |
-          steps.abdelrahman.outputs.result == 'down' ||
           steps.website.outputs.result == 'down' ||
-          steps.ha.outputs.result == 'down' ||
           steps.ai.outputs.result == 'down' ||
           steps.root.outputs.result == 'down'
         uses: actions/github-script@v8
         env:
-          ABDELRAHMAN_RESULT: ${{ steps.abdelrahman.outputs.result }}
-          ABDELRAHMAN_HTTP: ${{ steps.abdelrahman.outputs.status }}
           WEBSITE_RESULT: ${{ steps.website.outputs.result }}
           WEBSITE_HTTP: ${{ steps.website.outputs.status }}
-          HA_RESULT: ${{ steps.ha.outputs.result }}
-          HA_HTTP: ${{ steps.ha.outputs.status }}
           AI_RESULT: ${{ steps.ai.outputs.result }}
           AI_HTTP: ${{ steps.ai.outputs.status }}
           ROOT_RESULT: ${{ steps.root.outputs.result }}
@@ -191,9 +149,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const checks = {
-              'Abdelrahman Portfolio': { result: process.env.ABDELRAHMAN_RESULT, http: process.env.ABDELRAHMAN_HTTP },
               'QuNeva Website': { result: process.env.WEBSITE_RESULT, http: process.env.WEBSITE_HTTP },
-              'QuNeva HA': { result: process.env.HA_RESULT, http: process.env.HA_HTTP },
               'QuNeva AI': { result: process.env.AI_RESULT, http: process.env.AI_HTTP },
               'QuNeva Root Domain': { result: process.env.ROOT_RESULT, http: process.env.ROOT_HTTP },
             };
@@ -227,9 +183,7 @@ jobs:
       - name: Auto-close incident if all services recovered
         id: recover
         if: |
-          steps.abdelrahman.outputs.result == 'up' &&
           steps.website.outputs.result == 'up' &&
-          steps.ha.outputs.result == 'up' &&
           steps.ai.outputs.result == 'up' &&
           steps.root.outputs.result == 'up'
         uses: actions/github-script@v8
@@ -461,8 +415,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Service | Status | HTTP | Response |" >> $GITHUB_STEP_SUMMARY
           echo "|---------|--------|------|----------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Abdelrahman Portfolio | ${{ steps.abdelrahman.outputs.result }} | ${{ steps.abdelrahman.outputs.status }} | ${{ steps.abdelrahman.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
           echo "| QuNeva Website | ${{ steps.website.outputs.result }} | ${{ steps.website.outputs.status }} | ${{ steps.website.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
-          echo "| QuNeva HA | ${{ steps.ha.outputs.result }} | ${{ steps.ha.outputs.status }} | ${{ steps.ha.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
           echo "| QuNeva AI | ${{ steps.ai.outputs.result }} | ${{ steps.ai.outputs.status }} | ${{ steps.ai.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
           echo "| Root Domain | ${{ steps.root.outputs.result }} | ${{ steps.root.outputs.status }} | ${{ steps.root.outputs.time }}s |" >> $GITHUB_STEP_SUMMARY
