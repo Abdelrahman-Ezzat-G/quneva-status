@@ -53,6 +53,16 @@ jobs:
           [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 400 ] && echo "result=up" >> $GITHUB_OUTPUT || echo "result=down" >> $GITHUB_OUTPUT
 
       - name: Update status JSON
+        # audit QS-1: pass step outputs via env and reference $VARs in the shell,
+        # instead of interpolating ${{ }} directly into the heredoc (the classic
+        # template/shell-injection anti-pattern). Functionally identical.
+        env:
+          WEBSITE_RESULT: ${{ steps.website.outputs.result }}
+          WEBSITE_STATUS: ${{ steps.website.outputs.status || 0 }}
+          WEBSITE_TIME: ${{ steps.website.outputs.time || 0 }}
+          AI_RESULT: ${{ steps.ai.outputs.result }}
+          AI_STATUS: ${{ steps.ai.outputs.status || 0 }}
+          AI_TIME: ${{ steps.ai.outputs.time || 0 }}
         run: |
           mkdir -p data
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -66,28 +76,37 @@ jobs:
               "website": {
                 "name": "QuNeva Website",
                 "url": "https://quneva.com",
-                "status": "${{ steps.website.outputs.result }}",
-                "http_status": ${{ steps.website.outputs.status || 0 }},
-                "response_time_s": ${{ steps.website.outputs.time || 0 }}
+                "status": "$WEBSITE_RESULT",
+                "http_status": ${WEBSITE_STATUS:-0},
+                "response_time_s": ${WEBSITE_TIME:-0}
               },
               "ai": {
                 "name": "QuNeva AI",
                 "url": "https://ai.quneva.com",
-                "status": "${{ steps.ai.outputs.result }}",
-                "http_status": ${{ steps.ai.outputs.status || 0 }},
-                "response_time_s": ${{ steps.ai.outputs.time || 0 }}
+                "status": "$AI_RESULT",
+                "http_status": ${AI_STATUS:-0},
+                "response_time_s": ${AI_TIME:-0}
               }
             }
           }
           JSONEOF
 
       - name: Append to history CSV
+        # audit QS-1: step outputs passed via env, referenced as $VARs (no ${{ }}
+        # interpolation into the shell). Functionally identical.
+        env:
+          WEBSITE_RESULT: ${{ steps.website.outputs.result || 'down' }}
+          WEBSITE_STATUS: ${{ steps.website.outputs.status || 0 }}
+          WEBSITE_TIME: ${{ steps.website.outputs.time || 0 }}
+          AI_RESULT: ${{ steps.ai.outputs.result || 'down' }}
+          AI_STATUS: ${{ steps.ai.outputs.status || 0 }}
+          AI_TIME: ${{ steps.ai.outputs.time || 0 }}
         run: |
           mkdir -p data
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           MONTH=$(date -u +"%Y-%m")
           HEADER="timestamp,website_result,website_http,website_time,ai_result,ai_http,ai_time"
-          ROW="$TIMESTAMP,${{ steps.website.outputs.result || 'down' }},${{ steps.website.outputs.status || 0 }},${{ steps.website.outputs.time || 0 }},${{ steps.ai.outputs.result || 'down' }},${{ steps.ai.outputs.status || 0 }},${{ steps.ai.outputs.time || 0 }}"
+          ROW="$TIMESTAMP,$WEBSITE_RESULT,$WEBSITE_STATUS,$WEBSITE_TIME,$AI_RESULT,$AI_STATUS,$AI_TIME"
 
           # Live file used by the dashboard (kept to the most recent 500 rows)
           if [ ! -f data/history.csv ]; then
