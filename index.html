@@ -566,7 +566,7 @@ function renderGrid(){
       isUp = fallback.status === 'up';
       isChecking = false;
       displayMs = Math.round(fallback.response_time_s * 1000);
-      sourceLabel = `<span class="data-source source-live">📄 Latest record</span>`;
+      sourceLabel = `<span class="data-source source-live">⚡ Live via Supabase</span>`;
     } else {
       isUp = true; isChecking = true; displayMs = null; sourceLabel = '';
     }
@@ -692,10 +692,13 @@ function renderGlobal(){
     text.textContent = 'All Systems Operational';
   }
 }
-function updateTimestamp(src){
+function updateTimestamp(){
+  // Reflect the newest recorded check (from Supabase / the merged history).
+  const last = allRows.length ? new Date(allRows[allRows.length - 1][0]) : new Date();
+  const t = last.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
+    + ' · ' + last.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
   document.getElementById('lastUpdated').textContent =
-    'Last checked: ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
-    + ' · ' + src + ' · Checks run every 30 min';
+    'Last checked: ' + t + ' · Checks run every 30 min';
 }
 
 async function fetchStatusJSON(){
@@ -748,15 +751,55 @@ async function loadArchiveRows(){
   return rows;
 }
 
+// Live uptime history is stored in Supabase (public read via the anon key + RLS
+// that only allows SELECT on this one table). Rows are mapped into the same
+// array shape parseCSV produces so all the existing calc functions work unchanged.
+const SUPABASE_URL = 'https://kefoipujbrnfujqxidbv.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_6PComrEr9-14dPtMNs1ehQ_GQiVatj8';
+async function fetchSupabaseHistory(){
+  try{
+    const since = new Date(Date.now() - 92 * 86400000).toISOString();
+    const url = `${SUPABASE_URL}/rest/v1/status_checks`
+      + `?select=checked_at,service,status,http_code,response_ms`
+      + `&checked_at=gte.${since}&order=checked_at.asc&limit=100000`;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    const res = await fetch(url, {
+      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON },
+      cache: 'no-cache', signal: ctrl.signal
+    }).finally(() => clearTimeout(timer));
+    if(!res.ok) return [];
+    const data = await res.json();
+    if(!Array.isArray(data)) return [];
+    const byTs = new Map();  // group the two services of one check into one row
+    for(const r of data){
+      const base = r.service === 'website' ? 1 : r.service === 'ai' ? 4 : null;
+      if(base === null) continue;
+      let row = byTs.get(r.checked_at);
+      if(!row){ row = [r.checked_at, 'down', '0', '0', 'down', '0', '0']; byTs.set(r.checked_at, row); }
+      row[base]     = String(r.status || 'down');
+      row[base + 1] = String(r.http_code ?? 0);
+      row[base + 2] = String((r.response_ms ?? 0) / 1000);  // seconds, like the CSV
+    }
+    return [...byTs.values()];
+  } catch(e){ console.warn('supabase history unavailable', e.message); return []; }
+}
+
 async function fetchHistoryCSV(){
   try{
-    // The live file holds only the most recent rows; monthly archives extend the
-    // window so 30/90-day figures reflect real data instead of the last ~500 rows.
-    const [liveText, archiveRows] = await Promise.all([fetchCSV('data/history.csv'), loadArchiveRows()]);
+    // History now comes from Supabase; the frozen CSV archives cover the period
+    // before Supabase went live. To avoid double-counting the dual-write overlap,
+    // CSV rows are only used for timestamps older than the earliest Supabase row.
+    const [liveText, archiveRows, supaRows] = await Promise.all([
+      fetchCSV('data/history.csv'), loadArchiveRows(), fetchSupabaseHistory()
+    ]);
 
+    const earliestSupa = supaRows.length ? new Date(supaRows[0][0]).getTime() : Infinity;
     const byTs = new Map();
-    archiveRows.forEach(r => byTs.set(r[0], r));
-    if(liveText) parseCSV(liveText).forEach(r => byTs.set(r[0], r));
+    const addCsv = r => { if(new Date(r[0]).getTime() < earliestSupa) byTs.set(r[0], r); };
+    archiveRows.forEach(addCsv);
+    if(liveText) parseCSV(liveText).forEach(addCsv);
+    supaRows.forEach(r => byTs.set(r[0], r));
     allRows = [...byTs.values()].sort((a,b) => new Date(a[0]) - new Date(b[0]));
     if(!allRows.length) return;
 
@@ -899,8 +942,11 @@ function renderTrend(){
 }
 
 async function runAll(){
-  await Promise.all([fetchStatusJSON(), fetchHistoryCSV(), fetchIncidents(), fetchMaintenance()]);
+  // Current status + history come from Supabase (with the frozen CSV archives as
+  // fallback/old-history); incidents & maintenance come from the committed JSON.
+  await Promise.all([fetchHistoryCSV(), fetchIncidents(), fetchMaintenance()]);
   renderGrid(); renderUptime(); renderMetrics(); renderGlobal(); renderSLA(); renderTrend();
+  updateTimestamp();
 }
 
 runAll();
