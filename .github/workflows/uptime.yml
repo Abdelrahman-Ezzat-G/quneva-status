@@ -136,6 +136,37 @@ jobs:
           fi
           echo "$ROW" >> "$ARCHIVE"
 
+      - name: Record checks in Supabase
+        if: always()
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kefoipujbrnfujqxidbv.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          WEBSITE_RESULT: ${{ steps.website.outputs.result || 'down' }}
+          WEBSITE_HTTP: ${{ steps.website.outputs.status || 0 }}
+          WEBSITE_TIME: ${{ steps.website.outputs.time || 0 }}
+          AI_RESULT: ${{ steps.ai.outputs.result || 'down' }}
+          AI_HTTP: ${{ steps.ai.outputs.status || 0 }}
+          AI_TIME: ${{ steps.ai.outputs.time || 0 }}
+        run: |
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "SUPABASE_SERVICE_ROLE_KEY not set — skipping Supabase write."
+            exit 0
+          fi
+          export WEBSITE_MS=$(awk "BEGIN{printf \"%d\", ($WEBSITE_TIME)*1000}")
+          export AI_MS=$(awk "BEGIN{printf \"%d\", ($AI_TIME)*1000}")
+          PAYLOAD=$(python3 -c "import os,json;print(json.dumps([{'service':'website','status':os.environ['WEBSITE_RESULT'],'http_code':int(os.environ.get('WEBSITE_HTTP') or 0),'response_ms':int(os.environ['WEBSITE_MS'])},{'service':'ai','status':os.environ['AI_RESULT'],'http_code':int(os.environ.get('AI_HTTP') or 0),'response_ms':int(os.environ['AI_MS'])}]))")
+          HTTP=$(curl -s -o /tmp/sb.json -w '%{http_code}' -X POST "$SUPABASE_URL/rest/v1/status_checks" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+          echo "Supabase insert HTTP $HTTP"
+          case "$HTTP" in
+            20*) echo "Recorded checks in Supabase" ;;
+            *) cat /tmp/sb.json 2>/dev/null || true; echo "Supabase insert failed (HTTP $HTTP)" ;;
+          esac
+
       - name: Build archive manifest
         run: |
           # List available monthly archives so the dashboard fetches exactly
