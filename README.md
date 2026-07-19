@@ -20,7 +20,7 @@ Public status page for [QuNeva WFM](https://www.quneva.com) — Enterprise Workf
 
 ## How It Works
 
-- **GitHub Actions** runs uptime checks every hour (`uptime.yml`)
+- **GitHub Actions** runs uptime checks every ~30 min via an external dispatcher, with a 6-hourly GitHub `schedule` as a fallback heartbeat (`uptime.yml`)
 - Results are saved to `data/status.json`, `data/history.csv`, and monthly `data/history-archive-YYYY-MM.csv`
 - **GitHub Pages** hosts the status page (`index.html`)
 - Incidents are automatically created as GitHub Issues when downtime is detected, and exported to `data/incidents.json` and an Atom feed at `data/incidents.xml`
@@ -73,7 +73,7 @@ quneva-status/
 │   └── maintenance.json          ← Open maintenance notices (auto-updated)
 └── .github/
     └── workflows/
-        ├── uptime.yml            ← Uptime monitor (hourly)
+        ├── uptime.yml            ← Uptime monitor (~30 min via dispatcher; 6h fallback)
         └── deploy.yml            ← GitHub Pages deployment
 ```
 

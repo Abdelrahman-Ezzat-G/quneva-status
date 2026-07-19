@@ -2,8 +2,17 @@ name: Uptime Monitor
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    # Fallback heartbeat only. An external dispatcher runs the primary ~30-min
+    # checks via workflow_dispatch; this low-frequency schedule just guarantees
+    # the monitor never goes fully dark if that external trigger ever stops,
+    # while avoiding the redundant top-of-hour runs the old hourly cron caused.
+    - cron: "0 */6 * * *"
   workflow_dispatch:
+    inputs:
+      test_email:
+        description: "Send a test alert email (verifies RESEND_API_KEY)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -24,7 +33,11 @@ jobs:
         uses: actions/checkout@v5
         with:
           ref: main
-          fetch-depth: 0
+          # Shallow: only a small window of history is needed to rebase one new
+          # commit onto the latest main. The commit step deepens automatically if
+          # the merge-base ever falls outside this window. Avoids a full ~2000+
+          # commit clone on every run.
+          fetch-depth: 50
 
       - name: Check QuNeva Website
         id: website
@@ -228,9 +241,18 @@ jobs:
           NEW_INCIDENT: ${{ steps.incident.outputs.created }}
           DOWN_LIST: ${{ steps.incident.outputs.down }}
           RECOVERED: ${{ steps.recover.outputs.recovered }}
+          TEST_EMAIL: ${{ github.event.inputs.test_email }}
         run: |
           NOW=$(date -u +'%Y-%m-%d %H:%M UTC')
-          if [ "$NEW_INCIDENT" = "true" ]; then
+          if [ "$TEST_EMAIL" = "true" ]; then
+            export SUBJECT="[QuNeva Status] 🧪 Test alert"
+            export TEXT="This is a test of QuNeva Status email alerts.
+
+          If you received this, alerting is configured correctly (RESEND_API_KEY is valid).
+          Time: $NOW
+
+          Live status: https://status.quneva.com"
+          elif [ "$NEW_INCIDENT" = "true" ]; then
             export SUBJECT="[QuNeva Status] 🔴 Service disruption: $DOWN_LIST"
             export TEXT="A service disruption was detected.
 
@@ -398,8 +420,13 @@ jobs:
           git commit -m "chore: uptime check $(date -u +'%Y-%m-%d %H:%M UTC')"
 
           for i in 1 2 3; do
-            git fetch origin main
-            git rebase origin/main || git rebase --abort
+            git fetch --depth=50 origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              # Merge-base may be beyond the shallow window — deepen and retry once.
+              git fetch --deepen=500 origin main || git fetch --unshallow origin || true
+              git rebase origin/main || git rebase --abort || true
+            fi
             if git push --force-with-lease origin HEAD:main; then
               echo "Status data pushed successfully"
               exit 0

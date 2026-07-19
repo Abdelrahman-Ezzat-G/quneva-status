@@ -99,7 +99,7 @@ Click **Save**.
 Go to: https://github.com/Abdelrahman-Ezzat-G/quneva-status/actions
 
 You should see two workflows:
-- **Uptime Monitor** — runs every hour
+- **Uptime Monitor** — runs ~every 30 min (external dispatcher) with a 6-hourly fallback
 - **Deploy Status Page** — deploys on every push
 
 Click **Uptime Monitor** → **Run workflow** → **Run workflow** (green button).
@@ -138,7 +138,7 @@ After DNS propagates (5 min to 24 hours):
 ### Uptime checks showing wrong results
 - The GitHub Actions workflow (server-side `curl`) is the single authoritative uptime source
 - The page renders `data/status.json` (latest check) and `data/history.csv` + archives (history) — it does not probe the services from the browser
-- `data/status.json` is updated every hour with accurate results
+- `data/status.json` is updated on every check (~30 min) with accurate results
 - If the page looks stale, confirm the latest **Uptime Monitor** run succeeded and committed to `main`
 
 ### Workflow runs but data/ files not created
@@ -150,14 +150,21 @@ After DNS propagates (5 min to 24 hours):
 
 ## Maintenance
 
-### Changing check interval
-Edit the `cron` line under `schedule` in `.github/workflows/uptime.yml`:
+### Check cadence
+Primary checks come from an **external dispatcher** (~every 30 min) that triggers
+the workflow via `workflow_dispatch`. The GitHub `schedule` in `uptime.yml` is only
+a **fallback heartbeat** (`0 */6 * * *`) so the monitor never goes fully dark if the
+external trigger stops. To change the fallback frequency, edit that `cron` line:
 ```yaml
-cron: "0 * * * *"     # every hour (current default)
-cron: "*/15 * * * *"  # every 15 minutes
-cron: "*/5 * * * *"   # every 5 minutes
+cron: "0 */6 * * *"   # every 6 hours (current fallback)
+cron: "0 */2 * * *"   # every 2 hours
+cron: "0 * * * *"     # hourly
 ```
 > Note: each run commits to `main`, so shorter intervals mean many more commits.
+
+### Sending a test alert email
+Go to **Actions → Uptime Monitor → Run workflow**, tick **test_email**, and run it.
+If `RESEND_API_KEY` is set correctly you'll receive a test email at `MAIL_TO`.
 
 ### Adding a new monitored service
 1. Add a new step in `uptime.yml` (copy an existing check step)

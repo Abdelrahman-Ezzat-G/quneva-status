@@ -695,7 +695,7 @@ function renderGlobal(){
 function updateTimestamp(src){
   document.getElementById('lastUpdated').textContent =
     'Last checked: ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
-    + ' · ' + src + ' · Checks run hourly';
+    + ' · ' + src + ' · Checks run every 30 min';
 }
 
 async function fetchStatusJSON(){
