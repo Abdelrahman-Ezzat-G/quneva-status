@@ -74,7 +74,9 @@ jobs:
         if: always()
         continue-on-error: true
         env:
-          SUPABASE_URL: https://kefoipujbrnfujqxidbv.supabase.co
+          # Consolidation: status_checks now lives on QuNeva_M — both URL and key
+          # come from repo secrets so the target can be changed without a code edit.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           WEBSITE_RESULT: ${{ steps.website.outputs.result || 'down' }}
           WEBSITE_HTTP: ${{ steps.website.outputs.status || 0 }}
@@ -83,8 +85,8 @@ jobs:
           AI_HTTP: ${{ steps.ai.outputs.status || 0 }}
           AI_TIME: ${{ steps.ai.outputs.time || 0 }}
         run: |
-          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
-            echo "SUPABASE_SERVICE_ROLE_KEY not set — skipping Supabase write."
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ] || [ -z "$SUPABASE_URL" ]; then
+            echo "Supabase secrets not set — skipping Supabase write."
             exit 0
           fi
           export WEBSITE_MS=$(awk "BEGIN{printf \"%d\", ($WEBSITE_TIME)*1000}")
